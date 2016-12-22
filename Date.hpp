@@ -219,6 +219,11 @@ public:
         SetYear(year);
     }
 
+    int Compare(Date const& date) const throw()
+    {
+        return GetDate() > date.GetDate() ? 1 : (GetDate() < date.GetDate() ? -1 : 0);
+    }
+
 // Data (internal use only)
 private:
     day_type   m_day;   // 1..31
