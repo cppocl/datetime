@@ -139,6 +139,36 @@ public:
         return *this;
     }
 
+    bool operator <(Date const& date) const throw()
+    {
+        return Compare(date) < 0;
+    }
+
+    bool operator <=(Date const& date) const throw()
+    {
+        return Compare(date) <= 0;
+    }
+
+    bool operator >(Date const& date) const throw()
+    {
+        return Compare(date) > 0;
+    }
+
+    bool operator >=(Date const& date) const throw()
+    {
+        return Compare(date) >= 0;
+    }
+
+    bool operator ==(Date const& date) const throw()
+    {
+        return Compare(date) == 0;
+    }
+
+    bool operator !=(Date const& date) const throw()
+    {
+        return Compare(date) != 0;
+    }
+
 // Member functions.
 public:
     // Get a day between 1 and 31.
