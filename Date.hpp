@@ -249,6 +249,13 @@ public:
         SetYear(year);
     }
 
+    void Copy(Date const& date) throw()
+    {
+        m_day = date.m_day;
+        m_month = date.m_month;
+        m_year = date.m_year;
+    }
+
     int Compare(Date const& date) const throw()
     {
         uint32_t d1 = GetDate();
@@ -263,6 +270,6 @@ private:
     year_type  m_year;  // YYYY. e.g. 1970
 };
 
-}
+} // namespace ocl
 
 #endif // OCL_GUARD_DATETIME_DATE_HPP

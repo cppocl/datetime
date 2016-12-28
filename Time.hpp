@@ -201,6 +201,14 @@ public:
         m_hours = static_cast<hour_type>(time >> 24U);
     }
 
+    void Copy(Time const& time) throw()
+    {
+        m_hours = time.m_hours;
+        m_minutes = time.m_minutes;
+        m_seconds = time.m_seconds;
+        m_milliseconds = time.m_milliseconds;
+    }
+
     int Compare(Time const& time) const throw()
     {
         uint32_t t1 = GetTime();
