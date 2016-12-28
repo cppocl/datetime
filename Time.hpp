@@ -66,7 +66,7 @@ private:
 
 // Constructors.
 public:
-    Time()
+    Time() throw()
         : m_hours(0)
         , m_minutes(0)
         , m_seconds(0)
@@ -77,7 +77,7 @@ public:
     Time(hour_type hours,         // 0..23
          minute_type minutes,       // 0..59
          second_type seconds,       // 0..59
-         millisecond_type milliseconds) // 0..999
+         millisecond_type milliseconds) throw() // 0..999
         : m_hours(hours)
         , m_minutes(minutes)
     {
@@ -85,7 +85,7 @@ public:
         SetMilliseconds(milliseconds);
     }
 
-    Time(Time const& time)
+    Time(Time const& time) throw()
         : m_hours(time.m_hours)
         , m_minutes(time.m_minutes)
         , m_seconds(time.m_seconds)
@@ -95,7 +95,7 @@ public:
 
 // Overloaded operators.
 public:
-    Time& operator =(Time const& time)
+    Time& operator =(Time const& time) throw()
     {
         m_hours = time.m_hours;
         m_minutes = time.m_minutes;
@@ -210,10 +210,10 @@ public:
 
 // Data (internal use only)
 private:
-    hour_type m_hours;        // 0..23
-    minute_type m_minutes;      // 0..59
-    second_type m_seconds;      // 0..59 (6 - bits)
-    millisecond_internal_type m_milliseconds; // 0..999 (8 - bits + 2 top bits stored in m_seconds)
+    hour_type m_hours;                        // 0..23
+    minute_type m_minutes;                    // 0..59
+    second_type m_seconds;                    // 0..59 (6 - bits)
+    millisecond_internal_type m_milliseconds; // 0..999 (8 - bits + 2 bottom bits stored in m_seconds)
 };
 
 } // namespace ocl
