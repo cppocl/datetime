@@ -251,7 +251,9 @@ public:
 
     int Compare(Date const& date) const throw()
     {
-        return GetDate() > date.GetDate() ? 1 : (GetDate() < date.GetDate() ? -1 : 0);
+        uint32_t d1 = GetDate();
+        uint32_t d2 = date.GetDate();
+        return d1 > d2 ? 1 : (d1 < d2 ? -1 : 0);
     }
 
 // Data (internal use only)

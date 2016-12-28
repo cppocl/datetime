@@ -193,8 +193,8 @@ TEST_MEMBER_FUNCTION(Time, GetTime, NA)
     Time time3(23U, 59U, 59U, 999U);
 
     CHECK_EQUAL(time1.GetTime(), 0U);
-    CHECK_EQUAL(time2.GetTime(), 0x01020304u);
-    CHECK_EQUAL(time3.GetTime(), 0x173bfbe7u);
+    CHECK_EQUAL(time2.GetTime(), 0x01020c04u);
+    CHECK_EQUAL(time3.GetTime(), 0x173befe7u);
 }
 
 TEST_MEMBER_FUNCTION(Time, SetTime, uint32_t)
@@ -208,17 +208,33 @@ TEST_MEMBER_FUNCTION(Time, SetTime, uint32_t)
     CHECK_EQUAL(time.GetMinutes(), 0U);
     CHECK_EQUAL(time.GetHours(), 0U);
 
-    time.SetTime(0x01020304u);
-    CHECK_EQUAL(time.GetTime(), 0x01020304u);
+    time.SetTime(0x01020c04u);
+    CHECK_EQUAL(time.GetTime(), 0x01020c04u);
     CHECK_EQUAL(time.GetMilliseconds(), 4U);
     CHECK_EQUAL(time.GetSeconds(), 3U);
     CHECK_EQUAL(time.GetMinutes(), 2U);
     CHECK_EQUAL(time.GetHours(), 1U);
 
-    time.SetTime(0x173bfbe7u);
-    CHECK_EQUAL(time.GetTime(), 0x173bfbe7u);
+    time.SetTime(0x173befe7u);
+    CHECK_EQUAL(time.GetTime(), 0x173befe7u);
     CHECK_EQUAL(time.GetMilliseconds(), 999U);
     CHECK_EQUAL(time.GetSeconds(), 59U);
     CHECK_EQUAL(time.GetMinutes(), 59U);
     CHECK_EQUAL(time.GetHours(), 23U);
+}
+
+TEST_CONST_MEMBER_FUNCTION(Time, Compare, Time_const_ref)
+{
+    TEST_OVERRIDE_ARGS("Time const&");
+
+    CHECK_EQUAL(Time().Compare(Time()), 0);
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).Compare(Time(0U, 0U, 0U, 0U)), 0);
+    CHECK_EQUAL(Time(1U, 0U, 0U, 0U).Compare(Time(2U, 0U, 0U, 0U)), -1);
+    CHECK_EQUAL(Time(0U, 1U, 0U, 0U).Compare(Time(0U, 2U, 0U, 0U)), -1);
+    CHECK_EQUAL(Time(0U, 0U, 1U, 0U).Compare(Time(0U, 0U, 2U, 0U)), -1);
+    CHECK_EQUAL(Time(0U, 0U, 0U, 1U).Compare(Time(0U, 0U, 0U, 2U)), -1);
+    CHECK_EQUAL(Time(2U, 0U, 0U, 0U).Compare(Time(1U, 0U, 0U, 0U)), 1);
+    CHECK_EQUAL(Time(0U, 2U, 0U, 0U).Compare(Time(0U, 1U, 0U, 0U)), 1);
+    CHECK_EQUAL(Time(0U, 0U, 2U, 0U).Compare(Time(0U, 0U, 1U, 0U)), 1);
+    CHECK_EQUAL(Time(0U, 0U, 0U, 2U).Compare(Time(0U, 0U, 0U, 1U)), 1);
 }

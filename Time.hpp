@@ -59,10 +59,10 @@ private:
     typedef uint8_t millisecond_internal_type;
 
     // Masks for handling m_milliseconds and m_seconds.
-    // m_seconds top two bits contain the top two bits of the 10 bits used for milliseconds.
-    static second_type const SECONDS_MASK = static_cast<second_type>(0x3f);
-    static second_type const MILLISECONDS_FROM_SECONDS_MASK = static_cast<second_type>(0xc0);
-    static millisecond_type const MILLISECONDS_UPPER_BITS = static_cast<millisecond_type>(0x0300);
+    // m_seconds bottom two bits contain the top two bits of the 10 bits used for milliseconds.
+    // Storing seconds in top 8 bits allows for quick time comparison.
+    static second_type const SECONDS_MASK = static_cast<second_type>(0xfc);
+    static second_type const MILLISECONDS_FROM_SECONDS_MASK = static_cast<second_type>(0x03);
 
 // Constructors.
 public:
@@ -80,9 +80,9 @@ public:
          millisecond_type milliseconds) // 0..999
         : m_hours(hours)
         , m_minutes(minutes)
-        , m_seconds((seconds & SECONDS_MASK) | static_cast<second_type>((milliseconds & MILLISECONDS_UPPER_BITS) >> 2))
-        , m_milliseconds(static_cast<unsigned char>(milliseconds & 0xff))
     {
+        SetSeconds(seconds);
+        SetMilliseconds(milliseconds);
     }
 
     Time(Time const& time)
@@ -104,33 +104,62 @@ public:
         return *this;
     }
 
+    bool operator <(Time const& time) const throw()
+    {
+        return Compare(time) < 0;
+    }
+
+    bool operator <=(Time const& time) const throw()
+    {
+        return Compare(time) <= 0;
+    }
+
+    bool operator >(Time const& time) const throw()
+    {
+        return Compare(time) > 0;
+    }
+
+    bool operator >=(Time const& time) const throw()
+    {
+        return Compare(time) >= 0;
+    }
+
+    bool operator ==(Time const& time) const throw()
+    {
+        return Compare(time) == 0;
+    }
+
+    bool operator !=(Time const& time) const throw()
+    {
+        return Compare(time) != 0;
+    }
+
 // Member functions.
 public:
     millisecond_type GetMilliseconds() const throw()
     {
         millisecond_type milliseconds = m_milliseconds;
-        milliseconds |= static_cast<unsigned short>(m_seconds & MILLISECONDS_FROM_SECONDS_MASK)
-                        << static_cast<unsigned short>(2);
+        milliseconds |= static_cast<millisecond_type>(m_seconds & MILLISECONDS_FROM_SECONDS_MASK) << 8U;
 
         return milliseconds;
     }
 
     void SetMilliseconds(millisecond_type milliseconds) throw()
     {
-        static millisecond_type const MILLISECONDS_TOP_BITS = static_cast<millisecond_type>(0x0300);
-        unsigned char top_bits = static_cast<unsigned char>((milliseconds & MILLISECONDS_TOP_BITS) >> 2);
-        m_seconds = (m_seconds & SECONDS_MASK) | top_bits;
-        m_milliseconds = milliseconds & static_cast<unsigned char>(0xff);
+        second_type seconds = m_seconds & SECONDS_MASK;
+        m_milliseconds = static_cast<millisecond_internal_type>(milliseconds);
+        m_seconds = seconds | (static_cast<second_type>(milliseconds >> 8U) & MILLISECONDS_FROM_SECONDS_MASK);
     }
 
     second_type GetSeconds() const throw()
     {
-        return m_seconds & SECONDS_MASK;
+        return static_cast<second_type>(m_seconds >> 2U);
     }
 
     void SetSeconds(second_type seconds) throw()
     {
-        m_seconds = (m_seconds & MILLISECONDS_FROM_SECONDS_MASK) | (seconds & SECONDS_MASK);
+        second_type millisecond_bits = m_seconds & MILLISECONDS_FROM_SECONDS_MASK;
+        m_seconds = static_cast<second_type>(seconds << 2U) | millisecond_bits;
     }
 
     minute_type GetMinutes() const throw()
@@ -170,6 +199,13 @@ public:
         m_seconds = static_cast<second_type>(time >> 8U);
         m_minutes = static_cast<minute_type>(time >> 16U);
         m_hours = static_cast<hour_type>(time >> 24U);
+    }
+
+    int Compare(Time const& time) const throw()
+    {
+        uint32_t t1 = GetTime();
+        uint32_t t2 = time.GetTime();
+        return t1 > t2 ? 1 : (t1 < t2 ? -1 : 0);
     }
 
 // Data (internal use only)
