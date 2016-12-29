@@ -111,11 +111,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Date.hpp" />
+    <ClInclude Include="..\..\..\DateTime.hpp" />
     <ClInclude Include="..\..\..\NowTicks.hpp" />
     <ClInclude Include="..\..\..\TicksTime.hpp" />
     <ClInclude Include="..\..\..\Time.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\unit_tests\DateTime_tests.cpp" />
     <ClCompile Include="..\..\..\unit_tests\datetime_unit_tests_main.cpp" />
     <ClCompile Include="..\..\..\unit_tests\Date_tests.cpp" />
     <ClCompile Include="..\..\..\unit_tests\TicksTime_tests.cpp" />

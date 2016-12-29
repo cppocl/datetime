@@ -218,6 +218,27 @@ TEST_CONST_MEMBER_FUNCTION(Date, IsLeapYear, NA)
     CHECK_FALSE(date.IsLeapYear());
 }
 
+TEST_CONST_MEMBER_FUNCTION(Date, GetDate, NA)
+{
+    CHECK_EQUAL(Date().GetDate(), 0x07b20101U);
+    CHECK_EQUAL(Date(1U, 2U, 2000U).GetDate(), 0x07d00201U);
+}
+
+TEST_CONST_MEMBER_FUNCTION(Date, SetDate, uint32_t)
+{
+    Date date;
+
+    date.SetDate(0x07b20101U);
+    CHECK_EQUAL(date.GetDay(), 1U);
+    CHECK_EQUAL(date.GetMonth(), 1U);
+    CHECK_EQUAL(date.GetYear(), 1970U);
+
+    date.SetDate(0x07d00201U);
+    CHECK_EQUAL(date.GetDay(), 1U);
+    CHECK_EQUAL(date.GetMonth(), 2U);
+    CHECK_EQUAL(date.GetYear(), 2000U);
+}
+
 TEST_CONST_MEMBER_FUNCTION(Date, Compare, Date_const_ref)
 {
     TEST_OVERRIDE_ARGS("Date const&");
