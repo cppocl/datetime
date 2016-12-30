@@ -379,34 +379,78 @@ TEST_CONST_MEMBER_FUNCTION(DateTime, IsLeapYear, NA)
 
 TEST_MEMBER_FUNCTION(DateTime, GetMilliseconds, NA)
 {
+    for (DateTime::millisecond_type ms = 0; ms <= 999U; ++ms)
+    {
+        DateTime dt(Date(), Time(0U, 1U, 2U, ms));
+        CHECK_EQUAL(dt.GetMilliseconds(), ms);
+    }
 }
 
 TEST_CONST_MEMBER_FUNCTION(DateTime, SetMilliseconds, millisecond_type)
 {
+    DateTime dt;
+    for (DateTime::millisecond_type ms = 0; ms <= 999U; ++ms)
+    {
+        dt.SetMilliseconds(ms);
+        CHECK_EQUAL(dt.GetMilliseconds(), ms);
+    }
 }
 
 TEST_MEMBER_FUNCTION(DateTime, GetSeconds, NA)
 {
+    for (DateTime::second_type s = 0; s <= 59U; ++s)
+    {
+        DateTime dt(Date(), Time(0U, 1U, s, 3U));
+        CHECK_EQUAL(dt.GetSeconds(), s);
+    }
 }
 
 TEST_CONST_MEMBER_FUNCTION(DateTime, SetSeconds, second_type)
 {
+    DateTime dt;
+    for (DateTime::second_type s = 0; s <= 59U; ++s)
+    {
+        dt.SetSeconds(s);
+        CHECK_EQUAL(dt.GetSeconds(), s);
+    }
 }
 
 TEST_MEMBER_FUNCTION(DateTime, GetMinutes, NA)
 {
+    for (DateTime::minute_type m = 0; m <= 59U; ++m)
+    {
+        DateTime dt(Date(), Time(0U, m, 2U, 3U));
+        CHECK_EQUAL(dt.GetMinutes(), m);
+    }
 }
 
 TEST_CONST_MEMBER_FUNCTION(DateTime, SetMinutes, minute_type)
 {
+    DateTime dt;
+    for (DateTime::minute_type m = 0; m <= 59U; ++m)
+    {
+        dt.SetMinutes(m);
+        CHECK_EQUAL(dt.GetMinutes(), m);
+    }
 }
 
 TEST_MEMBER_FUNCTION(DateTime, GetHours, NA)
 {
+    for (DateTime::hour_type h = 0; h <= 23U; ++h)
+    {
+        DateTime dt(Date(), Time(h, 1U, 2U, 3U));
+        CHECK_EQUAL(dt.GetHours(), h);
+    }
 }
 
 TEST_CONST_MEMBER_FUNCTION(DateTime, SetHours, hour_type)
 {
+    DateTime dt;
+    for (DateTime::hour_type h = 0; h <= 23U; ++h)
+    {
+        dt.SetHours(h);
+        CHECK_EQUAL(dt.GetHours(), h);
+    }
 }
 
 TEST_MEMBER_FUNCTION(DateTime, GetDate, NA)
@@ -420,11 +464,13 @@ TEST_CONST_MEMBER_FUNCTION(DateTime, SetDate, uint32_t)
     DateTime dt;
 
     dt.SetDate(0x07b20101U);
+    CHECK_EQUAL(dt.GetDate(), 0x07b20101U);
     CHECK_EQUAL(dt.GetDay(), 1U);
     CHECK_EQUAL(dt.GetMonth(), 1U);
     CHECK_EQUAL(dt.GetYear(), 1970U);
 
     dt.SetDate(0x07d00201U);
+    CHECK_EQUAL(dt.GetDate(), 0x07d00201U);
     CHECK_EQUAL(dt.GetDay(), 1U);
     CHECK_EQUAL(dt.GetMonth(), 2U);
     CHECK_EQUAL(dt.GetYear(), 2000U);
@@ -470,9 +516,80 @@ TEST_CONST_MEMBER_FUNCTION(DateTime, SetTime, uint32_t)
 TEST_MEMBER_FUNCTION(DateTime, SetDateTime, uint32_t_uint32_t)
 {
     TEST_OVERRIDE_ARGS("uint32_t, uint32_t");
+
+    DateTime dt;
+
+    dt.SetDateTime(0x07b20101U, 0U);
+    CHECK_EQUAL(dt.GetDay(), 1U);
+    CHECK_EQUAL(dt.GetMonth(), 1U);
+    CHECK_EQUAL(dt.GetYear(), 1970U);
+    CHECK_EQUAL(dt.GetTime(), 0U);
+    CHECK_EQUAL(dt.GetMilliseconds(), 0U);
+    CHECK_EQUAL(dt.GetSeconds(), 0U);
+    CHECK_EQUAL(dt.GetMinutes(), 0U);
+    CHECK_EQUAL(dt.GetHours(), 0U);
+
+    dt.SetDateTime(0x07d00201U, 0x01020c04u);
+    CHECK_EQUAL(dt.GetDate(), 0x07d00201U);
+    CHECK_EQUAL(dt.GetDay(), 1U);
+    CHECK_EQUAL(dt.GetMonth(), 2U);
+    CHECK_EQUAL(dt.GetYear(), 2000U);
+    CHECK_EQUAL(dt.GetTime(), 0x01020c04u);
+    CHECK_EQUAL(dt.GetMilliseconds(), 4U);
+    CHECK_EQUAL(dt.GetSeconds(), 3U);
+    CHECK_EQUAL(dt.GetMinutes(), 2U);
+    CHECK_EQUAL(dt.GetHours(), 1U);
+
+    dt.SetDateTime(0x07d00201U, 0x01020c04u);
+    CHECK_EQUAL(dt.GetDate(), 0x07d00201U);
+    CHECK_EQUAL(dt.GetDay(), 1U);
+    CHECK_EQUAL(dt.GetMonth(), 2U);
+    CHECK_EQUAL(dt.GetYear(), 2000U);
+    CHECK_EQUAL(dt.GetTime(), 0x01020c04u);
+    CHECK_EQUAL(dt.GetMilliseconds(), 4U);
+    CHECK_EQUAL(dt.GetSeconds(), 3U);
+    CHECK_EQUAL(dt.GetMinutes(), 2U);
+    CHECK_EQUAL(dt.GetHours(), 1U);
 }
 
 TEST_MEMBER_FUNCTION(DateTime, Compare, DateTime_const_ref)
 {
     TEST_OVERRIDE_ARGS("DateTime const&");
+
+    // Compare date and time differences.
+    CHECK_EQUAL(DateTime().Compare(DateTime()), 0);
+    CHECK_EQUAL(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 3U, 4U)).Compare(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 3U, 4U))), 0);
+    CHECK_EQUAL(DateTime(Date(1U, 1U, 1980U), Time(1U, 2U, 3U, 4U)).Compare(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 3U, 4U))), -1);
+    CHECK_EQUAL(DateTime(Date(1U, 2U, 1979U), Time(1U, 2U, 3U, 4U)).Compare(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 3U, 4U))), -1);
+    CHECK_EQUAL(DateTime(Date(1U, 2U, 1980U), Time(0U, 2U, 3U, 4U)).Compare(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 3U, 4U))), -1);
+    CHECK_EQUAL(DateTime(Date(1U, 2U, 1980U), Time(1U, 1U, 3U, 4U)).Compare(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 3U, 4U))), -1);
+    CHECK_EQUAL(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 2U, 4U)).Compare(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 3U, 4U))), -1);
+    CHECK_EQUAL(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 3U, 3U)).Compare(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 3U, 4U))), -1);
+    CHECK_EQUAL(DateTime(Date(2U, 2U, 1980U), Time(1U, 2U, 3U, 4U)).Compare(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 3U, 4U))), 1);
+    CHECK_EQUAL(DateTime(Date(1U, 3U, 1980U), Time(1U, 2U, 3U, 4U)).Compare(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 3U, 4U))), 1);
+    CHECK_EQUAL(DateTime(Date(1U, 2U, 1981U), Time(1U, 2U, 3U, 4U)).Compare(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 3U, 4U))), 1);
+    CHECK_EQUAL(DateTime(Date(1U, 2U, 1980U), Time(2U, 2U, 3U, 4U)).Compare(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 3U, 4U))), 1);
+    CHECK_EQUAL(DateTime(Date(1U, 2U, 1980U), Time(1U, 3U, 3U, 4U)).Compare(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 3U, 4U))), 1);
+    CHECK_EQUAL(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 4U, 4U)).Compare(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 3U, 4U))), 1);
+    CHECK_EQUAL(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 3U, 5U)).Compare(DateTime(Date(1U, 2U, 1980U), Time(1U, 2U, 3U, 4U))), 1);
+
+    // Compare only date differences.
+    CHECK_EQUAL(DateTime(Date(1U, 2U, 1980U), Time()).Compare(DateTime(Date(1U, 2U, 1980U), Time())), 0);
+    CHECK_EQUAL(DateTime(Date(1U, 2U, 1980U), Time()).Compare(DateTime(Date(2U, 2U, 1980U), Time())), -1);
+    CHECK_EQUAL(DateTime(Date(2U, 1U, 1980U), Time()).Compare(DateTime(Date(1U, 2U, 1980U), Time())), -1);
+    CHECK_EQUAL(DateTime(Date(3U, 2U, 1979U), Time()).Compare(DateTime(Date(1U, 2U, 1980U), Time())), -1);
+    CHECK_EQUAL(DateTime(Date(2U, 2U, 1980U), Time()).Compare(DateTime(Date(1U, 2U, 1980U), Time())), 1);
+    CHECK_EQUAL(DateTime(Date(1U, 3U, 1980U), Time()).Compare(DateTime(Date(1U, 2U, 1980U), Time())), 1);
+    CHECK_EQUAL(DateTime(Date(1U, 2U, 1981U), Time()).Compare(DateTime(Date(1U, 2U, 1980U), Time())), 1);
+
+    // Compare only time differences.
+    CHECK_EQUAL(DateTime(Date(), Time(0U, 0U, 0U, 0U)).Compare(DateTime(Date(), Time(0U, 0U, 0U, 0U))), 0);
+    CHECK_EQUAL(DateTime(Date(), Time(1U, 0U, 0U, 0U)).Compare(DateTime(Date(), Time(2U, 0U, 0U, 0U))), -1);
+    CHECK_EQUAL(DateTime(Date(), Time(0U, 1U, 0U, 0U)).Compare(DateTime(Date(), Time(0U, 2U, 0U, 0U))), -1);
+    CHECK_EQUAL(DateTime(Date(), Time(0U, 0U, 1U, 0U)).Compare(DateTime(Date(), Time(0U, 0U, 2U, 0U))), -1);
+    CHECK_EQUAL(DateTime(Date(), Time(0U, 0U, 0U, 1U)).Compare(DateTime(Date(), Time(0U, 0U, 0U, 2U))), -1);
+    CHECK_EQUAL(DateTime(Date(), Time(2U, 0U, 0U, 0U)).Compare(DateTime(Date(), Time(1U, 0U, 0U, 0U))), 1);
+    CHECK_EQUAL(DateTime(Date(), Time(0U, 2U, 0U, 0U)).Compare(DateTime(Date(), Time(0U, 1U, 0U, 0U))), 1);
+    CHECK_EQUAL(DateTime(Date(), Time(0U, 0U, 2U, 0U)).Compare(DateTime(Date(), Time(0U, 0U, 1U, 0U))), 1);
+    CHECK_EQUAL(DateTime(Date(), Time(0U, 0U, 0U, 2U)).Compare(DateTime(Date(), Time(0U, 0U, 0U, 1U))), 1);
 }

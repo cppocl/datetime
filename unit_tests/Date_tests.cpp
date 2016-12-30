@@ -229,11 +229,13 @@ TEST_MEMBER_FUNCTION(Date, SetDate, uint32_t)
     Date date;
 
     date.SetDate(0x07b20101U);
+    CHECK_EQUAL(date.GetDate(), 0x07b20101U);
     CHECK_EQUAL(date.GetDay(), 1U);
     CHECK_EQUAL(date.GetMonth(), 1U);
     CHECK_EQUAL(date.GetYear(), 1970U);
 
     date.SetDate(0x07d00201U);
+    CHECK_EQUAL(date.GetDate(), 0x07d00201U);
     CHECK_EQUAL(date.GetDay(), 1U);
     CHECK_EQUAL(date.GetMonth(), 2U);
     CHECK_EQUAL(date.GetYear(), 2000U);
