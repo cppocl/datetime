@@ -73,7 +73,7 @@ TEST_MEMBER_FUNCTION(Date, DaysInMonth, month_type)
         31U, 28U, 31U, 30U, 31U, 30U, 31U, 31U, 30U, 31U, 30U, 31U
     };
 
-    for (Date::month_type month = Date::JANUARY; month <= Date::DECEMBER; ++month)
+    for (Date::month_type month = Date::MIN_MONTH; month <= Date::MAX_MONTH; ++month)
         CHECK_EQUAL(days_in_month[month - Date::JANUARY], Date::DaysInMonth(month));
 }
 
@@ -126,8 +126,8 @@ TEST_CONST_MEMBER_FUNCTION(Date, GetDay, NA)
     Date date1(1U, 2U, 1980U);
     CHECK_EQUAL(date1.GetDay(), 1U);
 
-    Date date3(31U, 1U, 1980U);
-    CHECK_EQUAL(date3.GetDay(), 31U);
+    Date date2(31U, 1U, 1980U);
+    CHECK_EQUAL(date2.GetDay(), 31U);
 }
 
 TEST_MEMBER_FUNCTION(Date, SetDay, day_type)
@@ -224,7 +224,7 @@ TEST_CONST_MEMBER_FUNCTION(Date, GetDate, NA)
     CHECK_EQUAL(Date(1U, 2U, 2000U).GetDate(), 0x07d00201U);
 }
 
-TEST_CONST_MEMBER_FUNCTION(Date, SetDate, uint32_t)
+TEST_MEMBER_FUNCTION(Date, SetDate, uint32_t)
 {
     Date date;
 
