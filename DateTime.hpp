@@ -168,7 +168,7 @@ public:
 
     static bool IsLeapMonth(month_type month, year_type year) throw()
     {
-        return IsLeapMonth(month, year);
+        return month == FEBRUARY && IsLeapYear(year);
     }
 
 // Member functions.
