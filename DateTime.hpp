@@ -271,7 +271,7 @@ public:
         m_time.SetTime(time);
     }
 
-    void SetDateTimne(uint32_t date, uint32_t time) throw()
+    void SetDateTime(uint32_t date, uint32_t time) throw()
     {
         m_date.SetDate(date);
         m_time.SetTime(time);
