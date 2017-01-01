@@ -86,8 +86,14 @@ public:
         m_stop = m_start;
     }
 
+    time_type GetElapsed() const throw()
+    {
+        return m_stop - m_start;
+    }
+
+
     // Get elapsed time, and update the stop time if refresh is true.
-    time_type GetElapsed(bool refresh = true)
+    time_type GetElapsed(bool refresh)
     {
         if (refresh)
             m_stop = Now();
