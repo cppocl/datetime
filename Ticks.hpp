@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef OCL_GUARD_DATETIME_NOWTICKS_HPP
-#define OCL_GUARD_DATETIME_NOWTICKS_HPP
+#ifndef OCL_GUARD_DATETIME_TICKS_HPP
+#define OCL_GUARD_DATETIME_TICKS_HPP
 
 #include <ctime>
 #include <cstddef>
@@ -26,7 +26,7 @@ namespace ocl
 // Provide a basic class that defines the type for ticks, number of ticks per second
 // obtain the current time in ticks.
 template<typename TimeType = clock_t>
-class NowTicks
+class Ticks
 {
 // Types and constants
 public:
@@ -43,14 +43,14 @@ public:
 
 // Constructors and destructor.
 public:
-    NowTicks() throw()
+    Ticks() throw()
         : m_start(0)
         , m_stop(0)
         , m_elapsed_ref(NULL)
     {
     }
 
-    NowTicks(bool record_start)
+    Ticks(bool record_start)
         : m_start(record_start ? Now() : 0)
         , m_stop(0)
         , m_elapsed_ref(NULL)
@@ -59,14 +59,14 @@ public:
 
     // Provide a reference to an elapsed time that can be updated when
     // the object is destroyed or goes out of scope.
-    NowTicks(time_type& elapsed)
+    Ticks(time_type& elapsed)
         : m_start(Now())
         , m_stop(0)
         , m_elapsed_ref(&elapsed)
     {
     }
 
-    ~NowTicks()
+    ~Ticks()
     {
         if (m_elapsed_ref != NULL)
             *m_elapsed_ref = Now() - m_start;
@@ -119,4 +119,4 @@ private:
 
 } // namespace ocl
 
-#endif // OCL_GUARD_DATETIME_NOWTICKS_HPP
+#endif // OCL_GUARD_DATETIME_TICKS_HPP
