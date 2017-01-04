@@ -116,16 +116,25 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\Date.hpp" />
     <ClInclude Include="..\..\..\DateTime.hpp" />
+    <ClInclude Include="..\..\..\internal\InternalTimeFunction.hpp" />
+    <ClInclude Include="..\..\..\PerformanceTime.hpp" />
     <ClInclude Include="..\..\..\Ticks.hpp" />
     <ClInclude Include="..\..\..\TicksTime.hpp" />
     <ClInclude Include="..\..\..\Time.hpp" />
+    <ClInclude Include="..\..\..\TimeAlgorithms.hpp" />
+    <ClInclude Include="..\..\..\TimeFunction.hpp" />
+    <ClInclude Include="..\..\..\PerformanceCount.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unit_tests\DateTime_tests.cpp" />
     <ClCompile Include="..\..\..\unit_tests\datetime_unit_tests_main.cpp" />
     <ClCompile Include="..\..\..\unit_tests\Date_tests.cpp" />
+    <ClCompile Include="..\..\..\unit_tests\PerformanceTime_tests.cpp" />
     <ClCompile Include="..\..\..\unit_tests\TicksTime_tests.cpp" />
     <ClCompile Include="..\..\..\unit_tests\Ticks_tests.cpp" />
+    <ClCompile Include="..\..\..\unit_tests\TimeAlgorithms_tests.cpp" />
+    <ClCompile Include="..\..\..\unit_tests\PerformanceCount_tests.cpp" />
+    <ClCompile Include="..\..\..\unit_tests\TimeFunction_tests.cpp" />
     <ClCompile Include="..\..\..\unit_tests\Time_tests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
