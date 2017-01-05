@@ -53,7 +53,7 @@ public:
     {
         tm* tm_dt = NULL;
         time_type date_time;
-        time_t t = time(NULL);
+        time_t t = ::time(NULL);
 
         switch (time_zone)
         {
