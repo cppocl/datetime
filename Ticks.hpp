@@ -17,8 +17,7 @@ limitations under the License.
 #ifndef OCL_GUARD_DATETIME_TICKS_HPP
 #define OCL_GUARD_DATETIME_TICKS_HPP
 
-#include <ctime>
-#include <cstddef>
+#include "NowTicks.hpp"
 
 namespace ocl
 {
@@ -32,13 +31,13 @@ class Ticks
 public:
     typedef TimeType time_type;
 
-    static time_type const TICKS_PER_SECOND = CLOCKS_PER_SEC;
+    static time_type const TICKS_PER_SECOND = NowTicks<time_type>::TICKS_PER_SECOND;
 
 // Static methods.
 public:
     static time_type Now()
     {
-        return static_cast<time_type>(::clock());
+        return NowTicks<time_type>::Now();
     }
 
 // Constructors and destructor.

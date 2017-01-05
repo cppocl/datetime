@@ -117,6 +117,8 @@
     <ClInclude Include="..\..\..\Date.hpp" />
     <ClInclude Include="..\..\..\DateTime.hpp" />
     <ClInclude Include="..\..\..\internal\InternalTimeFunction.hpp" />
+    <ClInclude Include="..\..\..\NowDateTime.hpp" />
+    <ClInclude Include="..\..\..\NowTicks.hpp" />
     <ClInclude Include="..\..\..\PerformanceTime.hpp" />
     <ClInclude Include="..\..\..\Ticks.hpp" />
     <ClInclude Include="..\..\..\TicksTime.hpp" />
@@ -129,6 +131,8 @@
     <ClCompile Include="..\..\..\unit_tests\DateTime_tests.cpp" />
     <ClCompile Include="..\..\..\unit_tests\datetime_unit_tests_main.cpp" />
     <ClCompile Include="..\..\..\unit_tests\Date_tests.cpp" />
+    <ClCompile Include="..\..\..\unit_tests\NowDateTime_tests.cpp" />
+    <ClCompile Include="..\..\..\unit_tests\NowTicks_tests.cpp" />
     <ClCompile Include="..\..\..\unit_tests\PerformanceTime_tests.cpp" />
     <ClCompile Include="..\..\..\unit_tests\TicksTime_tests.cpp" />
     <ClCompile Include="..\..\..\unit_tests\Ticks_tests.cpp" />
