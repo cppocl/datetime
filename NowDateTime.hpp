@@ -37,7 +37,7 @@ public:
 public:
     static void ToDateTime(DateTime& date_time, tm const& tm_dt) throw()
     {
-        // Take a copy as this struct us shared across all threads.
+        // Take a copy as this struct is shared across all threads.
         tm local_tm_dt = tm_dt;
 
         date_time.SetHours(static_cast<DateTime::hour_type>(local_tm_dt.tm_hour));
