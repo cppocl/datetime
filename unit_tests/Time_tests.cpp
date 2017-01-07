@@ -37,6 +37,7 @@ TEST_MEMBER_FUNCTION(Time, constructor, hour_type_minute_type_second_type_millis
 
     Time time1(4U, 3U, 2U, 1U);
     Time time2(23U, 58U, 59U, 999U);
+    Time time3(24U, 60U, 60U, 1000U);
 
     CHECK_EQUAL(time1.GetMilliseconds(), 1U);
     CHECK_EQUAL(time1.GetSeconds(), 2U);
@@ -47,6 +48,11 @@ TEST_MEMBER_FUNCTION(Time, constructor, hour_type_minute_type_second_type_millis
     CHECK_EQUAL(time2.GetSeconds(), 59U);
     CHECK_EQUAL(time2.GetMinutes(), 58U);
     CHECK_EQUAL(time2.GetHours(), 23U);
+
+    CHECK_EQUAL(time3.GetMilliseconds(), 999U);
+    CHECK_EQUAL(time3.GetSeconds(), 59U);
+    CHECK_EQUAL(time3.GetMinutes(), 59U);
+    CHECK_EQUAL(time3.GetHours(), 23U);
 }
 
 TEST_MEMBER_FUNCTION(Time, constructor, Time_const_ref)
@@ -110,6 +116,118 @@ TEST_MEMBER_FUNCTION(Time, assignment_operator, Time_const_ref)
     CHECK_EQUAL(time2.GetHours(), 23U);
 }
 
+TEST_MEMBER_FUNCTION(Time, SplitMilliseconds, uint32_t_ref_uint32_t_ref_uint32_t_ref_uint32_t_ref)
+{
+    TEST_OVERRIDE_ARGS("uint32_t&, uint32_t&, uint32_t&, uint32_t&");
+
+    uint32_t hours = 0U;
+    uint32_t minutes = 0U;
+    uint32_t seconds = 0U;
+    uint32_t milliseconds = 0U;
+    Time::SplitMilliseconds(hours, minutes, seconds, milliseconds);
+    CHECK_EQUAL(hours, 0U);
+    CHECK_EQUAL(minutes, 0U);
+    CHECK_EQUAL(seconds, 0U);
+    CHECK_EQUAL(milliseconds, 0U);
+
+    hours = 0U;
+    minutes = 0U;
+    seconds = 0U;
+    milliseconds = 999U;
+    Time::SplitMilliseconds(hours, minutes, seconds, milliseconds);
+    CHECK_EQUAL(hours, 0U);
+    CHECK_EQUAL(minutes, 0U);
+    CHECK_EQUAL(seconds, 0U);
+    CHECK_EQUAL(milliseconds, 999U);
+
+    hours = 0U;
+    minutes = 0U;
+    seconds = 0U;
+    milliseconds = Time::MILLISECONDS_PER_SECOND;
+    Time::SplitMilliseconds(hours, minutes, seconds, milliseconds);
+    CHECK_EQUAL(hours, 0U);
+    CHECK_EQUAL(minutes, 0U);
+    CHECK_EQUAL(seconds, 1U);
+    CHECK_EQUAL(milliseconds, 0U);
+
+    hours = 0U;
+    minutes = 0U;
+    seconds = 0U;
+    milliseconds = Time::MILLISECONDS_PER_MINUTE;
+    Time::SplitMilliseconds(hours, minutes, seconds, milliseconds);
+    CHECK_EQUAL(hours, 0U);
+    CHECK_EQUAL(minutes, 1U);
+    CHECK_EQUAL(seconds, 0U);
+    CHECK_EQUAL(milliseconds, 0U);
+
+    hours = 0U;
+    minutes = 0U;
+    seconds = 0U;
+    milliseconds = Time::MILLISECONDS_PER_HOUR;
+    Time::SplitMilliseconds(hours, minutes, seconds, milliseconds);
+    CHECK_EQUAL(hours, 1U);
+    CHECK_EQUAL(minutes, 0U);
+    CHECK_EQUAL(seconds, 0U);
+    CHECK_EQUAL(milliseconds, 0U);
+
+    hours = 0U;
+    minutes = 0U;
+    seconds = 0U;
+    milliseconds = Time::MILLISECONDS_PER_HOUR + Time::MILLISECONDS_PER_MINUTE + Time::MILLISECONDS_PER_SECOND + 2U;
+    Time::SplitMilliseconds(hours, minutes, seconds, milliseconds);
+    CHECK_EQUAL(hours, 1U);
+    CHECK_EQUAL(minutes, 1U);
+    CHECK_EQUAL(seconds, 1U);
+    CHECK_EQUAL(milliseconds, 2U);
+}
+
+TEST_MEMBER_FUNCTION(Time, ToMilliseconds, uint32_t_uint32_t_uint32_t_uint32_t)
+{
+    TEST_OVERRIDE_ARGS("uint32_t, uint32_t, uint32_t, uint32_t");
+
+    uint32_t hours = 0U;
+    uint32_t minutes = 0U;
+    uint32_t seconds = 0U;
+    uint32_t milliseconds = 0U;
+    uint32_t ms = Time::ToMilliseconds(hours, minutes, seconds, milliseconds);
+    CHECK_EQUAL(ms, 0U);
+
+    hours = 0U;
+    minutes = 0U;
+    seconds = 0U;
+    milliseconds = 1U;
+    ms = Time::ToMilliseconds(hours, minutes, seconds, milliseconds);
+    CHECK_EQUAL(ms, 1U);
+
+    hours = 0U;
+    minutes = 0U;
+    seconds = 1U;
+    milliseconds = 0U;
+    ms = Time::ToMilliseconds(hours, minutes, seconds, milliseconds);
+    CHECK_EQUAL(ms, Time::MILLISECONDS_PER_SECOND);
+
+    hours = 0U;
+    minutes = 1U;
+    seconds = 0U;
+    milliseconds = 0U;
+    ms = Time::ToMilliseconds(hours, minutes, seconds, milliseconds);
+    CHECK_EQUAL(ms, Time::MILLISECONDS_PER_MINUTE);
+
+    hours = 1U;
+    minutes = 0U;
+    seconds = 0U;
+    milliseconds = 0U;
+    ms = Time::ToMilliseconds(hours, minutes, seconds, milliseconds);
+    CHECK_EQUAL(ms, Time::MILLISECONDS_PER_HOUR);
+
+    hours = 1U;
+    minutes = 1U;
+    seconds = 1U;
+    milliseconds = 2U;
+    ms = Time::ToMilliseconds(hours, minutes, seconds, milliseconds);
+    CHECK_EQUAL(ms, Time::MILLISECONDS_PER_HOUR + Time::MILLISECONDS_PER_MINUTE + Time::MILLISECONDS_PER_SECOND + 2U);
+}
+
 TEST_MEMBER_FUNCTION(Time, GetMilliseconds, NA)
 {
     for (Time::millisecond_type ms = 0; ms <= 999U; ++ms)
@@ -127,6 +245,9 @@ TEST_MEMBER_FUNCTION(Time, SetMilliseconds, millisecond_type)
         time.SetMilliseconds(ms);
         CHECK_EQUAL(time.GetMilliseconds(), ms);
     }
+
+    time.SetMilliseconds(1000U);
+    CHECK_EQUAL(time.GetMilliseconds(), 999U);
 }
 
 TEST_MEMBER_FUNCTION(Time, GetSeconds, NA)
@@ -146,6 +267,9 @@ TEST_MEMBER_FUNCTION(Time, SetSeconds, second_type)
         time.SetSeconds(s);
         CHECK_EQUAL(time.GetSeconds(), s);
     }
+
+    time.SetSeconds(60U);
+    CHECK_EQUAL(time.GetSeconds(), 59U);
 }
 
 TEST_MEMBER_FUNCTION(Time, GetMinutes, NA)
@@ -165,6 +289,9 @@ TEST_MEMBER_FUNCTION(Time, SetMinutes, minute_type)
         time.SetMinutes(m);
         CHECK_EQUAL(time.GetMinutes(), m);
     }
+
+    time.SetMinutes(60U);
+    CHECK_EQUAL(time.GetMinutes(), 59U);
 }
 
 TEST_MEMBER_FUNCTION(Time, GetHours, NA)
@@ -184,6 +311,55 @@ TEST_MEMBER_FUNCTION(Time, SetHours, hour_type)
         time.SetHours(h);
         CHECK_EQUAL(time.GetHours(), h);
     }
+
+    time.SetHours(24U);
+    CHECK_EQUAL(time.GetHours(), 23U);
+}
+
+TEST_MEMBER_FUNCTION(Time, GetAsMilliseconds, NA)
+{
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetAsMilliseconds(), 0U);
+    CHECK_EQUAL(Time(0U, 0U, 0U, 1U).GetAsMilliseconds(), 1U);
+    CHECK_EQUAL(Time(0U, 0U, 1U, 0U).GetAsMilliseconds(), Time::MILLISECONDS_PER_SECOND);
+    CHECK_EQUAL(Time(0U, 1U, 0U, 0U).GetAsMilliseconds(), Time::MILLISECONDS_PER_MINUTE);
+    CHECK_EQUAL(Time(1U, 0U, 0U, 0U).GetAsMilliseconds(), Time::MILLISECONDS_PER_HOUR);
+
+    CHECK_EQUAL(Time(1U, 1U, 1U, 2U).GetAsMilliseconds(), Time::MILLISECONDS_PER_HOUR +
+                                                          Time::MILLISECONDS_PER_MINUTE +
+                                                          Time::MILLISECONDS_PER_SECOND + 2U);
+
+    CHECK_EQUAL(Time(23U, 59U, 59U, 999U).GetAsMilliseconds(), (Time::MILLISECONDS_PER_HOUR * 23U) +
+                                                               (Time::MILLISECONDS_PER_MINUTE * 59U) +
+                                                               (Time::MILLISECONDS_PER_SECOND * 59U) + 999U);
+}
+
+TEST_MEMBER_FUNCTION(Time, SetFromMilliseconds, uint32_t)
+{
+    Time time;
+
+    time.SetFromMilliseconds(1U);
+    CHECK_EQUAL(time.GetMilliseconds(), 1U);
+    CHECK_EQUAL(time.GetSeconds(), 0U);
+    CHECK_EQUAL(time.GetMinutes(), 0U);
+    CHECK_EQUAL(time.GetHours(), 0U);
+
+    time.SetFromMilliseconds(Time::MILLISECONDS_PER_SECOND);
+    CHECK_EQUAL(time.GetMilliseconds(), 0U);
+    CHECK_EQUAL(time.GetSeconds(), 1U);
+    CHECK_EQUAL(time.GetMinutes(), 0U);
+    CHECK_EQUAL(time.GetHours(), 0U);
+
+    time.SetFromMilliseconds(Time::MILLISECONDS_PER_MINUTE);
+    CHECK_EQUAL(time.GetMilliseconds(), 0U);
+    CHECK_EQUAL(time.GetSeconds(), 0U);
+    CHECK_EQUAL(time.GetMinutes(), 1U);
+    CHECK_EQUAL(time.GetHours(), 0U);
+
+    time.SetFromMilliseconds(Time::MILLISECONDS_PER_HOUR);
+    CHECK_EQUAL(time.GetMilliseconds(), 0U);
+    CHECK_EQUAL(time.GetSeconds(), 0U);
+    CHECK_EQUAL(time.GetMinutes(), 0U);
+    CHECK_EQUAL(time.GetHours(), 1U);
 }
 
 TEST_MEMBER_FUNCTION(Time, GetTime, NA)

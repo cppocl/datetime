@@ -38,10 +38,10 @@ public:
 
 // Constants.
 public:
-    static size_type const MILLISECONDS_PER_SECOND = 1000;
-    static size_type const SECONDS_PER_MINUTE = 60;
-    static size_type const MINUTES_PER_HOUR = 60;
-    static size_type const HOURS_PER_DAY = 24;
+    static size_type const MILLISECONDS_PER_SECOND = 1000U;
+    static size_type const SECONDS_PER_MINUTE = 60U;
+    static size_type const MINUTES_PER_HOUR = 60U;
+    static size_type const HOURS_PER_DAY = 24U;
 
     static size_type const MILLISECONDS_PER_MINUTE = MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE;
     static size_type const MILLISECONDS_PER_HOUR = MILLISECONDS_PER_MINUTE * MINUTES_PER_HOUR;
@@ -51,6 +51,11 @@ public:
     static size_type const SECONDS_PER_DAY = SECONDS_PER_HOUR * HOURS_PER_DAY;
 
     static size_type const MINUTES_PER_DAY = MINUTES_PER_HOUR * HOURS_PER_DAY;
+
+    static millisecond_type const MAX_MILLISECONDS = 999U;
+    static second_type const MAX_SECONDS = 59U;
+    static minute_type const MAX_MINUTES = 59U;
+    static hour_type const MAX_HOURS = 23U;
 
 // constants (internal use only)
 private:
@@ -64,13 +69,20 @@ private:
     static second_type const SECONDS_MASK = static_cast<second_type>(0xfc);
     static second_type const MILLISECONDS_FROM_SECONDS_MASK = static_cast<second_type>(0x03);
 
+    // When milliseconds is the maximum value, the lower 8 bits and
+    // the upper 2 bits will always be the same value, and can be optimized with constants.
+    static millisecond_internal_type const MAX_MILLISECONDS_LOW_8_BITS =
+                            static_cast<millisecond_internal_type>(MAX_MILLISECONDS & 0xffU);
+    static millisecond_internal_type const MAX_MILLISECONDS_HI_BYTE_2_BITS =
+            static_cast<second_type>(MAX_MILLISECONDS >> 8U) & MILLISECONDS_FROM_SECONDS_MASK;
+
 // Constructors.
 public:
     Time() throw()
-        : m_hours(0)
-        , m_minutes(0)
-        , m_seconds(0)
-        , m_milliseconds(0)
+        : m_hours(0U)
+        , m_minutes(0U)
+        , m_seconds(0U)
+        , m_milliseconds(0U)
     {
     }
 
@@ -78,9 +90,9 @@ public:
          minute_type minutes,       // 0..59
          second_type seconds,       // 0..59
          millisecond_type milliseconds) throw() // 0..999
-        : m_hours(hours)
-        , m_minutes(minutes)
     {
+        SetHours(hours);
+        SetMinutes(minutes);
         SetSeconds(seconds);
         SetMilliseconds(milliseconds);
     }
@@ -134,6 +146,37 @@ public:
         return Compare(time) != 0;
     }
 
+// Static member functions.
+public:
+    // Split milliseconds into hours, minutes, seconds and milliseconds.
+    static void SplitMilliseconds(size_type& hours,
+                                  size_type& minutes,
+                                  size_type& seconds,
+                                  size_type& milliseconds) throw()
+    {
+        size_type ms = milliseconds;
+        hours = ms / MILLISECONDS_PER_HOUR;
+        ms -= hours * MILLISECONDS_PER_HOUR;
+        minutes = ms / MILLISECONDS_PER_MINUTE;
+        ms -= minutes * MILLISECONDS_PER_MINUTE;
+        seconds = ms / MILLISECONDS_PER_SECOND;
+        ms -= seconds * MILLISECONDS_PER_SECOND;
+        milliseconds = ms;
+    }
+
+    // Convert a time into milliseconds.
+    static size_type ToMilliseconds(size_type hours,
+                                    size_type minutes,
+                                    size_type seconds,
+                                    size_type milliseconds) throw()
+    {
+        uint32_t ms = hours * MILLISECONDS_PER_HOUR;
+        ms += minutes * MILLISECONDS_PER_MINUTE;
+        ms += seconds * MILLISECONDS_PER_SECOND;
+        ms += milliseconds;
+        return ms;
+    }
+
 // Member functions.
 public:
     millisecond_type GetMilliseconds() const throw()
@@ -146,9 +189,17 @@ public:
 
     void SetMilliseconds(millisecond_type milliseconds) throw()
     {
-        second_type seconds = m_seconds & SECONDS_MASK;
-        m_milliseconds = static_cast<millisecond_internal_type>(milliseconds);
-        m_seconds = seconds | (static_cast<second_type>(milliseconds >> 8U) & MILLISECONDS_FROM_SECONDS_MASK);
+        if (milliseconds > MAX_MILLISECONDS)
+        {
+            m_milliseconds = MAX_MILLISECONDS_LOW_8_BITS;
+            m_seconds |= MAX_MILLISECONDS_HI_BYTE_2_BITS;
+        }
+        else
+        {
+            second_type seconds = m_seconds & SECONDS_MASK;
+            m_milliseconds = static_cast<millisecond_internal_type>(milliseconds);
+            m_seconds = seconds | (static_cast<second_type>(milliseconds >> 8U) & MILLISECONDS_FROM_SECONDS_MASK);
+        }
     }
 
     second_type GetSeconds() const throw()
@@ -159,7 +210,10 @@ public:
     void SetSeconds(second_type seconds) throw()
     {
         second_type millisecond_bits = m_seconds & MILLISECONDS_FROM_SECONDS_MASK;
-        m_seconds = static_cast<second_type>(seconds << 2U) | millisecond_bits;
+        if (seconds > MAX_SECONDS)
+            m_seconds = static_cast<second_type>(MAX_SECONDS << 2U) | millisecond_bits;
+        else
+            m_seconds = static_cast<second_type>(seconds << 2U) | millisecond_bits;
     }
 
     minute_type GetMinutes() const throw()
@@ -169,7 +223,7 @@ public:
 
     void SetMinutes(minute_type minutes) throw()
     {
-        m_minutes = minutes;
+        m_minutes = minutes > MAX_MINUTES ? MAX_MINUTES : minutes;
     }
 
     hour_type GetHours() const throw()
@@ -179,7 +233,31 @@ public:
 
     void SetHours(hour_type hours) throw()
     {
-        m_hours = hours;
+        m_hours = hours > MAX_HOURS ? MAX_HOURS : hours;
+    }
+
+    // Convert time into a milliseconds value.
+    size_type GetAsMilliseconds() const throw()
+    {
+        return ToMilliseconds(static_cast<size_type>(GetHours()),
+                              static_cast<size_type>(GetMinutes()),
+                              static_cast<size_type>(GetSeconds()),
+                              static_cast<size_type>(GetMilliseconds()));
+    }
+
+    // Convert the milliseconds to a time.
+    void SetFromMilliseconds(size_type milliseconds) throw()
+    {
+        size_type hours = 0;
+        size_type minutes = 0;
+        size_type seconds = 0;
+        SplitMilliseconds(hours, minutes, seconds, milliseconds);
+        if (hours > MAX_HOURS)
+            hours = MAX_HOURS;
+        SetHours(static_cast<hour_type>(hours));
+        SetMinutes(static_cast<minute_type>(minutes));
+        SetSeconds(static_cast<second_type>(seconds));
+        SetMilliseconds(static_cast<millisecond_type>(milliseconds));
     }
 
     // Get the time as a 32-bit value for conveniently serializing the time.
