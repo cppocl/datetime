@@ -63,7 +63,8 @@ public:
             total_count += sample_count;
 
             // Sample the time taken for current sample count.
-            sample_ticks = time_function::Call(return_value, sample_count, obj, func, args...);
+            sample_ticks = time_function::Call<class_type, return_type, count_type, varargs...>(
+                                                 return_value, sample_count, obj, func, args...);
             current_ticks += sample_ticks;
         }
         while (current_ticks < duration_ticks);
@@ -97,7 +98,8 @@ public:
             total_count += sample_count;
 
             // Sample the time taken for current sample count.
-            sample_ticks = time_function::Call(sample_count, obj, func, args...);
+            sample_ticks = time_function::Call<class_type, count_type, varargs...>(
+                                                        sample_count, obj, func, args...);
             current_ticks += sample_ticks;
         }
         while (current_ticks < duration_ticks);
@@ -132,7 +134,8 @@ public:
             total_count += sample_count;
 
             // Sample the time taken for current sample count.
-            sample_ticks = time_function::Call(return_value, sample_count, obj, func, args...);
+            sample_ticks = time_function::Call<class_type, return_type, count_type, varargs...>(
+                                                 return_value, sample_count, obj, func, args...);
             current_ticks += sample_ticks;
         }
         while (current_ticks < duration_ticks);
@@ -166,7 +169,8 @@ public:
             total_count += sample_count;
 
             // Sample the time taken for current sample count.
-            sample_ticks = time_function::Call(sample_count, obj, func, args...);
+            sample_ticks = time_function::Call<class_type, count_type, varargs...>(
+                                                  sample_count, obj, func, args...);
             current_ticks += sample_ticks;
         }
         while (current_ticks < duration_ticks);
@@ -200,7 +204,8 @@ public:
             total_count += sample_count;
 
             // Sample the time taken for current sample count.
-            sample_ticks = time_function::Call(return_value, sample_count, func, args...);
+            sample_ticks = time_function::Call<return_type, count_type, varargs...>(
+                                          return_value, sample_count, func, args...);
             current_ticks += sample_ticks;
         }
         while (current_ticks < duration_ticks);
@@ -233,7 +238,8 @@ public:
             total_count += sample_count;
 
             // Sample the time taken for current sample count.
-            sample_ticks = time_function::Call(sample_count, func, args...);
+            sample_ticks = time_function::Call<count_type, varargs...>(
+                                           sample_count, func, args...);
             current_ticks += sample_ticks;
         }
         while (current_ticks < duration_ticks);
