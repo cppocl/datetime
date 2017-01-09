@@ -146,6 +146,18 @@ public:
         return Compare(time) != 0;
     }
 
+    Time& operator +=(uint32_t milliseconds)
+    {
+        AddMilliseconds(milliseconds);
+        return *this;
+    }
+
+    Time& operator -=(uint32_t milliseconds)
+    {
+        SubtractMilliseconds(milliseconds);
+        return *this;
+    }
+
 // Static member functions.
 public:
     // Split milliseconds into hours, minutes, seconds and milliseconds.
@@ -258,6 +270,24 @@ public:
         SetMinutes(static_cast<minute_type>(minutes));
         SetSeconds(static_cast<second_type>(seconds));
         SetMilliseconds(static_cast<millisecond_type>(milliseconds));
+    }
+
+    void AddMilliseconds(size_type milliseconds) throw()
+    {
+        size_type time_ms = GetAsMilliseconds() + milliseconds;
+        if (time_ms >= MILLISECONDS_PER_DAY)
+            SetFromMilliseconds(MILLISECONDS_PER_DAY - 1U);
+        else
+            SetFromMilliseconds(time_ms);
+    }
+
+    void SubtractMilliseconds(size_type milliseconds) throw()
+    {
+        size_type time_ms = GetAsMilliseconds();
+        if (milliseconds >= time_ms)
+            SetFromMilliseconds(0U);
+        else
+            SetFromMilliseconds(time_ms - milliseconds);
     }
 
     // Get the time as a 32-bit value for conveniently serializing the time.
