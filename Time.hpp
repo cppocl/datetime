@@ -59,18 +59,18 @@ public:
 
 // constants (internal use only)
 private:
-    // Milliseconds are stored as a 10 bit value, 8 bits in m_milliseconds
-    // and 2 bits in the top 2 bits of m_seconds.
+    /// Milliseconds are stored as a 10 bit value, 8 bits in m_milliseconds
+    /// and 2 bits in the top 2 bits of m_seconds.
     typedef uint8_t millisecond_internal_type;
 
-    // Masks for handling m_milliseconds and m_seconds.
-    // m_seconds bottom two bits contain the top two bits of the 10 bits used for milliseconds.
-    // Storing seconds in top 8 bits allows for quick time comparison.
+    /// Masks for handling m_milliseconds and m_seconds.
+    /// m_seconds bottom two bits contain the top two bits of the 10 bits used for milliseconds.
+    /// Storing seconds in top 8 bits allows for quick time comparison.
     static second_type const SECONDS_MASK = static_cast<second_type>(0xfc);
     static second_type const MILLISECONDS_FROM_SECONDS_MASK = static_cast<second_type>(0x03);
 
-    // When milliseconds is the maximum value, the lower 8 bits and
-    // the upper 2 bits will always be the same value, and can be optimized with constants.
+    /// When milliseconds is the maximum value, the lower 8 bits and
+    /// the upper 2 bits will always be the same value, and can be optimized with constants.
     static millisecond_internal_type const MAX_MILLISECONDS_LOW_8_BITS =
                             static_cast<millisecond_internal_type>(MAX_MILLISECONDS & 0xffU);
     static millisecond_internal_type const MAX_MILLISECONDS_HI_BYTE_2_BITS =
@@ -91,10 +91,7 @@ public:
          second_type seconds,       // 0..59
          millisecond_type milliseconds) throw() // 0..999
     {
-        SetHours(hours);
-        SetMinutes(minutes);
-        SetSeconds(seconds);
-        SetMilliseconds(milliseconds);
+        SetTime(hours, minutes, seconds, milliseconds);
     }
 
     Time(Time const& time) throw()
@@ -157,7 +154,7 @@ public:
 
 // Static member functions.
 public:
-    // Split milliseconds into hours, minutes, seconds and milliseconds.
+    /// Split milliseconds into hours, minutes, seconds and milliseconds.
     static void SplitMilliseconds(size_type& hours,
                                   size_type& minutes,
                                   size_type& seconds,
@@ -173,7 +170,7 @@ public:
         milliseconds = ms;
     }
 
-    // Convert a time into milliseconds.
+    /// Convert a time into milliseconds.
     static size_type ToMilliseconds(size_type hours,
                                     size_type minutes,
                                     size_type seconds,
@@ -245,7 +242,7 @@ public:
         m_hours = hours > MAX_HOURS ? MAX_HOURS : hours;
     }
 
-    // Convert time into a milliseconds value.
+    /// Convert time into a milliseconds value.
     size_type GetAsMilliseconds() const throw()
     {
         return ToMilliseconds(static_cast<size_type>(GetHours()),
@@ -254,7 +251,7 @@ public:
                               static_cast<size_type>(GetMilliseconds()));
     }
 
-    // Convert the milliseconds to a time.
+    /// Convert the milliseconds to a time.
     void SetFromMilliseconds(size_type milliseconds) throw()
     {
         size_type hours = 0;
@@ -278,6 +275,22 @@ public:
             SetFromMilliseconds(time_ms);
     }
 
+    /// Add milliseconds and return any overflow.
+    void AddMilliseconds(size_type milliseconds, size_type& overflow) throw()
+    {
+        size_type time_ms = GetAsMilliseconds() + milliseconds;
+        if (time_ms >= MILLISECONDS_PER_DAY)
+        {
+            overflow = 1U + time_ms - MILLISECONDS_PER_DAY;
+            SetFromMilliseconds(MILLISECONDS_PER_DAY - 1U);
+        }
+        else
+        {
+            overflow = 0U;
+            SetFromMilliseconds(time_ms);
+        }
+    }
+
     void SubtractMilliseconds(size_type milliseconds) throw()
     {
         size_type time_ms = GetAsMilliseconds();
@@ -287,7 +300,22 @@ public:
             SetFromMilliseconds(time_ms - milliseconds);
     }
 
-    // Get the time as a 32-bit value for conveniently serializing the time.
+    void SubtractMilliseconds(size_type milliseconds, size_type& underflow) throw()
+    {
+        size_type time_ms = GetAsMilliseconds();
+        if (milliseconds > time_ms)
+        {
+            underflow = milliseconds - time_ms;
+            SetFromMilliseconds(0U);
+        }
+        else
+        {
+            underflow = 0U;
+            SetFromMilliseconds(time_ms - milliseconds);
+        }
+    }
+
+    /// Get the time as a 32-bit value for conveniently serializing the time.
     uint32_t GetTime() const throw()
     {
         uint32_t time = m_milliseconds;
@@ -297,7 +325,7 @@ public:
         return time;
     }
 
-    // Set the time from a 32-bit value for conveniently serializing the time.
+    /// Set the time from a 32-bit value for conveniently serializing the time.
     void SetTime(uint32_t time) throw()
     {
         m_milliseconds = static_cast<millisecond_internal_type>(time);
@@ -312,6 +340,17 @@ public:
         m_minutes = time.m_minutes;
         m_seconds = time.m_seconds;
         m_milliseconds = time.m_milliseconds;
+    }
+
+    void SetTime(hour_type hours,
+                 minute_type minutes,
+                 second_type seconds,
+                 millisecond_type milliseconds) throw()
+    {
+        SetHours(hours);
+        SetMinutes(minutes);
+        SetSeconds(seconds);
+        SetMilliseconds(milliseconds);
     }
 
     int Compare(Time const& time) const throw()
