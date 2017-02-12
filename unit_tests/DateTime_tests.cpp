@@ -225,7 +225,7 @@ TEST_MEMBER_FUNCTION(DateTime, operator_not_eq, DateTime_const_ref)
     CHECK_FALSE(dt != DateTime(Date(2U, 3U, 2000U), Time(2U, 3U, 4U, 5U)));
 }
 
-TEST_MEMBER_FUNCTION(DateTime, DaysInMonth, month_type)
+TEST_MEMBER_FUNCTION(DateTime, GetDaysInMonth, month_type)
 {
     Date::day_type days_in_month[Date::MONTHS_PER_YEAR] =
     {
@@ -233,7 +233,7 @@ TEST_MEMBER_FUNCTION(DateTime, DaysInMonth, month_type)
     };
 
     for (DateTime::month_type month = DateTime::JANUARY; month <= DateTime::DECEMBER; ++month)
-        CHECK_EQUAL(days_in_month[month - Date::JANUARY], DateTime::DaysInMonth(month));
+        CHECK_EQUAL(days_in_month[month - Date::JANUARY], DateTime::GetDaysInMonth(month));
 }
 
 TEST_MEMBER_FUNCTION(DateTime, IsLeapYear, year_type)

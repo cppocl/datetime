@@ -500,6 +500,28 @@ TEST_MEMBER_FUNCTION(Time, SetTime, uint32_t)
     CHECK_EQUAL(time.GetHours(), 23U);
 }
 
+TEST_MEMBER_FUNCTION(Time, SetTime, Time_const_ref)
+{
+    TEST_OVERRIDE_ARGS("Time const&");
+
+    Time time;
+    Time time_default;
+    Time time2(1U, 2U, 3U, 4U);
+
+    time.SetTime(time_default);
+    CHECK_EQUAL(time.GetTime(), 0U);
+    CHECK_EQUAL(time.GetMilliseconds(), 0U);
+    CHECK_EQUAL(time.GetSeconds(), 0U);
+    CHECK_EQUAL(time.GetMinutes(), 0U);
+    CHECK_EQUAL(time.GetHours(), 0U);
+
+    time.SetTime(time2);
+    CHECK_EQUAL(time.GetMilliseconds(), 4U);
+    CHECK_EQUAL(time.GetSeconds(), 3U);
+    CHECK_EQUAL(time.GetMinutes(), 2U);
+    CHECK_EQUAL(time.GetHours(), 1U);
+}
+
 TEST_CONST_MEMBER_FUNCTION(Time, Compare, Time_const_ref)
 {
     TEST_OVERRIDE_ARGS("Time const&");

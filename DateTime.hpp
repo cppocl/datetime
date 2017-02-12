@@ -41,7 +41,7 @@ public:
 public:
     static day_type const MIN_DAY = Date::MIN_DAY;
     static day_type const MAX_DAY = Date::MAX_DAY;
-    static day_type const DAY_LEAP_YEAR = Date::DAY_LEAP_YEAR;
+    static day_type const DAYS_IN_LEAP_FEBRUARY = Date::DAYS_IN_LEAP_FEBRUARY;
 
     static size_type const MONTHS_PER_YEAR = Date::MONTHS_PER_YEAR;
 
@@ -119,8 +119,8 @@ public:
 public:
     DateTime& operator =(DateTime const& date_time) throw()
     {
-        m_date.Copy(date_time.m_date);
-        m_time.Copy(date_time.m_time);
+        m_date.SetDate(date_time.m_date);
+        m_time.SetTime(date_time.m_time);
         return *this;
     }
 
@@ -156,9 +156,9 @@ public:
 
 // Static member functions.
 public:
-    static size_type DaysInMonth(month_type month) throw()
+    static size_type GetDaysInMonth(month_type month) throw()
     {
-        return Date::DaysInMonth(month);
+        return Date::GetDaysInMonth(month);
     }
 
     static bool IsLeapYear(year_type year) throw()

@@ -17,7 +17,7 @@ limitations under the License.
 #ifndef OCL_GUARD_DATETIME_TIME_HPP
 #define OCL_GUARD_DATETIME_TIME_HPP
 
-#include <cstddef>
+#include <stdint.h>
 
 namespace ocl
 {
@@ -109,10 +109,7 @@ public:
 public:
     Time& operator =(Time const& time) throw()
     {
-        m_hours = time.m_hours;
-        m_minutes = time.m_minutes;
-        m_seconds = time.m_seconds;
-        m_milliseconds = time.m_milliseconds;
+        SetTime(time);
         return *this;
     }
 
@@ -309,7 +306,7 @@ public:
         m_hours = static_cast<hour_type>(time >> 24U);
     }
 
-    void Copy(Time const& time) throw()
+    void SetTime(Time const& time) throw()
     {
         m_hours = time.m_hours;
         m_minutes = time.m_minutes;

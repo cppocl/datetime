@@ -19,6 +19,717 @@ limitations under the License.
 
 using ocl::Date;
 
+TEST_MEMBER_FUNCTION(Date, IsLeapYear, year_type)
+{
+    CHECK_FALSE(Date::IsLeapYear(1800U));
+    CHECK_FALSE(Date::IsLeapYear(1900U));
+    CHECK_TRUE(Date::IsLeapYear(2000U));
+    CHECK_FALSE(Date::IsLeapYear(2003U));
+    CHECK_TRUE(Date::IsLeapYear(2004U));
+    CHECK_FALSE(Date::IsLeapYear(2005U));
+    CHECK_FALSE(Date::IsLeapYear(2006U));
+    CHECK_FALSE(Date::IsLeapYear(2007U));
+    CHECK_TRUE(Date::IsLeapYear(2008U));
+    CHECK_FALSE(Date::IsLeapYear(2100U));
+    CHECK_FALSE(Date::IsLeapYear(2200U));
+}
+
+TEST_CONST_MEMBER_FUNCTION(Date, IsLeapMonth, month_type_year_type)
+{
+    TEST_OVERRIDE_ARGS("month_type, year_type");
+
+    CHECK_FALSE(Date::IsLeapMonth(Date::FEBRUARY, 1800U));
+    CHECK_FALSE(Date::IsLeapMonth(Date::FEBRUARY, 1900U));
+    CHECK_TRUE(Date::IsLeapMonth(Date::FEBRUARY, 2000U));
+    CHECK_FALSE(Date::IsLeapMonth(Date::FEBRUARY, 2003U));
+    CHECK_TRUE(Date::IsLeapMonth(Date::FEBRUARY, 2004U));
+    CHECK_FALSE(Date::IsLeapMonth(Date::FEBRUARY, 2005U));
+    CHECK_FALSE(Date::IsLeapMonth(Date::FEBRUARY, 2006U));
+    CHECK_FALSE(Date::IsLeapMonth(Date::FEBRUARY, 2007U));
+    CHECK_TRUE(Date::IsLeapMonth(Date::FEBRUARY, 2008U));
+    CHECK_FALSE(Date::IsLeapMonth(Date::FEBRUARY, 2100U));
+    CHECK_FALSE(Date::IsLeapMonth(Date::FEBRUARY, 2200U));
+
+    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 1800U));
+    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 1900U));
+    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2000U));
+    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2003U));
+    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2004U));
+    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2005U));
+    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2006U));
+    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2007U));
+    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2008U));
+    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2100U));
+    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2200U));
+}
+
+TEST_MEMBER_FUNCTION(Date, GetDaysInMonth, month_type)
+{
+    Date::day_type days_in_month[Date::MONTHS_PER_YEAR] =
+    {
+        31U, 28U, 31U, 30U, 31U, 30U, 31U, 31U, 30U, 31U, 30U, 31U
+    };
+
+    for (Date::month_type month = Date::MIN_MONTH; month <= Date::MAX_MONTH; ++month)
+        CHECK_EQUAL(days_in_month[month - Date::JANUARY], Date::GetDaysInMonth(month));
+}
+
+TEST_MEMBER_FUNCTION(Date, GetDaysInMonth, month_type_year_type)
+{
+    TEST_OVERRIDE_ARGS("month_type, year_type");
+
+    Date::day_type days_in_month[Date::MONTHS_PER_YEAR] =
+    {
+        31U, 28U, 31U, 30U, 31U, 30U, 31U, 31U, 30U, 31U, 30U, 31U
+    };
+
+    Date::day_type days_in_leap_month[Date::MONTHS_PER_YEAR] =
+    {
+        31U, 29U, 31U, 30U, 31U, 30U, 31U, 31U, 30U, 31U, 30U, 31U
+    };
+
+    // Test days in month for a non-leap year.
+    for (Date::month_type month = Date::MIN_MONTH; month <= Date::MAX_MONTH; ++month)
+        CHECK_EQUAL(days_in_month[month - Date::JANUARY], Date::GetDaysInMonth(month, 2007U));
+
+    // Test days in month for a leap year.
+    for (Date::month_type month = Date::MIN_MONTH; month <= Date::MAX_MONTH; ++month)
+        CHECK_EQUAL(days_in_leap_month[month - Date::JANUARY], Date::GetDaysInMonth(month, 2008U));
+}
+
+TEST_MEMBER_FUNCTION(Date, GetNextMonth, month_type)
+{
+    CHECK_EQUAL(Date::GetNextMonth(Date::JANUARY), Date::FEBRUARY);
+    CHECK_EQUAL(Date::GetNextMonth(Date::FEBRUARY), Date::MARCH);
+    CHECK_EQUAL(Date::GetNextMonth(Date::MARCH), Date::APRIL);
+    CHECK_EQUAL(Date::GetNextMonth(Date::APRIL), Date::MAY);
+    CHECK_EQUAL(Date::GetNextMonth(Date::MAY), Date::JUNE);
+    CHECK_EQUAL(Date::GetNextMonth(Date::JUNE), Date::JULY);
+    CHECK_EQUAL(Date::GetNextMonth(Date::JULY), Date::AUGUST);
+    CHECK_EQUAL(Date::GetNextMonth(Date::AUGUST), Date::SEPTEMBER);
+    CHECK_EQUAL(Date::GetNextMonth(Date::SEPTEMBER), Date::OCTOBER);
+    CHECK_EQUAL(Date::GetNextMonth(Date::OCTOBER), Date::NOVEMBER);
+    CHECK_EQUAL(Date::GetNextMonth(Date::NOVEMBER), Date::DECEMBER);
+    CHECK_EQUAL(Date::GetNextMonth(Date::DECEMBER), Date::JANUARY);
+}
+
+TEST_MEMBER_FUNCTION(Date, MoveToNextMonth, month_type_year_type)
+{
+    TEST_OVERRIDE_ARGS("month_type, year_type");
+
+    Date::month_type month = Date::JANUARY;
+    Date::year_type year = 2000U;
+
+    Date::MoveToNextMonth(month, year);
+    CHECK_EQUAL(month, Date::FEBRUARY);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToNextMonth(month, year);
+    CHECK_EQUAL(month, Date::MARCH);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToNextMonth(month, year);
+    CHECK_EQUAL(month, Date::APRIL);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToNextMonth(month, year);
+    CHECK_EQUAL(month, Date::MAY);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToNextMonth(month, year);
+    CHECK_EQUAL(month, Date::JUNE);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToNextMonth(month, year);
+    CHECK_EQUAL(month, Date::JULY);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToNextMonth(month, year);
+    CHECK_EQUAL(month, Date::AUGUST);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToNextMonth(month, year);
+    CHECK_EQUAL(month, Date::SEPTEMBER);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToNextMonth(month, year);
+    CHECK_EQUAL(month, Date::OCTOBER);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToNextMonth(month, year);
+    CHECK_EQUAL(month, Date::NOVEMBER);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToNextMonth(month, year);
+    CHECK_EQUAL(month, Date::DECEMBER);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToNextMonth(month, year);
+    CHECK_EQUAL(month, Date::JANUARY);
+    CHECK_EQUAL(year, 2001U);
+}
+
+TEST_MEMBER_FUNCTION(Date, GetPreviousMonth, month_type)
+{
+    CHECK_EQUAL(Date::GetPreviousMonth(Date::JANUARY), Date::DECEMBER);
+    CHECK_EQUAL(Date::GetPreviousMonth(Date::FEBRUARY), Date::JANUARY);
+    CHECK_EQUAL(Date::GetPreviousMonth(Date::MARCH), Date::FEBRUARY);
+    CHECK_EQUAL(Date::GetPreviousMonth(Date::APRIL), Date::MARCH);
+    CHECK_EQUAL(Date::GetPreviousMonth(Date::MAY), Date::APRIL);
+    CHECK_EQUAL(Date::GetPreviousMonth(Date::JUNE), Date::MAY);
+    CHECK_EQUAL(Date::GetPreviousMonth(Date::JULY), Date::JUNE);
+    CHECK_EQUAL(Date::GetPreviousMonth(Date::AUGUST), Date::JULY);
+    CHECK_EQUAL(Date::GetPreviousMonth(Date::SEPTEMBER), Date::AUGUST);
+    CHECK_EQUAL(Date::GetPreviousMonth(Date::OCTOBER), Date::SEPTEMBER);
+    CHECK_EQUAL(Date::GetPreviousMonth(Date::NOVEMBER), Date::OCTOBER);
+    CHECK_EQUAL(Date::GetPreviousMonth(Date::DECEMBER), Date::NOVEMBER);
+}
+
+TEST_MEMBER_FUNCTION(Date, MoveToPreviousMonth, month_type_year_type)
+{
+    TEST_OVERRIDE_ARGS("month_type, year_type");
+
+    Date::month_type month = Date::JANUARY;
+    Date::year_type year = 2001U;
+
+    Date::MoveToPreviousMonth(month, year);
+    CHECK_EQUAL(month, Date::DECEMBER);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToPreviousMonth(month, year);
+    CHECK_EQUAL(month, Date::NOVEMBER);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToPreviousMonth(month, year);
+    CHECK_EQUAL(month, Date::OCTOBER);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToPreviousMonth(month, year);
+    CHECK_EQUAL(month, Date::SEPTEMBER);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToPreviousMonth(month, year);
+    CHECK_EQUAL(month, Date::AUGUST);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToPreviousMonth(month, year);
+    CHECK_EQUAL(month, Date::JULY);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToPreviousMonth(month, year);
+    CHECK_EQUAL(month, Date::JUNE);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToPreviousMonth(month, year);
+    CHECK_EQUAL(month, Date::MAY);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToPreviousMonth(month, year);
+    CHECK_EQUAL(month, Date::APRIL);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToPreviousMonth(month, year);
+    CHECK_EQUAL(month, Date::MARCH);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToPreviousMonth(month, year);
+    CHECK_EQUAL(month, Date::FEBRUARY);
+    CHECK_EQUAL(year, 2000U);
+    Date::MoveToPreviousMonth(month, year);
+    CHECK_EQUAL(month, Date::JANUARY);
+    CHECK_EQUAL(year, 2000U);
+}
+
+TEST_MEMBER_FUNCTION(Date, GetDaysToEndOfMonth, day_type_month_type)
+{
+    TEST_OVERRIDE_ARGS("day_type, month_type");
+
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::JANUARY), Date::DAYS_IN_JANUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::FEBRUARY), Date::DAYS_IN_FEBRUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::MARCH), Date::DAYS_IN_MARCH - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::APRIL), Date::DAYS_IN_APRIL - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::MAY), Date::DAYS_IN_MAY - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::JUNE), Date::DAYS_IN_JUNE - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::JULY), Date::DAYS_IN_JULY - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::AUGUST), Date::DAYS_IN_AUGUST - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::SEPTEMBER), Date::DAYS_IN_SEPTEMBER - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::OCTOBER), Date::DAYS_IN_OCTOBER - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::NOVEMBER), Date::DAYS_IN_NOVEMBER - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::DECEMBER), Date::DAYS_IN_DECEMBER - 1U);
+
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_JANUARY, Date::JANUARY), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_FEBRUARY, Date::FEBRUARY), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_MARCH, Date::MARCH), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_APRIL, Date::APRIL), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_MAY, Date::MAY), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_JUNE, Date::JUNE), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_JULY, Date::JULY), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_AUGUST, Date::AUGUST), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_SEPTEMBER, Date::SEPTEMBER), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_OCTOBER, Date::OCTOBER), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_NOVEMBER, Date::NOVEMBER), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_DECEMBER, Date::DECEMBER), 0U);
+}
+
+TEST_MEMBER_FUNCTION(Date, GetDaysToEndOfMonth, day_type_month_type_year_type)
+{
+    TEST_OVERRIDE_ARGS("day_type, month_type, year_type");
+
+    Date::year_type year = 2007U;
+
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::FEBRUARY, year), Date::DAYS_IN_FEBRUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::FEBRUARY, year + 1U), Date::DAYS_IN_LEAP_FEBRUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::MARCH, year), Date::DAYS_IN_MARCH - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::APRIL, year), Date::DAYS_IN_APRIL - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::MAY, year), Date::DAYS_IN_MAY - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::JUNE, year), Date::DAYS_IN_JUNE - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::JULY, year), Date::DAYS_IN_JULY - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::AUGUST, year), Date::DAYS_IN_AUGUST - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::SEPTEMBER, year), Date::DAYS_IN_SEPTEMBER - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::OCTOBER, year), Date::DAYS_IN_OCTOBER - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::NOVEMBER, year), Date::DAYS_IN_NOVEMBER - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(1U, Date::DECEMBER, year), Date::DAYS_IN_DECEMBER - 1U);
+
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_JANUARY, Date::JANUARY, year), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_FEBRUARY, Date::FEBRUARY, year), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_LEAP_FEBRUARY, Date::FEBRUARY, year + 1U), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_MARCH, Date::MARCH, year), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_APRIL, Date::APRIL, year), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_MAY, Date::MAY, year), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_JUNE, Date::JUNE, year), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_JULY, Date::JULY, year), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_AUGUST, Date::AUGUST, year), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_SEPTEMBER, Date::SEPTEMBER, year), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_OCTOBER, Date::OCTOBER, year), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_NOVEMBER, Date::NOVEMBER, year), 0U);
+    CHECK_EQUAL(Date::GetDaysToEndOfMonth(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), 0U);
+}
+
+TEST_MEMBER_FUNCTION(Date, GetDaysInYear, year_type)
+{
+    CHECK_EQUAL(Date::GetDaysInYear(1900U), Date::DAYS_PER_YEAR);
+    CHECK_EQUAL(Date::GetDaysInYear(2000U), Date::DAYS_PER_LEAP_YEAR);
+    CHECK_EQUAL(Date::GetDaysInYear(2007U), Date::DAYS_PER_YEAR);
+    CHECK_EQUAL(Date::GetDaysInYear(2008U), Date::DAYS_PER_LEAP_YEAR);
+}
+
+TEST_MEMBER_FUNCTION(Date, GetDaysInYears, year_type_yeae_type)
+{
+    TEST_OVERRIDE_ARGS("year_type, year_type");
+
+    CHECK_EQUAL(Date::GetDaysInYears(1900U, 1901U), Date::DAYS_PER_YEAR * 2U);
+    CHECK_EQUAL(Date::GetDaysInYears(2000U, 2003U), Date::DAYS_PER_LEAP_YEAR + (Date::DAYS_PER_YEAR * 3U));
+    CHECK_EQUAL(Date::GetDaysInYears(2006U, 2007U), Date::DAYS_PER_YEAR * 2U);
+    CHECK_EQUAL(Date::GetDaysInYears(2008U, 2012U), (Date::DAYS_PER_LEAP_YEAR * 2U) + (Date::DAYS_PER_YEAR * 3U));
+}
+
+TEST_MEMBER_FUNCTION(Date, GetDaysFromStartOfyear, day_type_month_type_year_type)
+{
+    TEST_OVERRIDE_ARGS("day_type, month_type, year_type");
+
+    // Check this works with 1900, which is not a leap year.
+    Date::year_type year = 1900U;
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::JANUARY, year), 0U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(2U, Date::JANUARY, year), 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::MARCH, year), Date::DAYS_IN_JANUARY + Date::DAYS_IN_FEBRUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), Date::DAYS_PER_YEAR - 1U);
+
+    // Check this works with 2000, which is a leap year.
+    year = 2000U;
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::JANUARY, year), 0U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(2U, Date::JANUARY, year), 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::MARCH, year), Date::DAYS_IN_JANUARY + Date::DAYS_IN_LEAP_FEBRUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), Date::DAYS_PER_LEAP_YEAR - 1U);
+
+    // Check this works with 2003, which is not a leap year.
+    year = 2003U;
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::JANUARY, year), 0U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(2U, Date::JANUARY, year), 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::MARCH, year), Date::DAYS_IN_JANUARY + Date::DAYS_IN_FEBRUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), Date::DAYS_PER_YEAR - 1U);
+
+    // Check this works with 2004, which is a leap year.
+    year = 2004U;
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::JANUARY, year), 0U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(2U, Date::JANUARY, year), 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::MARCH, year), Date::DAYS_IN_JANUARY + Date::DAYS_IN_LEAP_FEBRUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfyear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), Date::DAYS_PER_LEAP_YEAR - 1U);
+}
+
+TEST_MEMBER_FUNCTION(Date, GetDaysToEndOfYear, day_type_month_type_year_type)
+{
+    TEST_OVERRIDE_ARGS("day_type, month_type, year_type");
+
+    // Check this works with 1900, which is not a leap year.
+    Date::year_type year = 1900U;
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(1U, Date::JANUARY, year), Date::DAYS_PER_YEAR - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(2U, Date::JANUARY, year), Date::DAYS_PER_YEAR - 2U);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_PER_YEAR - Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(1U, Date::FEBRUARY, year), Date::DAYS_PER_YEAR - Date::DAYS_IN_JANUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(1U, Date::MARCH, year), Date::DAYS_PER_YEAR - Date::DAYS_IN_JANUARY - Date::DAYS_IN_FEBRUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), 0U);
+
+    // Check this works with 2000, which is a leap year.
+    year = 2000U;
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(1U, Date::JANUARY, year), Date::DAYS_PER_LEAP_YEAR - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(2U, Date::JANUARY, year), Date::DAYS_PER_LEAP_YEAR - 2U);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_PER_LEAP_YEAR - Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(1U, Date::FEBRUARY, year), Date::DAYS_PER_LEAP_YEAR - Date::DAYS_IN_JANUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(1U, Date::MARCH, year), Date::DAYS_PER_LEAP_YEAR - Date::DAYS_IN_JANUARY - Date::DAYS_IN_LEAP_FEBRUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), 0U);
+
+    // Check this works with 2003, which is not a leap year.
+    year = 2003U;
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(1U, Date::JANUARY, year), Date::DAYS_PER_YEAR - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(2U, Date::JANUARY, year), Date::DAYS_PER_YEAR - 2U);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_PER_YEAR - Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(1U, Date::FEBRUARY, year), Date::DAYS_PER_YEAR - Date::DAYS_IN_JANUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(1U, Date::MARCH, year), Date::DAYS_PER_YEAR - Date::DAYS_IN_JANUARY - Date::DAYS_IN_FEBRUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), 0U);
+
+    // Check this works with 2004, which is a leap year.
+    year = 2004U;
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(1U, Date::JANUARY, year), Date::DAYS_PER_LEAP_YEAR - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(2U, Date::JANUARY, year), Date::DAYS_PER_LEAP_YEAR - 2U);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_PER_LEAP_YEAR - Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(1U, Date::FEBRUARY, year), Date::DAYS_PER_LEAP_YEAR - Date::DAYS_IN_JANUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(1U, Date::MARCH, year), Date::DAYS_PER_LEAP_YEAR - Date::DAYS_IN_JANUARY - Date::DAYS_IN_LEAP_FEBRUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysToEndOfYear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), 0U);
+}
+
+TEST_MEMBER_FUNCTION(Date, GetNextDay, day_type_month_type)
+{
+    TEST_OVERRIDE_ARGS("day_type, month_type");
+
+    CHECK_EQUAL(Date::GetNextDay(1U, Date::JANUARY), 2U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_JANUARY - 1U, Date::JANUARY), Date::DAYS_IN_JANUARY);
+
+    // Test wrap around.
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_JANUARY, Date::JANUARY), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_FEBRUARY, Date::FEBRUARY), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_MARCH, Date::MARCH), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_APRIL, Date::APRIL), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_MAY, Date::MAY), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_JUNE, Date::JUNE), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_JULY, Date::JULY), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_AUGUST, Date::AUGUST), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_SEPTEMBER, Date::SEPTEMBER), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_OCTOBER, Date::OCTOBER), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_NOVEMBER, Date::NOVEMBER), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_DECEMBER, Date::DECEMBER), 1U);
+}
+
+TEST_MEMBER_FUNCTION(Date, GetNextDay, day_type_month_type_year_type)
+{
+    TEST_OVERRIDE_ARGS("day_type, month_type, year_type");
+
+    Date::year_type year = 2000U; // Is a leap year.
+
+    CHECK_EQUAL(Date::GetNextDay(1U, Date::JANUARY, year), 2U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_JANUARY - 1U, Date::JANUARY, year), Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_FEBRUARY, Date::FEBRUARY, year), Date::DAYS_IN_LEAP_FEBRUARY);
+
+    // Test wrap around.
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_JANUARY, Date::JANUARY, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_LEAP_FEBRUARY, Date::FEBRUARY, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_MARCH, Date::MARCH, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_APRIL, Date::APRIL, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_MAY, Date::MAY, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_JUNE, Date::JUNE, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_JULY, Date::JULY, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_AUGUST, Date::AUGUST, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_SEPTEMBER, Date::SEPTEMBER, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_OCTOBER, Date::OCTOBER, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_NOVEMBER, Date::NOVEMBER, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), 1U);
+
+    year = 2007U; // Is not a leap year.
+
+    CHECK_EQUAL(Date::GetNextDay(1U, Date::JANUARY, year), 2U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_JANUARY - 1U, Date::JANUARY, year), Date::DAYS_IN_JANUARY);
+
+    // Test wrap around.
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_JANUARY, Date::JANUARY, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_FEBRUARY, Date::FEBRUARY, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_MARCH, Date::MARCH, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_APRIL, Date::APRIL, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_MAY, Date::MAY, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_JUNE, Date::JUNE, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_JULY, Date::JULY, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_AUGUST, Date::AUGUST, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_SEPTEMBER, Date::SEPTEMBER, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_OCTOBER, Date::OCTOBER, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_NOVEMBER, Date::NOVEMBER, year), 1U);
+    CHECK_EQUAL(Date::GetNextDay(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), 1U);
+}
+
+TEST_MEMBER_FUNCTION(Date, GetPreviousDay, day_type_month_type)
+{
+    TEST_OVERRIDE_ARGS("day_type, month_type");
+
+    CHECK_EQUAL(Date::GetPreviousDay(Date::DAYS_IN_JANUARY, Date::JANUARY), Date::DAYS_IN_JANUARY - 1);
+    CHECK_EQUAL(Date::GetPreviousDay(2U, Date::JANUARY), 1U);
+
+    // Test wrap around.
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::JANUARY), Date::DAYS_IN_DECEMBER);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::FEBRUARY), Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::MARCH), Date::DAYS_IN_FEBRUARY);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::APRIL), Date::DAYS_IN_MARCH);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::MAY), Date::DAYS_IN_APRIL);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::JUNE), Date::DAYS_IN_MAY);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::JULY), Date::DAYS_IN_JUNE);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::AUGUST), Date::DAYS_IN_JULY);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::SEPTEMBER), Date::DAYS_IN_AUGUST);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::OCTOBER), Date::DAYS_IN_SEPTEMBER);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::NOVEMBER), Date::DAYS_IN_OCTOBER);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::DECEMBER), Date::DAYS_IN_NOVEMBER);
+}
+
+TEST_MEMBER_FUNCTION(Date, AddDaysForYears, size_type_day_type_month_type_year_type_ref)
+{
+    TEST_OVERRIDE_ARGS("size_type, day_type, month_type, year_type&");
+
+    // Check that no days remaining will return 0 days for last day of year, and that
+    // the year has not changed.
+    Date::day_type day = Date::DAYS_IN_DECEMBER;
+    Date::month_type month = Date::DECEMBER;
+    Date::year_type year = 2000U;
+    CHECK_EQUAL(Date::AddDaysForYears(0U, day, month, year), 0U);
+    CHECK_EQUAL(day, Date::DAYS_IN_DECEMBER);
+    CHECK_EQUAL(month, Date::DECEMBER);
+    CHECK_EQUAL(year, 2000U);
+
+    day = 1U;
+    month = Date::JANUARY;
+    year = 2000U;
+    CHECK_EQUAL(Date::AddDaysForYears(366U, day, month, year), 366U);
+    CHECK_EQUAL(day, 1U);
+    CHECK_EQUAL(month, Date::JANUARY);
+    CHECK_EQUAL(year, 2001U);
+
+    day = 1U;
+    month = Date::JANUARY;
+    year = 2001U;
+    CHECK_EQUAL(Date::AddDaysForYears(365U, day, month, year), 365U);
+    CHECK_EQUAL(day, 1U);
+    CHECK_EQUAL(month, Date::JANUARY);
+    CHECK_EQUAL(year, 2002U);
+
+    // Test wrap around from first day in last month to last day in last month for non-leap year into a leap year.
+    for (Date::day_type curr_day = 1U; curr_day <= Date::DAYS_IN_DECEMBER; ++curr_day)
+    {
+        day = curr_day;
+        month = Date::DECEMBER;
+        year = 1999U;
+        Date::size_type days_to_next_year = 1U + Date::DAYS_IN_DECEMBER - day;
+        Date::size_type calculated_days_to_next_year = Date::AddDaysForYears(days_to_next_year, day, month, year);
+        CHECK_EQUAL(calculated_days_to_next_year, days_to_next_year);
+        CHECK_EQUAL(day, 1U);
+        CHECK_EQUAL(month, Date::JANUARY);
+        CHECK_EQUAL(year, 2000U);
+    }
+
+    // Test wrap around from first day in last month to last day in last month for leap year.
+    for (Date::day_type curr_day = 1U; curr_day <= Date::DAYS_IN_DECEMBER; ++curr_day)
+    {
+        day = curr_day;
+        month = Date::DECEMBER;
+        year = 2000U;
+        CHECK_EQUAL(Date::AddDaysForYears(365U, day, month, year), 1U + Date::DAYS_IN_DECEMBER - day);
+        CHECK_EQUAL(day, 1U);
+        CHECK_EQUAL(month, Date::JANUARY);
+        CHECK_EQUAL(year, 2001U);
+    }
+
+    // Test wrap around from first day in last month to last day in last month for non-leap year.
+    for (Date::day_type curr_day = 1U; curr_day <= Date::DAYS_IN_DECEMBER; ++curr_day)
+    {
+        day = curr_day;
+        month = Date::DECEMBER;
+        year = 2001U;
+        CHECK_EQUAL(Date::AddDaysForYears(365U, day, month, year), 1U + Date::DAYS_IN_DECEMBER - day);
+        CHECK_EQUAL(day, 1U);
+        CHECK_EQUAL(month, Date::JANUARY);
+        CHECK_EQUAL(year, 2002U);
+    }
+}
+
+TEST_MEMBER_FUNCTION(Date, AddDaysForMonths, size_type_day_type_month_type_ref_year_type_ref)
+{
+    TEST_OVERRIDE_ARGS("size_type, day_type, month_type&, year_type&");
+
+    // Test that not enough days remaining will not wrap the count past the end of the month.
+    Date::day_type day = Date::DAYS_IN_JANUARY;
+    Date::month_type month = Date::JANUARY;
+    Date::year_type year = 2000U;
+    CHECK_EQUAL(Date::AddDaysForMonths(0U, day, month, year), 0U);
+    CHECK_EQUAL(day, Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(month, Date::JANUARY);
+    CHECK_EQUAL(year, 2000U);
+
+    // Test that not enough days remaining will not wrap the count past the end of the month.
+    day = Date::DAYS_IN_JANUARY - 1U;
+    month = Date::JANUARY;
+    year = 2000U;
+    CHECK_EQUAL(Date::AddDaysForMonths(1U, day, month, year), 0U);
+    CHECK_EQUAL(day, Date::DAYS_IN_JANUARY - 1U);
+    CHECK_EQUAL(month, Date::JANUARY);
+    CHECK_EQUAL(year, 2000U);
+
+    // Check that a whole year of days wraps around for a non-leap year.
+    day = 1U;
+    month = Date::JANUARY;
+    year = 1999U;
+    CHECK_EQUAL(Date::AddDaysForMonths(365U, day, month, year), 365U);
+    CHECK_EQUAL(day, 1U);
+    CHECK_EQUAL(month, Date::JANUARY);
+    CHECK_EQUAL(year, 2000U);
+
+    // Check that a whole year of days wraps around for a leap year.
+    day = 1U;
+    month = Date::JANUARY;
+    year = 2000U;
+    CHECK_EQUAL(Date::AddDaysForMonths(366U, day, month, year), 366U);
+    CHECK_EQUAL(day, 1U);
+    CHECK_EQUAL(month, Date::JANUARY);
+    CHECK_EQUAL(year, 2001U);
+
+    // Test that with a minimum days remaining, the wrapping to the next month and
+    // days to next month are correct.
+    for (Date::day_type curr_day = 1U; curr_day <= Date::DAYS_IN_JANUARY; ++curr_day)
+    {
+        day = curr_day;
+        month = Date::JANUARY;
+        year = 2000U;
+        Date::size_type days_to_next_month = 1U + Date::DAYS_IN_JANUARY - day;
+        Date::size_type calculated_days_to_next_month = Date::AddDaysForMonths(days_to_next_month, day, month, year);
+        CHECK_EQUAL(day, 1U);
+        CHECK_EQUAL(days_to_next_month, calculated_days_to_next_month);
+        CHECK_EQUAL(month, Date::FEBRUARY);
+    }
+}
+
+TEST_MEMBER_FUNCTION(Date, SubtractDaysForYears, size_type_day_type_month_type_year_type_ref)
+{
+    TEST_OVERRIDE_ARGS("size_type, day_type, month_type, year_type&");
+
+    // Check that no days remaining will return 0 days for first day of year, and that
+    // the year has not changed.
+
+    Date::day_type day = 1U;
+    Date::month_type month = Date::JANUARY;
+    Date::year_type year = 2000U;
+    CHECK_EQUAL(Date::SubtractDaysForYears(0U, day, month, year), 0U);
+    CHECK_EQUAL(year, 2000U);
+    CHECK_EQUAL(month, Date::JANUARY);
+
+    day = Date::DAYS_IN_DECEMBER;
+    month = Date::DECEMBER;
+    year = 2000U;
+    CHECK_EQUAL(Date::SubtractDaysForYears(366U, day, month, year), 366U);
+    CHECK_EQUAL(year, 1999U);
+    CHECK_EQUAL(month, Date::DECEMBER);
+
+    day = Date::DAYS_IN_DECEMBER;
+    month = Date::DECEMBER;
+    year = 2001U;
+    CHECK_EQUAL(Date::SubtractDaysForYears(365U, day, month, year), 365U);
+    CHECK_EQUAL(year, 2000U);
+    CHECK_EQUAL(month, Date::DECEMBER);
+
+    // Test wrap around from first day in first month to last day in last month for non-leap year.
+    for (Date::day_type curr_day = 1U; curr_day <= Date::DAYS_IN_JANUARY; ++curr_day)
+    {
+        day = curr_day;
+        month = Date::JANUARY;
+        year = 2000U;
+
+        // With only day(s) remaining to wrap to previous year,
+        // check SubtractDaysForYears calculates remaining day in current year for wrap around.
+        Date::size_type calculated_days_to_prev_year = Date::SubtractDaysForYears(day, day, month, year);
+        CHECK_EQUAL(calculated_days_to_prev_year, curr_day);
+        CHECK_EQUAL(day, Date::DAYS_IN_DECEMBER);
+        CHECK_EQUAL(month, Date::DECEMBER);
+        CHECK_EQUAL(year, 1999U);
+    }
+}
+
+TEST_MEMBER_FUNCTION(Date, SubtractDaysForMonths, size_type_day_type_month_type_ref_year_type_ref)
+{
+    TEST_OVERRIDE_ARGS("size_type, day_type, month_type&, year_type&");
+
+    // Test that not enough days remaining will not wrap the count past the end of the month.
+    Date::day_type day = Date::DAYS_IN_JANUARY - 1U;
+    Date::month_type month = Date::JANUARY;
+    Date::year_type year = 2000U;
+    CHECK_EQUAL(Date::SubtractDaysForMonths(1U, day, month, year), 0U);
+    CHECK_EQUAL(month, Date::JANUARY);
+
+    // Check that a whole year of days wraps around for a non-leap year.
+    day = Date::DAYS_IN_DECEMBER;
+    month = Date::DECEMBER;
+    year = 2001U;
+    CHECK_EQUAL(Date::SubtractDaysForMonths(365U, day, month, year), 365U);
+    CHECK_EQUAL(month, Date::DECEMBER);
+    CHECK_EQUAL(year, 2000U);
+
+    Date::size_type days_in_year = Date::GetDaysInYear(year);
+    // Check that a whole year of days wraps around for a leap year.
+    day = Date::DAYS_IN_DECEMBER;
+    month = Date::DECEMBER;
+    year = 2000U;
+    Date::size_type calculated_days_for_whole_months = Date::SubtractDaysForMonths(days_in_year, day, month, year);
+    CHECK_EQUAL(calculated_days_for_whole_months, days_in_year);
+    CHECK_EQUAL(month, Date::DECEMBER);
+    CHECK_EQUAL(year, 1999U);
+
+    // Test that with a minimum days remaining, the wrapping to the previous month and
+    // days to previous month are correct.
+    for (Date::day_type curr_day = 1U; curr_day <= Date::DAYS_IN_JANUARY; ++curr_day)
+    {
+        day = curr_day;
+        month = Date::JANUARY;
+        year = 2000U;
+        Date::size_type calculated_days_to_prev_month = Date::SubtractDaysForMonths(curr_day, day, month, year);
+        CHECK_EQUAL(day, Date::DAYS_IN_DECEMBER);
+        CHECK_EQUAL(curr_day, calculated_days_to_prev_month);
+        CHECK_EQUAL(month, Date::DECEMBER);
+        CHECK_EQUAL(year, 1999U);
+    }
+}
+
+TEST_MEMBER_FUNCTION(Date, GetPreviousDay, day_type_month_type_year_type)
+{
+    TEST_OVERRIDE_ARGS("day_type, month_type, year_type");
+
+    Date::year_type year = 2000U; // Is a leap year.
+
+    CHECK_EQUAL(Date::GetPreviousDay(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1);
+    CHECK_EQUAL(Date::GetPreviousDay(2U, Date::JANUARY, year), 1U);
+    CHECK_EQUAL(Date::GetPreviousDay(Date::DAYS_IN_LEAP_FEBRUARY, Date::FEBRUARY, year), Date::DAYS_IN_FEBRUARY);
+
+    // Test wrap around.
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::JANUARY, year), Date::DAYS_IN_DECEMBER);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::MARCH, year), Date::DAYS_IN_LEAP_FEBRUARY);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::APRIL, year), Date::DAYS_IN_MARCH);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::MAY, year), Date::DAYS_IN_APRIL);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::JUNE, year), Date::DAYS_IN_MAY);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::JULY, year), Date::DAYS_IN_JUNE);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::AUGUST, year), Date::DAYS_IN_JULY);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::SEPTEMBER, year), Date::DAYS_IN_AUGUST);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::OCTOBER, year), Date::DAYS_IN_SEPTEMBER);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::NOVEMBER, year), Date::DAYS_IN_OCTOBER);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::DECEMBER, year), Date::DAYS_IN_NOVEMBER);
+
+    year = 2007U; // Is not a leap year.
+
+    CHECK_EQUAL(Date::GetPreviousDay(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1);
+    CHECK_EQUAL(Date::GetPreviousDay(2U, Date::JANUARY, year), 1U);
+
+    // Test wrap around.
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::JANUARY, year), Date::DAYS_IN_DECEMBER);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::MARCH, year), Date::DAYS_IN_FEBRUARY);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::APRIL, year), Date::DAYS_IN_MARCH);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::MAY, year), Date::DAYS_IN_APRIL);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::JUNE, year), Date::DAYS_IN_MAY);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::JULY, year), Date::DAYS_IN_JUNE);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::AUGUST, year), Date::DAYS_IN_JULY);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::SEPTEMBER, year), Date::DAYS_IN_AUGUST);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::OCTOBER, year), Date::DAYS_IN_SEPTEMBER);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::NOVEMBER, year), Date::DAYS_IN_OCTOBER);
+    CHECK_EQUAL(Date::GetPreviousDay(1U, Date::DECEMBER, year), Date::DAYS_IN_NOVEMBER);
+}
+
 TEST_MEMBER_FUNCTION(Date, constructor, NA)
 {
     TEST_OVERRIDE_FUNCTION_NAME("Date");
@@ -64,61 +775,6 @@ TEST_MEMBER_FUNCTION(Date, assignment_operator, Date_const_ref)
     CHECK_EQUAL(date2.GetDay(), 2U);
     CHECK_EQUAL(date2.GetMonth(), Date::FEBRUARY);
     CHECK_EQUAL(date2.GetYear(), 1980U);
-}
-
-TEST_MEMBER_FUNCTION(Date, DaysInMonth, month_type)
-{
-    Date::day_type days_in_month[Date::MONTHS_PER_YEAR] =
-    {
-        31U, 28U, 31U, 30U, 31U, 30U, 31U, 31U, 30U, 31U, 30U, 31U
-    };
-
-    for (Date::month_type month = Date::MIN_MONTH; month <= Date::MAX_MONTH; ++month)
-        CHECK_EQUAL(days_in_month[month - Date::JANUARY], Date::DaysInMonth(month));
-}
-
-TEST_CONST_MEMBER_FUNCTION(Date, IsLeapMonth, month_type_year_type)
-{
-    TEST_OVERRIDE_ARGS("month_type, year_type");
-
-    CHECK_FALSE(Date::IsLeapMonth(Date::FEBRUARY, 1800U));
-    CHECK_FALSE(Date::IsLeapMonth(Date::FEBRUARY, 1900U));
-    CHECK_TRUE(Date::IsLeapMonth(Date::FEBRUARY, 2000U));
-    CHECK_FALSE(Date::IsLeapMonth(Date::FEBRUARY, 2003U));
-    CHECK_TRUE(Date::IsLeapMonth(Date::FEBRUARY, 2004U));
-    CHECK_FALSE(Date::IsLeapMonth(Date::FEBRUARY, 2005U));
-    CHECK_FALSE(Date::IsLeapMonth(Date::FEBRUARY, 2006U));
-    CHECK_FALSE(Date::IsLeapMonth(Date::FEBRUARY, 2007U));
-    CHECK_TRUE(Date::IsLeapMonth(Date::FEBRUARY, 2008U));
-    CHECK_FALSE(Date::IsLeapMonth(Date::FEBRUARY, 2100U));
-    CHECK_FALSE(Date::IsLeapMonth(Date::FEBRUARY, 2200U));
-
-    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 1800U));
-    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 1900U));
-    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2000U));
-    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2003U));
-    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2004U));
-    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2005U));
-    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2006U));
-    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2007U));
-    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2008U));
-    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2100U));
-    CHECK_FALSE(Date::IsLeapMonth(Date::JANUARY, 2200U));
-}
-
-TEST_MEMBER_FUNCTION(Date, IsLeapYear, year_type)
-{
-    CHECK_FALSE(Date::IsLeapYear(1800U));
-    CHECK_FALSE(Date::IsLeapYear(1900U));
-    CHECK_TRUE(Date::IsLeapYear(2000U));
-    CHECK_FALSE(Date::IsLeapYear(2003U));
-    CHECK_TRUE(Date::IsLeapYear(2004U));
-    CHECK_FALSE(Date::IsLeapYear(2005U));
-    CHECK_FALSE(Date::IsLeapYear(2006U));
-    CHECK_FALSE(Date::IsLeapYear(2007U));
-    CHECK_TRUE(Date::IsLeapYear(2008U));
-    CHECK_FALSE(Date::IsLeapYear(2100U));
-    CHECK_FALSE(Date::IsLeapYear(2200U));
 }
 
 TEST_CONST_MEMBER_FUNCTION(Date, GetDay, NA)
@@ -239,6 +895,257 @@ TEST_MEMBER_FUNCTION(Date, SetDate, uint32_t)
     CHECK_EQUAL(date.GetDay(), 1U);
     CHECK_EQUAL(date.GetMonth(), 2U);
     CHECK_EQUAL(date.GetYear(), 2000U);
+}
+
+TEST_MEMBER_FUNCTION(Date, SetDate, Date_const_ref)
+{
+    TEST_OVERRIDE_ARGS("Date const&");
+
+    Date date;
+
+    date.SetDate(Date(1U, Date::JANUARY, 1970U));
+    CHECK_EQUAL(date, Date(1U, Date::JANUARY, 1970U));
+}
+
+TEST_MEMBER_FUNCTION(Date, SetDate, day_type_month_type_year_type)
+{
+    TEST_OVERRIDE_ARGS("day_type, month_type, year_type");
+
+    Date date;
+
+    date.SetDate(1U, Date::JANUARY, 1970U);
+    CHECK_EQUAL(date, Date(1U, Date::JANUARY, 1970U));
+}
+
+TEST_MEMBER_FUNCTION(Date, IncrementDay, NA)
+{
+    Date date(1U, Date::JANUARY, 2000U);
+
+    date.IncrementDay();
+    CHECK_EQUAL(date.GetDay(), 2U);
+
+    date.SetDay(Date::DAYS_IN_JANUARY - 1);
+    date.IncrementDay();
+    CHECK_EQUAL(date.GetDay(), Date::DAYS_IN_JANUARY);
+
+    date.IncrementDay();
+    CHECK_EQUAL(date.GetDay(), 1U);
+    CHECK_EQUAL(date.GetMonth(), Date::FEBRUARY);
+
+    date.SetDay(Date::DAYS_IN_FEBRUARY);
+    date.IncrementDay();
+    CHECK_EQUAL(date.GetDay(), Date::DAYS_IN_LEAP_FEBRUARY);
+    CHECK_EQUAL(date.GetMonth(), Date::FEBRUARY);
+
+    date.IncrementDay();
+    CHECK_EQUAL(date.GetDay(), 1U);
+    CHECK_EQUAL(date.GetMonth(), Date::MARCH);
+
+    date.SetDate(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2000U);
+    date.IncrementDay();
+    CHECK_EQUAL(date, Date(1U, Date::JANUARY, 2001U));
+
+    date.SetDay(Date::DAYS_IN_FEBRUARY - 1U);
+    date.SetMonth(Date::FEBRUARY);
+    date.IncrementDay();
+    CHECK_EQUAL(date, Date(Date::DAYS_IN_FEBRUARY, Date::FEBRUARY, 2001U));
+
+    date.IncrementDay();
+    CHECK_EQUAL(date, Date(1U, Date::MARCH, 2001U));
+}
+
+TEST_MEMBER_FUNCTION(Date, DecrementDay, NA)
+{
+    Date date(2U, Date::MARCH, 2000U);
+
+    date.DecrementDay();
+    CHECK_EQUAL(date.GetDay(), 1U);
+
+    date.DecrementDay();
+    CHECK_EQUAL(date.GetDay(), Date::DAYS_IN_LEAP_FEBRUARY);
+    CHECK_EQUAL(date.GetMonth(), Date::FEBRUARY);
+
+    date.DecrementDay();
+    CHECK_EQUAL(date.GetDay(), Date::DAYS_IN_FEBRUARY);
+
+    date.SetDate(1U, Date::JANUARY, 2001U);
+    date.DecrementDay();
+    CHECK_EQUAL(date, Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2000U));
+
+    date.SetDate(1U, Date::MARCH, 2001U);
+    date.DecrementDay();
+    CHECK_EQUAL(date, Date(Date::DAYS_IN_LEAP_FEBRUARY, Date::FEBRUARY, 2001U));
+}
+
+TEST_MEMBER_FUNCTION(Date, IncrementMonth, NA)
+{
+    Date date;
+
+    // Test leap year and non-leap year max days per month.
+    for (Date::year_type year = 2000U; year <= 2001; ++year)
+    {
+        for (Date::month_type month = Date::JANUARY; month <= Date::DECEMBER; ++month)
+        {
+            Date::day_type max_day = Date::GetDaysInMonth(month, year);
+            Date::day_type max_next_day = Date::GetDaysInMonth(Date::GetNextMonth(month), year);
+
+            date.SetDate(max_day, month, year);
+            date.IncrementMonth();
+
+            Date::day_type expected_day = max_next_day < max_day ? max_next_day : max_day;
+            CHECK_EQUAL(date.GetDay(), expected_day);
+        }
+    }
+}
+
+TEST_MEMBER_FUNCTION(Date, DecrementMonth, NA)
+{
+    Date date;
+
+    // Test leap year and non-leap year max days per month.
+    for (Date::year_type year = 2000U; year <= 2001; ++year)
+    {
+        for (Date::month_type month = Date::JANUARY; month <= Date::DECEMBER; ++month)
+        {
+            Date::day_type max_day = Date::GetDaysInMonth(month, year);
+            Date::day_type max_next_day = Date::GetDaysInMonth(Date::GetPreviousMonth(month), year);
+
+            date.SetDate(max_day, month, year);
+            date.DecrementMonth();
+
+            Date::day_type expected_day = max_next_day < max_day ? max_next_day : max_day;
+            CHECK_EQUAL(date.GetDay(), expected_day);
+        }
+    }
+}
+
+TEST_MEMBER_FUNCTION(Date, AddDays, size_type)
+{
+    Date date;
+
+    Date::size_type days_in_leap_year = Date::GetDaysInYear(2000U);
+    Date::size_type days_in_year = Date::GetDaysInYear(2001U);
+
+    for (Date::year_type year = 2000U; year <= 2001U; ++year)
+    {
+        for (Date::month_type month = Date::JANUARY; month <= Date::DECEMBER; ++month)
+        {
+            Date::day_type days_in_month = Date::GetDaysInMonth(month, year);
+
+            // Test adding 0 days to every day in the month has no effect.
+            for (Date::day_type day = 1U; day < days_in_month; ++day)
+            {
+                date.SetDate(day, month, year);
+                date.AddDays(0U);
+                CHECK_EQUAL(date.GetDay(), day);
+                CHECK_EQUAL(date.GetMonth(), month);
+                CHECK_EQUAL(date.GetYear(), year);
+            }
+
+            // Test offsetting days for a complete year wraps correctly to next day, month and year.
+            for (Date::day_type day = 1U; day < days_in_month; ++day)
+            {
+                date.SetDate(day, month, year);
+                bool need_leap_days = (year == 2000U) && (month <= Date::FEBRUARY);
+                Date::size_type days_to_next_year = need_leap_days ? days_in_leap_year : days_in_year;
+                date.AddDays(days_to_next_year);
+                CHECK_EQUAL(date, Date(day, month, year + 1U));
+            }
+
+            // Test adding a single day to every day except last day
+            // sets correct day and doesn't wrap month.
+            for (Date::day_type day = 1U; day < days_in_month; ++day)
+            {
+                date.SetDate(day, month, year);
+                date.AddDays(1U);
+                CHECK_EQUAL(date.GetDay(), day + 1U);
+                CHECK_EQUAL(date.GetMonth(), month);
+                CHECK_EQUAL(date.GetYear(), year);
+            }
+
+            // Test adding number of days to reach last day doesn't overflow the month,
+            // and sets the day to the last day of the month.
+            for (Date::day_type day = 1U; day < days_in_month; ++day)
+            {
+                date.SetDay(day);
+                date.AddDays(days_in_month - day);
+                CHECK_EQUAL(date.GetDay(), days_in_month);
+                CHECK_EQUAL(date.GetMonth(), month);
+                CHECK_EQUAL(date.GetYear(), year);
+            }
+
+            // Test adding days in the month wraps to the start of the following month.
+            date.SetDate(1U, month, year);
+            date.AddDays(days_in_month);
+            CHECK_EQUAL(date.GetDay(), 1U);
+            Date::month_type next_month = Date::GetNextMonth(month);
+            CHECK_EQUAL(date.GetMonth(), next_month);
+            Date::year_type expected_year = month < Date::DECEMBER ? year : year + 1U;
+            CHECK_EQUAL(date.GetYear(), expected_year);
+        }
+    }
+}
+
+TEST_MEMBER_FUNCTION(Date, SubtractDays, size_type)
+{
+    Date date;
+
+    Date::size_type days_in_leap_year = Date::GetDaysInYear(2000U);
+    Date::size_type days_in_year = Date::GetDaysInYear(2001U);
+
+    for (Date::year_type year = 2000U; year <= 2001U; ++year)
+    {
+        for (Date::month_type month = Date::JANUARY; month <= Date::DECEMBER; ++month)
+        {
+            // Test offsetting days for a complete year wraps correctly to previous day, month and year.
+            Date::day_type days_in_month = Date::GetDaysInMonth(month, year);
+            for (Date::day_type day = 1U; day < days_in_month; ++day)
+            {
+                date.SetDate(day, month, year);
+
+                // Between March 2000 and February 2001 the subtraction
+                // needs to be days in a leap year (366 days).
+                bool need_leap_days = (year == 2000U && month > Date::FEBRUARY) ||
+                                      (year == 2001U && month <= Date::FEBRUARY);
+
+                Date::size_type days_to_prev_year = need_leap_days ? days_in_leap_year : days_in_year;
+                date.SubtractDays(days_to_prev_year);
+                Date cmp(day, month, year - 1U);
+                CHECK_EQUAL(date, cmp);
+            }
+
+            // Test subtracting a single day to every day except first day
+            // sets correct day and doesn't wrap month.
+            for (Date::day_type day = 2U; day <= days_in_month; ++day)
+            {
+                date.SetDate(day, month, year);
+                date.SubtractDays(1U);
+                CHECK_EQUAL(date.GetDay(), day - 1U);
+                CHECK_EQUAL(date.GetMonth(), month);
+                CHECK_EQUAL(date.GetYear(), year);
+            }
+
+            // Test subtracting number of days to reach first day doesn't wrap the month,
+            // and sets the day to the first day of the month.
+            for (Date::day_type day = 1U; day < days_in_month; ++day)
+            {
+                date.SetDay(day);
+                date.SubtractDays(day - 1U);
+                CHECK_EQUAL(date.GetDay(), 1U);
+                CHECK_EQUAL(date.GetMonth(), month);
+                CHECK_EQUAL(date.GetYear(), year);
+            }
+
+            // Test subtracting days in the month wraps to the end of the previous month.
+            date.SetDate(days_in_month, month, year);
+            date.SubtractDays(days_in_month);
+            Date::month_type prev_month = Date::GetPreviousMonth(month);
+            Date::year_type expected_year = prev_month < Date::DECEMBER ? year : year - 1U;
+            CHECK_EQUAL(date.GetDay(), Date::GetDaysInMonth(prev_month, expected_year));
+            CHECK_EQUAL(date.GetMonth(), prev_month);
+            CHECK_EQUAL(date.GetYear(), expected_year);
+        }
+    }
 }
 
 TEST_CONST_MEMBER_FUNCTION(Date, Compare, Date_const_ref)
