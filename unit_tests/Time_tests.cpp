@@ -116,6 +116,28 @@ TEST_MEMBER_FUNCTION(Time, assignment_operator, Time_const_ref)
     CHECK_EQUAL(time2.GetHours(), 23U);
 }
 
+TEST_CONST_MEMBER_FUNCTION(Time, minus_equal_operator, uint32_t)
+{
+    TEST_OVERRIDE_FUNCTION_NAME("operator -=");
+    typedef Time::diff_type diff_type;
+
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).operator-=(0U), Time(0U, 0U, 0U, 0U));
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).operator-=(1U), Time(0U, 0U, 0U, 0U));
+    CHECK_EQUAL(Time(0U, 0U, 0U, 1U).operator-=(1U), Time(0U, 0U, 0U, 0U));
+    CHECK_EQUAL(Time(0U, 0U, 0U, 1U).operator-=(2U), Time(0U, 0U, 0U, 0U));
+    CHECK_EQUAL(Time(0U, 0U, 0U, 2U).operator-=(1U), Time(0U, 0U, 0U, 1U));
+    CHECK_EQUAL(Time(0U, 0U, 0U, 999U).operator-=(999U), Time(0U, 0U, 0U, 0U));
+    CHECK_EQUAL(Time(0U, 0U, 1U, 0U).operator-=(1U), Time(0U, 0U, 0U, 999U));
+    CHECK_EQUAL(Time(0U, 1U, 0U, 0U).operator-=(1U), Time(0U, 0U, 59U, 999U));
+    CHECK_EQUAL(Time(1U, 0U, 0U, 0U).operator-=(1U), Time(0U, 59U, 59U, 999U));
+    CHECK_EQUAL(Time(0U, 0U, 1U, 0U).operator-=(Time::MILLISECONDS_PER_SECOND - 1U), Time(0U, 0U, 0U, 1U));
+    CHECK_EQUAL(Time(0U, 0U, 1U, 0U).operator-=(Time::MILLISECONDS_PER_SECOND), Time(0U, 0U, 0U, 0U));
+    CHECK_EQUAL(Time(0U, 1U, 0U, 0U).operator-=(Time::MILLISECONDS_PER_MINUTE - 1U), Time(0U, 0U, 0U, 1U));
+    CHECK_EQUAL(Time(0U, 1U, 0U, 0U).operator-=(Time::MILLISECONDS_PER_MINUTE), Time(0U, 0U, 0U, 0U));
+    CHECK_EQUAL(Time(1U, 0U, 0U, 0U).operator-=(Time::MILLISECONDS_PER_HOUR - 1U), Time(0U, 0U, 0U, 1U));
+    CHECK_EQUAL(Time(1U, 0U, 0U, 0U).operator-=(Time::MILLISECONDS_PER_HOUR), Time(0U, 0U, 0U, 0U));
+}
+
 TEST_CONST_MEMBER_FUNCTION(Time, minus_operator, Time_const_ref)
 {
     TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator -", "Time const&");
