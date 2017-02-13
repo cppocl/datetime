@@ -116,6 +116,22 @@ TEST_MEMBER_FUNCTION(Time, assignment_operator, Time_const_ref)
     CHECK_EQUAL(time2.GetHours(), 23U);
 }
 
+TEST_CONST_MEMBER_FUNCTION(Time, minus_operator, Time_const_ref)
+{
+    TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator -", "Time const&");
+    typedef Time::diff_type diff_type;
+
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U) - Time(0U, 0U, 0U, 0U), 0);
+    CHECK_EQUAL(Time(0U, 0U, 0U, 1U) - Time(0U, 0U, 0U, 0U), 1);
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U) - Time(0U, 0U, 0U, 1U), -1);
+    CHECK_EQUAL(Time(0U, 0U, 1U, 0U) - Time(0U, 0U, 0U, 0U), static_cast<diff_type>(Time::MILLISECONDS_PER_SECOND));
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U) - Time(0U, 0U, 1U, 0U), -static_cast<diff_type>(Time::MILLISECONDS_PER_SECOND));
+    CHECK_EQUAL(Time(0U, 1U, 0U, 0U) - Time(0U, 0U, 0U, 0U), static_cast<diff_type>(Time::MILLISECONDS_PER_MINUTE));
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U) - Time(0U, 1U, 0U, 0U), -static_cast<diff_type>(Time::MILLISECONDS_PER_MINUTE));
+    CHECK_EQUAL(Time(1U, 0U, 0U, 0U) - Time(0U, 0U, 0U, 0U), static_cast<diff_type>(Time::MILLISECONDS_PER_HOUR));
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U) - Time(1U, 0U, 0U, 0U), -static_cast<diff_type>(Time::MILLISECONDS_PER_HOUR));
+}
+
 TEST_MEMBER_FUNCTION(Time, SplitMilliseconds, uint32_t_ref_uint32_t_ref_uint32_t_ref_uint32_t_ref)
 {
     TEST_OVERRIDE_ARGS("uint32_t&, uint32_t&, uint32_t&, uint32_t&");
@@ -316,7 +332,7 @@ TEST_MEMBER_FUNCTION(Time, SetHours, hour_type)
     CHECK_EQUAL(time.GetHours(), 23U);
 }
 
-TEST_MEMBER_FUNCTION(Time, GetAsMilliseconds, NA)
+TEST_CONST_MEMBER_FUNCTION(Time, GetAsMilliseconds, NA)
 {
     CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetAsMilliseconds(), 0U);
     CHECK_EQUAL(Time(0U, 0U, 0U, 1U).GetAsMilliseconds(), 1U);
@@ -360,6 +376,21 @@ TEST_MEMBER_FUNCTION(Time, SetFromMilliseconds, uint32_t)
     CHECK_EQUAL(time.GetSeconds(), 0U);
     CHECK_EQUAL(time.GetMinutes(), 0U);
     CHECK_EQUAL(time.GetHours(), 1U);
+}
+
+TEST_CONST_MEMBER_FUNCTION(Time, GetDifference, Time_const_ref)
+{
+    TEST_OVERRIDE_ARGS("Time const&");
+
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifference(Time(0U, 0U, 0U, 0U)), 0U);
+    CHECK_EQUAL(Time(0U, 0U, 0U, 1U).GetDifference(Time(0U, 0U, 0U, 0U)), 1U);
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifference(Time(0U, 0U, 0U, 1U)), 1U);
+    CHECK_EQUAL(Time(0U, 0U, 1U, 0U).GetDifference(Time(0U, 0U, 0U, 0U)), Time::MILLISECONDS_PER_SECOND);
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifference(Time(0U, 0U, 1U, 0U)), Time::MILLISECONDS_PER_SECOND);
+    CHECK_EQUAL(Time(0U, 1U, 0U, 0U).GetDifference(Time(0U, 0U, 0U, 0U)), Time::MILLISECONDS_PER_MINUTE);
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifference(Time(0U, 1U, 0U, 0U)), Time::MILLISECONDS_PER_MINUTE);
+    CHECK_EQUAL(Time(1U, 0U, 0U, 0U).GetDifference(Time(0U, 0U, 0U, 0U)), Time::MILLISECONDS_PER_HOUR);
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifference(Time(1U, 0U, 0U, 0U)), Time::MILLISECONDS_PER_HOUR);
 }
 
 TEST_MEMBER_FUNCTION(Time, AddMilliseconds, uint32_t)

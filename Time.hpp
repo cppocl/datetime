@@ -31,6 +31,7 @@ class Time
 // Types.
 public:
     typedef uint32_t size_type;
+    typedef int32_t diff_type;
     typedef uint16_t millisecond_type;
     typedef uint8_t second_type;
     typedef uint8_t minute_type;
@@ -152,6 +153,14 @@ public:
         return *this;
     }
 
+    /// Get difference between two times in milliseconds.
+    diff_type operator -(Time const& other) const throw()
+    {
+        size_type this_millisecds = GetAsMilliseconds();
+        size_type other_millisecds = other.GetAsMilliseconds();
+        return static_cast<diff_type>(this_millisecds) - static_cast<diff_type>(other_millisecds);
+    }
+
 // Static member functions.
 public:
     /// Split milliseconds into hours, minutes, seconds and milliseconds.
@@ -264,6 +273,15 @@ public:
         SetMinutes(static_cast<minute_type>(minutes));
         SetSeconds(static_cast<second_type>(seconds));
         SetMilliseconds(static_cast<millisecond_type>(milliseconds));
+    }
+
+    /// Get the difference between this time and the other time in milliseconds.
+    size_type GetDifference(Time const& other) const throw()
+    {
+        size_type this_milliseconds = GetAsMilliseconds();
+        size_type other_millisecds = other.GetAsMilliseconds();
+        return this_milliseconds > other_millisecds ? this_milliseconds - other_millisecds
+                                                    : other_millisecds - this_milliseconds;
     }
 
     void AddMilliseconds(size_type milliseconds) throw()
