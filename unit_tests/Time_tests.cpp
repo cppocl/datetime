@@ -116,6 +116,36 @@ TEST_MEMBER_FUNCTION(Time, assignment_operator, Time_const_ref)
     CHECK_EQUAL(time2.GetHours(), 23U);
 }
 
+TEST_CONST_MEMBER_FUNCTION(Time, less_operator, Time_const_ref)
+{
+    TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator <", "Time const&");
+}
+
+TEST_CONST_MEMBER_FUNCTION(Time, less_equal_operator, Time_const_ref)
+{
+    TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator <=", "Time const&");
+}
+
+TEST_CONST_MEMBER_FUNCTION(Time, greater_operator, Time_const_ref)
+{
+    TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator >", "Time const&");
+}
+
+TEST_CONST_MEMBER_FUNCTION(Time, greater_equal_operator, Time_const_ref)
+{
+    TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator >=", "Time const&");
+}
+
+TEST_CONST_MEMBER_FUNCTION(Time, is_equal_operator, Time_const_ref)
+{
+    TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator ==", "Time const&");
+}
+
+TEST_CONST_MEMBER_FUNCTION(Time, is_not_equal_operator, Time_const_ref)
+{
+    TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator !=", "Time const&");
+}
+
 TEST_CONST_MEMBER_FUNCTION(Time, plus_equal_operator, uint32_t)
 {
     TEST_OVERRIDE_FUNCTION_NAME("operator +=");
