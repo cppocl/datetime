@@ -88,6 +88,23 @@ public:
 
 // Static member functions.
 public:
+    /// Convert date to a 32-bit value that can be ordered.
+    static uint32_t GetDate(day_type day, month_type month, year_type year) throw()
+    {
+        uint32_t date = day;
+        date |= static_cast<uint32_t>(month) << 8U;
+        date |= static_cast<uint32_t>(year) << 16U;
+        return date;
+    }
+
+    /// Convert a 32-bit ordered value to a day, month and year.
+    static void SetDate(uint32_t date, day_type& day, month_type& month, year_type& year) throw()
+    {
+        day = static_cast<day_type>(date);
+        month = static_cast<month_type>(date >> 8U);
+        year = static_cast<year_type>(date >> 16U);
+    }
+
     static bool IsLeapYear(year_type year) throw()
     {
         /* Leap year is when an extra day is added to February,
@@ -662,18 +679,13 @@ public:
     /// Get the date as a 32-bit value for conveniently serializing the date.
     uint32_t GetDate() const throw()
     {
-        uint32_t date = m_day;
-        date |= static_cast<uint32_t>(m_month) << 8U;
-        date |= static_cast<uint32_t>(m_year) << 16U;
-        return date;
+        return GetDate(m_day, m_month, m_year);
     }
 
     /// Set the date from a 32-bit value for conveniently serializing the date.
     void SetDate(uint32_t date) throw()
     {
-        m_day = static_cast<day_type>(date);
-        m_month = static_cast<month_type>(date >> 8U);
-        m_year = static_cast<year_type>(date >> 16U);
+        SetDate(date, m_day, m_month, m_year);
     }
 
     void SetDate(Date const& date) throw()
