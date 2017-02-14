@@ -119,31 +119,111 @@ TEST_MEMBER_FUNCTION(Time, assignment_operator, Time_const_ref)
 TEST_CONST_MEMBER_FUNCTION(Time, less_operator, Time_const_ref)
 {
     TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator <", "Time const&");
+
+    CHECK_TRUE(Time(0U, 0U, 0U, 0U) < Time(0U, 0U, 0U, 1U));
+    CHECK_FALSE(Time(0U, 0U, 0U, 1U) < Time(0U, 0U, 0U, 1U));
+    CHECK_FALSE(Time(0U, 0U, 0U, 2U) < Time(0U, 0U, 0U, 1U));
+    CHECK_TRUE(Time(0U, 0U, 0U, 0U) < Time(0U, 0U, 1U, 0U));
+    CHECK_FALSE(Time(0U, 0U, 1U, 0U) < Time(0U, 0U, 1U, 0U));
+    CHECK_FALSE(Time(0U, 0U, 2U, 0U) < Time(0U, 0U, 1U, 0U));
+    CHECK_TRUE(Time(0U, 0U, 0U, 0U) < Time(0U, 1U, 0U, 0U));
+    CHECK_FALSE(Time(0U, 1U, 0U, 0U) < Time(0U, 1U, 0U, 0U));
+    CHECK_FALSE(Time(0U, 2U, 0U, 0U) < Time(0U, 1U, 0U, 0U));
+    CHECK_TRUE(Time(0U, 0U, 0U, 0U) < Time(1U, 0U, 0U, 0U));
+    CHECK_FALSE(Time(1U, 0U, 0U, 0U) < Time(1U, 0U, 0U, 0U));
+    CHECK_FALSE(Time(2U, 0U, 0U, 0U) < Time(1U, 0U, 0U, 0U));
 }
 
 TEST_CONST_MEMBER_FUNCTION(Time, less_equal_operator, Time_const_ref)
 {
     TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator <=", "Time const&");
+
+    CHECK_TRUE(Time(0U, 0U, 0U, 0U) <= Time(0U, 0U, 0U, 1U));
+    CHECK_TRUE(Time(0U, 0U, 0U, 1U) <= Time(0U, 0U, 0U, 1U));
+    CHECK_FALSE(Time(0U, 0U, 0U, 2U) <= Time(0U, 0U, 0U, 1U));
+    CHECK_TRUE(Time(0U, 0U, 0U, 0U) <= Time(0U, 0U, 1U, 0U));
+    CHECK_TRUE(Time(0U, 0U, 1U, 0U) <= Time(0U, 0U, 1U, 0U));
+    CHECK_FALSE(Time(0U, 0U, 2U, 0U) <= Time(0U, 0U, 1U, 0U));
+    CHECK_TRUE(Time(0U, 0U, 0U, 0U) <= Time(0U, 1U, 0U, 0U));
+    CHECK_TRUE(Time(0U, 1U, 0U, 0U) <= Time(0U, 1U, 0U, 0U));
+    CHECK_FALSE(Time(0U, 2U, 0U, 0U) <= Time(0U, 1U, 0U, 0U));
+    CHECK_TRUE(Time(0U, 0U, 0U, 0U) <= Time(1U, 0U, 0U, 0U));
+    CHECK_TRUE(Time(1U, 0U, 0U, 0U) <= Time(1U, 0U, 0U, 0U));
+    CHECK_FALSE(Time(2U, 0U, 0U, 0U) <= Time(1U, 0U, 0U, 0U));
 }
 
 TEST_CONST_MEMBER_FUNCTION(Time, greater_operator, Time_const_ref)
 {
     TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator >", "Time const&");
+
+    CHECK_FALSE(Time(0U, 0U, 0U, 0U) > Time(0U, 0U, 0U, 1U));
+    CHECK_FALSE(Time(0U, 0U, 0U, 1U) > Time(0U, 0U, 0U, 1U));
+    CHECK_TRUE(Time(0U, 0U, 0U, 2U) > Time(0U, 0U, 0U, 1U));
+    CHECK_FALSE(Time(0U, 0U, 0U, 0U) > Time(0U, 0U, 1U, 0U));
+    CHECK_FALSE(Time(0U, 0U, 1U, 0U) > Time(0U, 0U, 1U, 0U));
+    CHECK_TRUE(Time(0U, 0U, 2U, 0U) > Time(0U, 0U, 1U, 0U));
+    CHECK_FALSE(Time(0U, 0U, 0U, 0U) > Time(0U, 1U, 0U, 0U));
+    CHECK_FALSE(Time(0U, 1U, 0U, 0U) > Time(0U, 1U, 0U, 0U));
+    CHECK_TRUE(Time(0U, 2U, 0U, 0U) > Time(0U, 1U, 0U, 0U));
+    CHECK_FALSE(Time(0U, 0U, 0U, 0U) > Time(1U, 0U, 0U, 0U));
+    CHECK_FALSE(Time(1U, 0U, 0U, 0U) > Time(1U, 0U, 0U, 0U));
+    CHECK_TRUE(Time(2U, 0U, 0U, 0U) > Time(1U, 0U, 0U, 0U));
 }
 
 TEST_CONST_MEMBER_FUNCTION(Time, greater_equal_operator, Time_const_ref)
 {
     TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator >=", "Time const&");
+
+    CHECK_FALSE(Time(0U, 0U, 0U, 0U) >= Time(0U, 0U, 0U, 1U));
+    CHECK_TRUE(Time(0U, 0U, 0U, 1U) >= Time(0U, 0U, 0U, 1U));
+    CHECK_TRUE(Time(0U, 0U, 0U, 2U) >= Time(0U, 0U, 0U, 1U));
+    CHECK_FALSE(Time(0U, 0U, 0U, 0U) >= Time(0U, 0U, 1U, 0U));
+    CHECK_TRUE(Time(0U, 0U, 1U, 0U) >= Time(0U, 0U, 1U, 0U));
+    CHECK_TRUE(Time(0U, 0U, 2U, 0U) >= Time(0U, 0U, 1U, 0U));
+    CHECK_FALSE(Time(0U, 0U, 0U, 0U) >= Time(0U, 1U, 0U, 0U));
+    CHECK_TRUE(Time(0U, 1U, 0U, 0U) >= Time(0U, 1U, 0U, 0U));
+    CHECK_TRUE(Time(0U, 2U, 0U, 0U) >= Time(0U, 1U, 0U, 0U));
+    CHECK_FALSE(Time(0U, 0U, 0U, 0U) >= Time(1U, 0U, 0U, 0U));
+    CHECK_TRUE(Time(1U, 0U, 0U, 0U) >= Time(1U, 0U, 0U, 0U));
+    CHECK_TRUE(Time(2U, 0U, 0U, 0U) >= Time(1U, 0U, 0U, 0U));
 }
 
 TEST_CONST_MEMBER_FUNCTION(Time, is_equal_operator, Time_const_ref)
 {
     TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator ==", "Time const&");
+
+    CHECK_TRUE(Time(0U, 0U, 0U, 0U) == Time(0U, 0U, 0U, 0U));
+    CHECK_TRUE(Time(0U, 0U, 0U, 1U) == Time(0U, 0U, 0U, 1U));
+    CHECK_TRUE(Time(0U, 0U, 1U, 0U) == Time(0U, 0U, 1U, 0U));
+    CHECK_TRUE(Time(0U, 1U, 0U, 0U) == Time(0U, 1U, 0U, 0U));
+    CHECK_TRUE(Time(1U, 0U, 0U, 0U) == Time(1U, 0U, 0U, 0U));
+    CHECK_FALSE(Time(0U, 0U, 0U, 0U) == Time(0U, 0U, 0U, 1U));
+    CHECK_FALSE(Time(0U, 0U, 0U, 1U) == Time(0U, 0U, 0U, 0U));
+    CHECK_FALSE(Time(0U, 0U, 0U, 0U) == Time(0U, 0U, 1U, 0U));
+    CHECK_FALSE(Time(0U, 0U, 1U, 0U) == Time(0U, 0U, 0U, 0U));
+    CHECK_FALSE(Time(0U, 0U, 0U, 0U) == Time(0U, 1U, 0U, 0U));
+    CHECK_FALSE(Time(0U, 1U, 0U, 0U) == Time(0U, 0U, 0U, 0U));
+    CHECK_FALSE(Time(0U, 0U, 0U, 0U) == Time(1U, 0U, 0U, 0U));
+    CHECK_FALSE(Time(1U, 0U, 0U, 0U) == Time(0U, 0U, 0U, 0U));
 }
 
 TEST_CONST_MEMBER_FUNCTION(Time, is_not_equal_operator, Time_const_ref)
 {
     TEST_OVERRIDE_FUNCTION_NAME_ARGS("operator !=", "Time const&");
+
+    CHECK_FALSE(Time(0U, 0U, 0U, 0U) != Time(0U, 0U, 0U, 0U));
+    CHECK_FALSE(Time(0U, 0U, 0U, 1U) != Time(0U, 0U, 0U, 1U));
+    CHECK_FALSE(Time(0U, 0U, 1U, 0U) != Time(0U, 0U, 1U, 0U));
+    CHECK_FALSE(Time(0U, 1U, 0U, 0U) != Time(0U, 1U, 0U, 0U));
+    CHECK_FALSE(Time(1U, 0U, 0U, 0U) != Time(1U, 0U, 0U, 0U));
+    CHECK_TRUE(Time(0U, 0U, 0U, 0U) != Time(0U, 0U, 0U, 1U));
+    CHECK_TRUE(Time(0U, 0U, 0U, 1U) != Time(0U, 0U, 0U, 0U));
+    CHECK_TRUE(Time(0U, 0U, 0U, 0U) != Time(0U, 0U, 1U, 0U));
+    CHECK_TRUE(Time(0U, 0U, 1U, 0U) != Time(0U, 0U, 0U, 0U));
+    CHECK_TRUE(Time(0U, 0U, 0U, 0U) != Time(0U, 1U, 0U, 0U));
+    CHECK_TRUE(Time(0U, 1U, 0U, 0U) != Time(0U, 0U, 0U, 0U));
+    CHECK_TRUE(Time(0U, 0U, 0U, 0U) != Time(1U, 0U, 0U, 0U));
+    CHECK_TRUE(Time(1U, 0U, 0U, 0U) != Time(0U, 0U, 0U, 0U));
 }
 
 TEST_CONST_MEMBER_FUNCTION(Time, plus_equal_operator, uint32_t)

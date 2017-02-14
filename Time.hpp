@@ -154,6 +154,22 @@ public:
     }
 
     /// Get difference between two times in milliseconds.
+    Time operator +(size_type milliseconds) const throw()
+    {
+        Time time(*this);
+        time += milliseconds;
+        return time;
+    }
+
+    /// Get difference between two times in milliseconds.
+    Time operator -(size_type milliseconds) const throw()
+    {
+        Time time(*this);
+        time -= milliseconds;
+        return time;
+    }
+
+    /// Get difference between two times in milliseconds.
     diff_type operator -(Time const& other) const throw()
     {
         size_type this_millisecds = GetAsMilliseconds();
