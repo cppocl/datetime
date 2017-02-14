@@ -111,34 +111,34 @@ public:
         return *this;
     }
 
-    bool operator <(Time const& time) const throw()
+    bool operator <(Time const& other) const throw()
     {
-        return Compare(time) < 0;
+        return IsLess(other);
     }
 
-    bool operator <=(Time const& time) const throw()
+    bool operator <=(Time const& other) const throw()
     {
-        return Compare(time) <= 0;
+        return IsLessEqual(other);
     }
 
-    bool operator >(Time const& time) const throw()
+    bool operator >(Time const& other) const throw()
     {
-        return Compare(time) > 0;
+        return IsGreater(other);
     }
 
-    bool operator >=(Time const& time) const throw()
+    bool operator >=(Time const& other) const throw()
     {
-        return Compare(time) >= 0;
+        return IsGreaterEqual(other);
     }
 
-    bool operator ==(Time const& time) const throw()
+    bool operator ==(Time const& other) const throw()
     {
-        return Compare(time) == 0;
+        return IsEqual(other);
     }
 
-    bool operator !=(Time const& time) const throw()
+    bool operator !=(Time const& other) const throw()
     {
-        return Compare(time) != 0;
+        return IsNotEqual(other);
     }
 
     Time& operator +=(uint32_t milliseconds)
@@ -175,6 +175,32 @@ public:
         size_type this_millisecds = GetAsMilliseconds();
         size_type other_millisecds = other.GetAsMilliseconds();
         return static_cast<diff_type>(this_millisecds) - static_cast<diff_type>(other_millisecds);
+    }
+
+    Time operator ++() throw() // Prefix
+    {
+        AddMilliseconds(1U);
+        return *this;
+    }
+
+    Time operator ++(int) throw() // Postfix
+    {
+        Time time(*this);
+        time.AddMilliseconds(1U);
+        return time;
+    }
+
+    Time operator --() throw() // Prefix
+    {
+        SubtractMilliseconds(1U);
+        return *this;
+    }
+
+    Time operator --(int) throw() // Postfix
+    {
+        Time time(*this);
+        time.SubtractMilliseconds(1U);
+        return time;
     }
 
 // Static member functions.
@@ -387,10 +413,42 @@ public:
         SetMilliseconds(milliseconds);
     }
 
-    int Compare(Time const& time) const throw()
+    bool IsLess(Time const& other) const throw()
+    {
+        return GetTime() < other.GetTime();
+    }
+
+    bool IsLessEqual(Time const& other) const throw()
+    {
+        return GetTime() <= other.GetTime();
+    }
+
+    bool IsGreater(Time const& other) const throw()
+    {
+        return GetTime() > other.GetTime();
+    }
+
+    bool IsGreaterEqual(Time const& other) const throw()
+    {
+        return GetTime() >= other.GetTime();
+    }
+
+    bool IsEqual(Time const& other) const throw()
+    {
+        return GetTime() == other.GetTime();
+    }
+
+    bool IsNotEqual(Time const& other) const throw()
+    {
+        return GetTime() != other.GetTime();
+    }
+
+    /// Return -1 when this time is less than other time, 0 when equal or
+    // 1 when this time is greater than other time.
+    int Compare(Time const& other) const throw()
     {
         uint32_t t1 = GetTime();
-        uint32_t t2 = time.GetTime();
+        uint32_t t2 = other.GetTime();
         return t1 > t2 ? 1 : (t1 < t2 ? -1 : 0);
     }
 
