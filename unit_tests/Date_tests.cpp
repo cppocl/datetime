@@ -303,45 +303,45 @@ TEST_MEMBER_FUNCTION(Date, GetDaysInYears, year_type_yeae_type)
     CHECK_EQUAL(Date::GetDaysInYears(2008U, 2012U), (Date::DAYS_PER_LEAP_YEAR * 2U) + (Date::DAYS_PER_YEAR * 3U));
 }
 
-TEST_MEMBER_FUNCTION(Date, GetDaysFromStartOfyear, day_type_month_type_year_type)
+TEST_MEMBER_FUNCTION(Date, GetDaysFromStartOfYear, day_type_month_type_year_type)
 {
     TEST_OVERRIDE_ARGS("day_type, month_type, year_type");
 
     // Check this works with 1900, which is not a leap year.
     Date::year_type year = 1900U;
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::JANUARY, year), 0U);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(2U, Date::JANUARY, year), 1U);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1U);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::MARCH, year), Date::DAYS_IN_JANUARY + Date::DAYS_IN_FEBRUARY);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), Date::DAYS_PER_YEAR - 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::JANUARY, year), 0U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(2U, Date::JANUARY, year), 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::MARCH, year), Date::DAYS_IN_JANUARY + Date::DAYS_IN_FEBRUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), Date::DAYS_PER_YEAR - 1U);
 
     // Check this works with 2000, which is a leap year.
     year = 2000U;
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::JANUARY, year), 0U);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(2U, Date::JANUARY, year), 1U);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1U);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::MARCH, year), Date::DAYS_IN_JANUARY + Date::DAYS_IN_LEAP_FEBRUARY);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), Date::DAYS_PER_LEAP_YEAR - 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::JANUARY, year), 0U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(2U, Date::JANUARY, year), 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::MARCH, year), Date::DAYS_IN_JANUARY + Date::DAYS_IN_LEAP_FEBRUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), Date::DAYS_PER_LEAP_YEAR - 1U);
 
     // Check this works with 2003, which is not a leap year.
     year = 2003U;
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::JANUARY, year), 0U);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(2U, Date::JANUARY, year), 1U);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1U);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::MARCH, year), Date::DAYS_IN_JANUARY + Date::DAYS_IN_FEBRUARY);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), Date::DAYS_PER_YEAR - 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::JANUARY, year), 0U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(2U, Date::JANUARY, year), 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::MARCH, year), Date::DAYS_IN_JANUARY + Date::DAYS_IN_FEBRUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), Date::DAYS_PER_YEAR - 1U);
 
     // Check this works with 2004, which is a leap year.
     year = 2004U;
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::JANUARY, year), 0U);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(2U, Date::JANUARY, year), 1U);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1U);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(1U, Date::MARCH, year), Date::DAYS_IN_JANUARY + Date::DAYS_IN_LEAP_FEBRUARY);
-    CHECK_EQUAL(Date::GetDaysFromStartOfyear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), Date::DAYS_PER_LEAP_YEAR - 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::JANUARY, year), 0U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(2U, Date::JANUARY, year), 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1U);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::MARCH, year), Date::DAYS_IN_JANUARY + Date::DAYS_IN_LEAP_FEBRUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), Date::DAYS_PER_LEAP_YEAR - 1U);
 }
 
 TEST_MEMBER_FUNCTION(Date, GetDaysToEndOfYear, day_type_month_type_year_type)

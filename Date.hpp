@@ -220,7 +220,7 @@ public:
 
     /// Get days from 1st of January to current day and month for the year,
     /// adjusting for the leap year and month.
-    static size_type GetDaysFromStartOfyear(day_type day,
+    static size_type GetDaysFromStartOfYear(day_type day,
                                             month_type month,
                                             year_type year) throw()
     {
@@ -369,7 +369,7 @@ public:
                                           month_type& month,
                                           year_type& year) throw()
     {
-        size_type days_to_end_of_prev_year = GetDaysFromStartOfyear(day, month, year) + 1U;
+        size_type days_to_end_of_prev_year = GetDaysFromStartOfYear(day, month, year) + 1U;
         size_type total_days;
 
         if (days >= days_to_end_of_prev_year)
@@ -504,6 +504,26 @@ public:
         return *this;
     }
 
+    Date operator +(size_type days) const throw()
+    {
+        Date date(*this);
+        date += days;
+        return date;
+    }
+
+    Date operator -(size_type days) const throw()
+    {
+        Date date(*this);
+        date -= days;
+        return date;
+    }
+
+    /* TODO!
+    diff_type operator -(Date const& other) const throw()
+    {
+    }
+    */
+
     Date operator++() throw() // Prefix
     {
         IncrementDay();
@@ -594,9 +614,9 @@ public:
         return GetDaysToEndOfMonth(GetDay(), GetMonth(), GetYear());
     }
 
-    size_type GetDaysFromStartOfyear() const throw()
+    size_type GetDaysFromStartOfYear() const throw()
     {
-        return GetDaysFromStartOfyear(GetDay(), GetMonth(), GetYear());
+        return GetDaysFromStartOfYear(GetDay(), GetMonth(), GetYear());
     }
 
     size_type GetDaysToEndOfYear() const throw()
@@ -619,7 +639,7 @@ public:
     /// Set to the 1st of January for the current year, and return numbers of days to start.
     void SetStartOfYear(size_type& days_to_start) throw()
     {
-        days_to_start = GetDaysFromStartOfyear();
+        days_to_start = GetDaysFromStartOfYear();
         SetDay(1U);
         SetMonth(JANUARY);
     }
