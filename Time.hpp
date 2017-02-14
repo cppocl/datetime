@@ -318,7 +318,7 @@ public:
     }
 
     /// Get the difference between this time and the other time in milliseconds.
-    size_type GetDifference(Time const& other) const throw()
+    size_type GetDifferenceInMilliseconds(Time const& other) const throw()
     {
         size_type this_milliseconds = GetAsMilliseconds();
         size_type other_millisecds = other.GetAsMilliseconds();

@@ -527,19 +527,19 @@ TEST_MEMBER_FUNCTION(Time, SetFromMilliseconds, uint32_t)
     CHECK_EQUAL(time.GetHours(), 1U);
 }
 
-TEST_CONST_MEMBER_FUNCTION(Time, GetDifference, Time_const_ref)
+TEST_CONST_MEMBER_FUNCTION(Time, GetDifferenceInMilliseconds, Time_const_ref)
 {
     TEST_OVERRIDE_ARGS("Time const&");
 
-    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifference(Time(0U, 0U, 0U, 0U)), 0U);
-    CHECK_EQUAL(Time(0U, 0U, 0U, 1U).GetDifference(Time(0U, 0U, 0U, 0U)), 1U);
-    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifference(Time(0U, 0U, 0U, 1U)), 1U);
-    CHECK_EQUAL(Time(0U, 0U, 1U, 0U).GetDifference(Time(0U, 0U, 0U, 0U)), Time::MILLISECONDS_PER_SECOND);
-    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifference(Time(0U, 0U, 1U, 0U)), Time::MILLISECONDS_PER_SECOND);
-    CHECK_EQUAL(Time(0U, 1U, 0U, 0U).GetDifference(Time(0U, 0U, 0U, 0U)), Time::MILLISECONDS_PER_MINUTE);
-    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifference(Time(0U, 1U, 0U, 0U)), Time::MILLISECONDS_PER_MINUTE);
-    CHECK_EQUAL(Time(1U, 0U, 0U, 0U).GetDifference(Time(0U, 0U, 0U, 0U)), Time::MILLISECONDS_PER_HOUR);
-    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifference(Time(1U, 0U, 0U, 0U)), Time::MILLISECONDS_PER_HOUR);
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifferenceInMilliseconds(Time(0U, 0U, 0U, 0U)), 0U);
+    CHECK_EQUAL(Time(0U, 0U, 0U, 1U).GetDifferenceInMilliseconds(Time(0U, 0U, 0U, 0U)), 1U);
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifferenceInMilliseconds(Time(0U, 0U, 0U, 1U)), 1U);
+    CHECK_EQUAL(Time(0U, 0U, 1U, 0U).GetDifferenceInMilliseconds(Time(0U, 0U, 0U, 0U)), Time::MILLISECONDS_PER_SECOND);
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifferenceInMilliseconds(Time(0U, 0U, 1U, 0U)), Time::MILLISECONDS_PER_SECOND);
+    CHECK_EQUAL(Time(0U, 1U, 0U, 0U).GetDifferenceInMilliseconds(Time(0U, 0U, 0U, 0U)), Time::MILLISECONDS_PER_MINUTE);
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifferenceInMilliseconds(Time(0U, 1U, 0U, 0U)), Time::MILLISECONDS_PER_MINUTE);
+    CHECK_EQUAL(Time(1U, 0U, 0U, 0U).GetDifferenceInMilliseconds(Time(0U, 0U, 0U, 0U)), Time::MILLISECONDS_PER_HOUR);
+    CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifferenceInMilliseconds(Time(1U, 0U, 0U, 0U)), Time::MILLISECONDS_PER_HOUR);
 }
 
 TEST_MEMBER_FUNCTION(Time, AddMilliseconds, uint32_t)
