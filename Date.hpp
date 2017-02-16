@@ -235,6 +235,21 @@ public:
         return days;
     }
 
+    /// Get number of days in the year, adjusting for the leap year.
+    static size_type GetDaysInMonths(month_type start_month, month_type end_month, year_type year) throw()
+    {
+        size_type days = 0U;
+
+        // Total days until first leap year.
+        while (start_month <= end_month)
+        {
+            days += GetDaysInMonth(start_month, year);
+            ++start_month;
+        }
+
+        return days;
+    }
+
     /// Get days from 1st of January to current day and month for the year,
     /// adjusting for the leap year and month.
     static size_type GetDaysFromStartOfYear(day_type day,
@@ -420,7 +435,7 @@ public:
     /// where there were not enough days remaining to complete a full month.
     static size_type SubtractDaysForMonths(size_type days,
                                            day_type& day,
-                                           month_type &month,
+                                           month_type& month,
                                            year_type& year) throw()
     {
         size_type total_days;

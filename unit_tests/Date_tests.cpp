@@ -303,6 +303,18 @@ TEST_MEMBER_FUNCTION(Date, GetDaysInYears, year_type_yeae_type)
     CHECK_EQUAL(Date::GetDaysInYears(2008U, 2012U), (Date::DAYS_PER_LEAP_YEAR * 2U) + (Date::DAYS_PER_YEAR * 3U));
 }
 
+TEST_MEMBER_FUNCTION(Date, GetDaysInMonths, month_type_month_type_year_type)
+{
+    TEST_OVERRIDE_ARGS("month_type, month_type, year_type");
+
+    CHECK_EQUAL(Date::GetDaysInMonths(Date::JANUARY, Date::JANUARY, 2000U), Date::DAYS_IN_JANUARY);
+    CHECK_EQUAL(Date::GetDaysInMonths(Date::JANUARY, Date::FEBRUARY, 2000U), Date::DAYS_IN_JANUARY + Date::DAYS_IN_LEAP_FEBRUARY);
+    CHECK_EQUAL(Date::GetDaysInMonths(Date::JANUARY, Date::MARCH, 2000U), Date::DAYS_IN_JANUARY + Date::DAYS_IN_LEAP_FEBRUARY + Date::DAYS_IN_MARCH);
+    CHECK_EQUAL(Date::GetDaysInMonths(Date::JANUARY, Date::DECEMBER, 2000U), Date::GetDaysInYear(2000U));
+    CHECK_EQUAL(Date::GetDaysInMonths(Date::JANUARY, Date::FEBRUARY, 2001U), Date::DAYS_IN_JANUARY + Date::DAYS_IN_FEBRUARY);
+    CHECK_EQUAL(Date::GetDaysInMonths(Date::JANUARY, Date::DECEMBER, 2001U), Date::GetDaysInYear(2001U));
+}
+
 TEST_MEMBER_FUNCTION(Date, GetDaysFromStartOfYear, day_type_month_type_year_type)
 {
     TEST_OVERRIDE_ARGS("day_type, month_type, year_type");
