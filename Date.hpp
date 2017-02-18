@@ -156,7 +156,7 @@ public:
     }
 
     /// Move to next month and increment year, if month is December.
-    static void MoveToNextMonth(month_type& month, year_type& year) throw()
+    static void SetToNextMonth(month_type& month, year_type& year) throw()
     {
         if (month == DECEMBER)
         {
@@ -173,7 +173,7 @@ public:
     }
 
     /// Move to previous month and decrement year, if month is January.
-    static void MoveToPreviousMonth(month_type& month, year_type& year) throw()
+    static void SetToPreviousMonth(month_type& month, year_type& year) throw()
     {
         if (month == JANUARY)
         {
@@ -182,6 +182,18 @@ public:
         }
         else
             --month;
+    }
+
+    static void SetToStartOfYear(day_type& day, month_type& month)
+    {
+        day = 1U;
+        month = JANUARY;
+    }
+
+    static void SetToEndOfYear(day_type& day, month_type& month)
+    {
+        day = DAYS_IN_DECEMBER;
+        month = DECEMBER;
     }
 
     /// Return remaining days in month, e.g.
@@ -333,8 +345,7 @@ public:
 
         if (days >= days_to_start_of_next_year)
         {
-            day = MIN_DAY;
-            month = JANUARY;
+            SetToStartOfYear(day, month);
             total_days = days_to_start_of_next_year;
             days -= days_to_start_of_next_year;
             ++year;
@@ -373,11 +384,11 @@ public:
             day = MIN_DAY;
             total_days = days_to_start_of_next_month;
             days -= days_to_start_of_next_month;
-            MoveToNextMonth(month, year);
+            SetToNextMonth(month, year);
             size_type days_in_month = GetDaysInMonth(month, year);
             while (days >= days_in_month)
             {
-                MoveToNextMonth(month, year);
+                SetToNextMonth(month, year);
                 days -= days_in_month;
                 total_days += days_in_month;
                 days_in_month = GetDaysInMonth(month, year);
@@ -444,12 +455,12 @@ public:
         {
             total_days = day; // Count days to last day of previous month.
             days -= day;
-            MoveToPreviousMonth(month, year);
+            SetToPreviousMonth(month, year);
             size_type days_in_month = GetDaysInMonth(month, year);
             day = days_in_month;
             while (days >= days_in_month)
             {
-                MoveToPreviousMonth(month, year);
+                SetToPreviousMonth(month, year);
                 days -= days_in_month;
                 total_days += days_in_month;
                 days_in_month = GetDaysInMonth(month, year);
@@ -460,6 +471,44 @@ public:
             total_days = 0U;
 
         return total_days;
+    }
+
+    /// Get number of days between two dates for the same year.
+    /// First date must be less or equal to second date.
+    static size_type GetDaysDifference(day_type first_day,
+                                       month_type first_month,
+                                       day_type second_day,
+                                       month_type second_month,
+                                       year_type year)
+    {
+        size_type first_days_to_start  = GetDaysFromStartOfYear(first_day, first_month, year);
+        size_type second_days_to_start = GetDaysFromStartOfYear(second_day, second_month, year);
+        return second_days_to_start - first_days_to_start;
+    }
+
+    /// Get number of days between two dates.
+    /// First date must be less or equal to second date.
+    static size_type GetDaysDifference(day_type first_day,
+                                       month_type first_month,
+                                       year_type first_year,
+                                       day_type second_day,
+                                       month_type second_month,
+                                       year_type second_year)
+    {
+        size_type days;
+
+        if (second_year > first_year)
+        {
+            days = GetDaysToEndOfYear(first_day, first_month, first_year) + 1U;
+            ++first_year;
+            for (; first_year < second_year; ++first_year)
+                days += GetDaysInYear(first_year);
+            days += GetDaysFromStartOfYear(second_day, second_month, second_year);
+        }
+        else
+            days = GetDaysDifference(first_day, first_month, second_day, second_month, first_year);
+
+        return days;
     }
 
 // Constructors.
@@ -536,7 +585,7 @@ public:
         return *this;
     }
 
-    Date operator +(size_type days) const throw()
+    Date operator +(size_type days) throw()
     {
         Date date(*this);
         date += days;
@@ -550,11 +599,11 @@ public:
         return date;
     }
 
-    /* TODO!
     diff_type operator -(Date const& other) const throw()
     {
+        return GetDaysDifference(GetDay(), GetMonth(), GetYear(),
+                                 other.GetDay(), other.GetMonth(), other.GetYear());
     }
-    */
 
     Date operator++() throw() // Prefix
     {
@@ -661,6 +710,18 @@ public:
         return GetDaysInYear(GetYear());
     }
 
+    size_type GetDifferenceInDays(Date const& other) throw()
+    {
+        uint32_t date = GetDate();
+        uint32_t other_date = other.GetDate();
+        if (date < other_date)
+        {
+        }
+        else
+        {
+        }
+    }
+
     /// Set to the 1st of January for the current year.
     void SetStartOfYear() throw()
     {
@@ -672,8 +733,7 @@ public:
     void SetStartOfYear(size_type& days_to_start) throw()
     {
         days_to_start = GetDaysFromStartOfYear();
-        SetDay(1U);
-        SetMonth(JANUARY);
+        SetStartOfYear();
     }
 
     /// Set to the 31st of December for the current year.
@@ -687,8 +747,7 @@ public:
     void SetEndtOfYear(size_type& days_to_end) throw()
     {
         days_to_end = GetDaysToEndOfMonth();
-        SetDay(DAYS_IN_DECEMBER);
-        SetMonth(DECEMBER);
+        SetEndtOfYear();
     }
 
     /// Get the date as a 32-bit value for conveniently serializing the date.
