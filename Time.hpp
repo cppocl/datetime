@@ -293,6 +293,22 @@ public:
         m_hours = hours > MAX_HOURS ? MAX_HOURS : hours;
     }
 
+    void SetStart() throw()
+    {
+        SetHours(0U);
+        SetMinutes(0U);
+        SetSeconds(0U);
+        SetMilliseconds(0U);
+    }
+
+    void SetEnd() throw()
+    {
+        SetHours(HOURS_PER_DAY);
+        SetMinutes(MINUTES_PER_HOUR);
+        SetSeconds(SECONDS_PER_MINUTE);
+        SetMilliseconds(MILLISECONDS_PER_SECOND);
+    }
+
     /// Convert time into a milliseconds value.
     size_type GetAsMilliseconds() const throw()
     {
