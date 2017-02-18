@@ -25,93 +25,29 @@ limitations under the License.
 namespace ocl
 {
 
-template<typename TimeType>
-class Now
+template<typename time_type>
+static inline time_type Now(TimeZone time_zone = TimeZone::GMT)
 {
-// Types.
-public:
-    typedef TimeType time_type;
-
-// Static methods.
-public:
-    static time_type GetNow(TimeZone time_zone = TimeZone::GMT)
-    {
-        return static_cast<time_type>(NowTicks<time_type>::Now());
-    }
-
-// Constructors.
-public:
-    Now(time_type& now_ticks, TimeZone time_zone = TimeZone::GMT)
-    {
-        now_ticks = GetNow(time_zone);
-    }
-};
+    return static_cast<time_type>(NowTicks<time_type>::Now());
+}
 
 template<>
-class Now<Date>
+static inline Date Now<Date>(TimeZone time_zone)
 {
-// Types.
-public:
-    typedef Date time_type;
-
-// Static methods.
-public:
-    static time_type GetNow(TimeZone time_zone = TimeZone::GMT)
-    {
-        return NowDate::Now(time_zone);
-    }
-
-// Constructors.
-public:
-    Now(time_type& now_date, TimeZone time_zone = TimeZone::GMT)
-    {
-        now_date = GetNow(time_zone);
-    }
-};
+    return NowDate::Now(time_zone);
+}
 
 template<>
-class Now<Time>
+static inline Time Now<Time>(TimeZone time_zone)
 {
-// Types.
-public:
-    typedef Time time_type;
-
-// Static methods.
-public:
-    static time_type GetNow(TimeZone time_zone = TimeZone::GMT)
-    {
-        return NowTime::Now(time_zone);
-    }
-
-// Constructors.
-public:
-    Now(time_type& now_time, TimeZone time_zone = TimeZone::GMT)
-    {
-        now_time = GetNow(time_zone);
-    }
-};
+    return NowTime::Now(time_zone);
+}
 
 template<>
-class Now<DateTime>
+static DateTime Now<DateTime>(TimeZone time_zone)
 {
-// Types.
-public:
-    typedef DateTime time_type;
-
-// Static methods.
-public:
-    static time_type GetNow(TimeZone time_zone = TimeZone::GMT)
-    {
-        return NowDateTime::Now(time_zone);
-    }
-
-// Constructors.
-public:
-    Now(time_type& now_date_time, TimeZone time_zone = TimeZone::GMT)
-    {
-        now_date_time = GetNow(time_zone);
-    }
-};
+    return NowDateTime::Now(time_zone);
+}
 
 } // namespace ocl
 
