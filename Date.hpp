@@ -543,34 +543,34 @@ public:
         return *this;
     }
 
-    bool operator <(Date const& date) const throw()
+    bool operator <(Date const& other) const throw()
     {
-        return Compare(date) < 0;
+        return GetDate() < other.GetDate();
     }
 
-    bool operator <=(Date const& date) const throw()
+    bool operator <=(Date const& other) const throw()
     {
-        return Compare(date) <= 0;
+        return GetDate() <= other.GetDate();
     }
 
-    bool operator >(Date const& date) const throw()
+    bool operator >(Date const& other) const throw()
     {
-        return Compare(date) > 0;
+        return GetDate() > other.GetDate();
     }
 
-    bool operator >=(Date const& date) const throw()
+    bool operator >=(Date const& other) const throw()
     {
-        return Compare(date) >= 0;
+        return GetDate() >= other.GetDate();
     }
 
-    bool operator ==(Date const& date) const throw()
+    bool operator ==(Date const& other) const throw()
     {
-        return Compare(date) == 0;
+        return GetDate() == other.GetDate();
     }
 
-    bool operator !=(Date const& date) const throw()
+    bool operator !=(Date const& other) const throw()
     {
-        return Compare(date) != 0;
+        return GetDate() != other.GetDate();
     }
 
     Date& operator +=(size_type days_to_add) throw()
