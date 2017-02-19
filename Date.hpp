@@ -480,7 +480,7 @@ public:
                                        month_type first_month,
                                        day_type second_day,
                                        month_type second_month,
-                                       year_type year)
+                                       year_type year) throw()
     {
         size_type first_days_to_start  = GetDaysFromStartOfYear(first_day, first_month, year);
         size_type second_days_to_start = GetDaysFromStartOfYear(second_day, second_month, year);
@@ -494,7 +494,7 @@ public:
                                        year_type first_year,
                                        day_type second_day,
                                        month_type second_month,
-                                       year_type second_year)
+                                       year_type second_year) throw()
     {
         size_type days;
 
