@@ -123,6 +123,7 @@ public:
         return false;
     }
 
+    /// When month is February and the year is a leap year, this returns true.
     static bool IsLeapMonth(month_type month, year_type year) throw()
     {
         return month == FEBRUARY && IsLeapYear(year);
@@ -218,7 +219,7 @@ public:
         return IsLeapYear(year) ? DAYS_PER_LEAP_YEAR : DAYS_PER_YEAR;
     }
 
-    /// Get number of days in the year, adjusting for the leap year.
+    /// Get number of days in the years from start to end year, adjusting for the leap year.
     static size_type GetDaysInYears(year_type start_year, year_type end_year) throw()
     {
         size_type days = 0U;
@@ -247,7 +248,7 @@ public:
         return days;
     }
 
-    /// Get number of days in the year, adjusting for the leap year.
+    /// Get number of days in the months from start to end month, adjusting for the leap year.
     static size_type GetDaysInMonths(month_type start_month, month_type end_month, year_type year) throw()
     {
         size_type days = 0U;
