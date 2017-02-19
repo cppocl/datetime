@@ -261,6 +261,16 @@ public:
         m_date.SetDate(date);
     }
 
+    void SetDate(Date const& date) throw()
+    {
+        m_date.SetDate(date);
+    }
+
+    void SetDate(day_type day, month_type month, year_type year) throw()
+    {
+        m_date.SetDate(day, month, year);
+    }
+
     uint32_t GetTime() const throw()
     {
         return m_time.GetTime();
@@ -271,10 +281,61 @@ public:
         m_time.SetTime(time);
     }
 
+    void SetTime(Time const& time) throw()
+    {
+        m_time.SetTime(time);
+    }
+
+    void SetTime(hour_type hours,
+                 minute_type minutes,
+                 second_type seconds,
+                 millisecond_type milliseconds) throw()
+    {
+        m_time.SetTime(hours, minutes, seconds, milliseconds);
+    }
+
+    void SetStartTime() throw()
+    {
+        m_time.SetStart();
+    }
+
+    void SetEndTime() throw()
+    {
+        m_time.SetEnd();
+    }
+
     void SetDateTime(uint32_t date, uint32_t time) throw()
     {
         m_date.SetDate(date);
         m_time.SetTime(time);
+    }
+
+    void AddDays(size_type days) throw()
+    {
+        m_date.AddDays(days);
+    }
+
+    /// Add milliseconds, incrementing days if the milliseconds overflows the time.
+    void AddMiilseconds(size_type milliseconds) throw()
+    {
+        size_type overflow = 0U;
+        m_time.AddMilliseconds(milliseconds, overflow);
+        if (overflow > 0U)
+        {
+            --overflow;
+            size_type overflow_days = overflow / Time::MILLISECONDS_PER_DAY;
+            if (overflow_days > 0)
+            {
+                m_date.AddDays(overflow_days + 1U);
+                overflow -= overflow_days * Time::MILLISECONDS_PER_DAY;
+            }
+            else
+                m_date.IncrementDay();
+
+            // Subtract 1 as an overflow of 1 would set time to 0:0:0:0.
+            m_time.SetStart();
+            m_time.AddMilliseconds(overflow);
+        }
     }
 
     int Compare(DateTime const& date_time) const throw()

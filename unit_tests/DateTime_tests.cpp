@@ -552,6 +552,139 @@ TEST_MEMBER_FUNCTION(DateTime, SetDateTime, uint32_t_uint32_t)
     CHECK_EQUAL(dt.GetHours(), 1U);
 }
 
+TEST_MEMBER_FUNCTION(DateTime, AddDays, size_type)
+{
+    DateTime date_time;
+
+    Date::size_type days_in_leap_year = Date::GetDaysInYear(2000U);
+    Date::size_type days_in_year = Date::GetDaysInYear(2001U);
+
+    for (DateTime::year_type year = 2000U; year <= 2001U; ++year)
+    {
+        for (DateTime::month_type month = Date::JANUARY; month <= Date::DECEMBER; ++month)
+        {
+            DateTime::day_type days_in_month = Date::GetDaysInMonth(month, year);
+
+            // Test adding 0 days to every day in the month has no effect.
+            for (DateTime::day_type day = 1U; day < days_in_month; ++day)
+            {
+                date_time.SetDate(day, month, year);
+                date_time.AddDays(0U);
+                CHECK_EQUAL(date_time.GetDay(), day);
+                CHECK_EQUAL(date_time.GetMonth(), month);
+                CHECK_EQUAL(date_time.GetYear(), year);
+            }
+
+            // Test offsetting days for a complete year wraps correctly to next day, month and year.
+            for (DateTime::day_type day = 1U; day < days_in_month; ++day)
+            {
+                date_time.SetDate(day, month, year);
+                bool need_leap_days = (year == 2000U) && (month <= Date::FEBRUARY);
+                DateTime::size_type days_to_next_year = need_leap_days ? days_in_leap_year : days_in_year;
+                date_time.AddDays(days_to_next_year);
+                CHECK_EQUAL(date_time, DateTime(day, month, year + 1U, 0U, 0U, 0U, 0U));
+            }
+
+            // Test adding a single day to every day except last day
+            // sets correct day and doesn't wrap month.
+            for (DateTime::day_type day = 1U; day < days_in_month; ++day)
+            {
+                date_time.SetDate(day, month, year);
+                date_time.AddDays(1U);
+                CHECK_EQUAL(date_time.GetDay(), day + 1U);
+                CHECK_EQUAL(date_time.GetMonth(), month);
+                CHECK_EQUAL(date_time.GetYear(), year);
+            }
+
+            // Test adding number of days to reach last day doesn't overflow the month,
+            // and sets the day to the last day of the month.
+            for (DateTime::day_type day = 1U; day < days_in_month; ++day)
+            {
+                date_time.SetDay(day);
+                date_time.AddDays(days_in_month - day);
+                CHECK_EQUAL(date_time.GetDay(), days_in_month);
+                CHECK_EQUAL(date_time.GetMonth(), month);
+                CHECK_EQUAL(date_time.GetYear(), year);
+            }
+
+            // Test adding days in the month wraps to the start of the following month.
+            date_time.SetDate(1U, month, year);
+            date_time.AddDays(days_in_month);
+            CHECK_EQUAL(date_time.GetDay(), 1U);
+            Date::month_type next_month = Date::GetNextMonth(month);
+            CHECK_EQUAL(date_time.GetMonth(), next_month);
+            Date::year_type expected_year = month < Date::DECEMBER ? year : year + 1U;
+            CHECK_EQUAL(date_time.GetYear(), expected_year);
+        }
+    }
+}
+
+TEST_MEMBER_FUNCTION(DateTime, AddMiilseconds, size_type)
+{
+    DateTime date_time;
+    date_time.SetDate(1U, Date::JANUARY, 1980U);
+
+    date_time.AddMiilseconds(1U);
+    CHECK_EQUAL(date_time.GetMilliseconds(), 1U);
+
+    date_time.SetStartTime();
+    date_time.AddMiilseconds(999U);
+    CHECK_EQUAL(date_time.GetMilliseconds(), 999U);
+
+    date_time.SetStartTime();
+    date_time.AddMiilseconds(1000U);
+    CHECK_EQUAL(date_time.GetMilliseconds(), 0U);
+    CHECK_EQUAL(date_time.GetSeconds(), 1U);
+
+    date_time.SetStartTime();
+    date_time.AddMiilseconds(Time::MILLISECONDS_PER_MINUTE);
+    CHECK_EQUAL(date_time.GetMilliseconds(), 0U);
+    CHECK_EQUAL(date_time.GetSeconds(), 0U);
+    CHECK_EQUAL(date_time.GetMinutes(), 1U);
+
+    date_time.SetStartTime();
+    date_time.AddMiilseconds(Time::MILLISECONDS_PER_HOUR);
+    CHECK_EQUAL(date_time.GetMilliseconds(), 0U);
+    CHECK_EQUAL(date_time.GetSeconds(), 0U);
+    CHECK_EQUAL(date_time.GetMinutes(), 0U);
+    CHECK_EQUAL(date_time.GetHours(), 1U);
+
+    date_time.SetStartTime();
+    date_time.AddMiilseconds(Time::MILLISECONDS_PER_DAY);
+    CHECK_EQUAL(date_time.GetMilliseconds(), 0U);
+    CHECK_EQUAL(date_time.GetSeconds(), 0U);
+    CHECK_EQUAL(date_time.GetMinutes(), 0U);
+    CHECK_EQUAL(date_time.GetHours(), 0U);
+    CHECK_EQUAL(date_time.GetDay(), 2U);
+
+    date_time.SetStartTime();
+    date_time.SetDay(1U);
+    date_time.AddMiilseconds((Time::MILLISECONDS_PER_DAY * 2) - 1U);
+    CHECK_EQUAL(date_time.GetMilliseconds(), 999U);
+    CHECK_EQUAL(date_time.GetSeconds(), 59U);
+    CHECK_EQUAL(date_time.GetMinutes(), 59U);
+    CHECK_EQUAL(date_time.GetHours(), 23U);
+    CHECK_EQUAL(date_time.GetDay(), 2U);
+
+    date_time.SetStartTime();
+    date_time.SetDay(1U);
+    date_time.AddMiilseconds(Time::MILLISECONDS_PER_DAY * 2);
+    CHECK_EQUAL(date_time.GetMilliseconds(), 0U);
+    CHECK_EQUAL(date_time.GetSeconds(), 0U);
+    CHECK_EQUAL(date_time.GetMinutes(), 0U);
+    CHECK_EQUAL(date_time.GetHours(), 0U);
+    CHECK_EQUAL(date_time.GetDay(), 3U);
+
+    date_time.SetStartTime();
+    date_time.SetDay(1U);
+    date_time.AddMiilseconds((Time::MILLISECONDS_PER_DAY * 2) + 1U);
+    CHECK_EQUAL(date_time.GetMilliseconds(), 1U);
+    CHECK_EQUAL(date_time.GetSeconds(), 0U);
+    CHECK_EQUAL(date_time.GetMinutes(), 0U);
+    CHECK_EQUAL(date_time.GetHours(), 0U);
+    CHECK_EQUAL(date_time.GetDay(), 3U);
+}
+
 TEST_MEMBER_FUNCTION(DateTime, Compare, DateTime_const_ref)
 {
     TEST_OVERRIDE_ARGS("DateTime const&");
