@@ -369,6 +369,7 @@ public:
         }
     }
 
+    /// Subtract milliseconds to 0:0:0:0.
     void SubtractMilliseconds(size_type milliseconds) throw()
     {
         size_type time_ms = GetAsMilliseconds();
@@ -378,6 +379,7 @@ public:
             SetFromMilliseconds(time_ms - milliseconds);
     }
 
+    /// Subtract milliseconds to 0:0:0:0 and return any underflow.
     void SubtractMilliseconds(size_type milliseconds, size_type& underflow) throw()
     {
         size_type time_ms = GetAsMilliseconds();
@@ -462,7 +464,7 @@ public:
     }
 
     /// Return -1 when this time is less than other time, 0 when equal or
-    // 1 when this time is greater than other time.
+    /// 1 when this time is greater than other time.
     int Compare(Time const& other) const throw()
     {
         uint32_t t1 = GetTime();
