@@ -53,10 +53,11 @@ public:
 
     static size_type const MINUTES_PER_DAY = MINUTES_PER_HOUR * HOURS_PER_DAY;
 
-    static millisecond_type const MAX_MILLISECONDS = 999U;
-    static second_type const MAX_SECONDS = 59U;
-    static minute_type const MAX_MINUTES = 59U;
-    static hour_type const MAX_HOURS = 23U;
+    /// Maximum values for milliseconds, seconds, minutes and hours.
+    static millisecond_type const MAX_MILLISECONDS = MILLISECONDS_PER_SECOND - 1U;
+    static second_type const MAX_SECONDS = SECONDS_PER_MINUTE - 1U;
+    static minute_type const MAX_MINUTES = MINUTES_PER_HOUR - 1U;
+    static hour_type const MAX_HOURS = HOURS_PER_DAY - 1U;
 
 // constants (internal use only)
 private:
@@ -342,6 +343,7 @@ public:
                                                     : other_millisecds - this_milliseconds;
     }
 
+    /// Add milliseconds up to 23:59:59:999.
     void AddMilliseconds(size_type milliseconds) throw()
     {
         size_type time_ms = GetAsMilliseconds() + milliseconds;
@@ -351,7 +353,7 @@ public:
             SetFromMilliseconds(time_ms);
     }
 
-    /// Add milliseconds and return any overflow.
+    /// Add milliseconds up to 23:59:59:999 and return any overflow.
     void AddMilliseconds(size_type milliseconds, size_type& overflow) throw()
     {
         size_type time_ms = GetAsMilliseconds() + milliseconds;
