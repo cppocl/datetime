@@ -600,7 +600,7 @@ TEST_MEMBER_FUNCTION(Time, AddMilliseconds, uint32_t_uint32_t_ref)
     TEST_OVERRIDE_ARGS("uint32_t, uint32_t&");
 
     Time time;
-    Time::size_type overflow = 0U;
+    Time::size_type overflow = static_cast<Time::size_type>(0xffffffffU);
 
     time.AddMilliseconds(1U, overflow);
     CHECK_EQUAL(overflow, 0U);
@@ -610,6 +610,7 @@ TEST_MEMBER_FUNCTION(Time, AddMilliseconds, uint32_t_uint32_t_ref)
     CHECK_EQUAL(time.GetHours(), 0U);
 
     time.SetTime(0U, 0U, 0U, 1U);
+    overflow = static_cast<Time::size_type>(0xffffffffU);
     time.AddMilliseconds(1U, overflow);
     CHECK_EQUAL(overflow, 0U);
     CHECK_EQUAL(time.GetMilliseconds(), 2U);
@@ -618,6 +619,7 @@ TEST_MEMBER_FUNCTION(Time, AddMilliseconds, uint32_t_uint32_t_ref)
     CHECK_EQUAL(time.GetHours(), 0U);
 
     time.SetTime(0U, 0U, 0U, 2U);
+    overflow = static_cast<Time::size_type>(0xffffffffU);
     time.AddMilliseconds(998U, overflow);
     CHECK_EQUAL(overflow, 0U);
     CHECK_EQUAL(time.GetMilliseconds(), 0U);
@@ -626,6 +628,7 @@ TEST_MEMBER_FUNCTION(Time, AddMilliseconds, uint32_t_uint32_t_ref)
     CHECK_EQUAL(time.GetHours(), 0U);
 
     time.SetTime(0U, 0U, 1U, 0U);
+    overflow = static_cast<Time::size_type>(0xffffffffU);
     time.AddMilliseconds(1000U, overflow);
     CHECK_EQUAL(overflow, 0U);
     CHECK_EQUAL(time.GetMilliseconds(), 0U);
@@ -634,6 +637,7 @@ TEST_MEMBER_FUNCTION(Time, AddMilliseconds, uint32_t_uint32_t_ref)
     CHECK_EQUAL(time.GetHours(), 0U);
 
     time.SetTime(0U, 0U, 2U, 0U);
+    overflow = static_cast<Time::size_type>(0xffffffffU);
     time.AddMilliseconds(58000U, overflow);
     CHECK_EQUAL(overflow, 0U);
     CHECK_EQUAL(time.GetMilliseconds(), 0U);
@@ -642,6 +646,7 @@ TEST_MEMBER_FUNCTION(Time, AddMilliseconds, uint32_t_uint32_t_ref)
     CHECK_EQUAL(time.GetHours(), 0U);
 
     time.SetTime(0U, 1U, 0U, 0U);
+    overflow = static_cast<Time::size_type>(0xffffffffU);
     time.AddMilliseconds(Time::MILLISECONDS_PER_MINUTE * 59U, overflow);
     CHECK_EQUAL(overflow, 0U);
     CHECK_EQUAL(time.GetMilliseconds(), 0U);
@@ -650,6 +655,7 @@ TEST_MEMBER_FUNCTION(Time, AddMilliseconds, uint32_t_uint32_t_ref)
     CHECK_EQUAL(time.GetHours(), 1U);
 
     time.SetTime(1U, 0U, 0U, 0U);
+    overflow = static_cast<Time::size_type>(0xffffffffU);
     time.AddMilliseconds(Time::MILLISECONDS_PER_HOUR * 22U, overflow);
     CHECK_EQUAL(overflow, 0U);
     CHECK_EQUAL(time.GetMilliseconds(), 0U);
@@ -658,6 +664,7 @@ TEST_MEMBER_FUNCTION(Time, AddMilliseconds, uint32_t_uint32_t_ref)
     CHECK_EQUAL(time.GetHours(), 23U);
 
     time.SetTime(23U, 59U, 59U, 998U);
+    overflow = static_cast<Time::size_type>(0xffffffffU);
     time.AddMilliseconds(1U, overflow);
     CHECK_EQUAL(overflow, 0U);
     CHECK_EQUAL(time.GetMilliseconds(), 999U);
@@ -666,6 +673,7 @@ TEST_MEMBER_FUNCTION(Time, AddMilliseconds, uint32_t_uint32_t_ref)
     CHECK_EQUAL(time.GetHours(), 23U);
 
     time.SetTime(23U, 59U, 59U, 998U);
+    overflow = static_cast<Time::size_type>(0xffffffffU);
     time.AddMilliseconds(2U, overflow);
     CHECK_EQUAL(overflow, 1U);
     CHECK_EQUAL(time.GetMilliseconds(), 999U);
@@ -674,8 +682,18 @@ TEST_MEMBER_FUNCTION(Time, AddMilliseconds, uint32_t_uint32_t_ref)
     CHECK_EQUAL(time.GetHours(), 23U);
 
     time.SetTime(23U, 0U, 0U, 0U);
+    overflow = static_cast<Time::size_type>(0xffffffffU);
     time.AddMilliseconds(Time::MILLISECONDS_PER_HOUR * 2U, overflow);
     CHECK_EQUAL(overflow, Time::MILLISECONDS_PER_HOUR + 1U);
+    CHECK_EQUAL(time.GetMilliseconds(), 999U);
+    CHECK_EQUAL(time.GetSeconds(), 59U);
+    CHECK_EQUAL(time.GetMinutes(), 59U);
+    CHECK_EQUAL(time.GetHours(), 23U);
+
+    time.SetStart();
+    overflow = static_cast<Time::size_type>(0xffffffffU);
+    time.AddMilliseconds(Time::MILLISECONDS_PER_DAY, overflow);
+    CHECK_EQUAL(overflow, 1U);
     CHECK_EQUAL(time.GetMilliseconds(), 999U);
     CHECK_EQUAL(time.GetSeconds(), 59U);
     CHECK_EQUAL(time.GetMinutes(), 59U);
