@@ -605,26 +605,26 @@ public:
                                  other.GetDay(), other.GetMonth(), other.GetYear());
     }
 
-    Date operator++() throw() // Prefix
+    Date operator++() throw() // Prefix add milliseconds.
     {
         IncrementDay();
         return *this;
     }
 
-    Date operator++(int) throw() // Postfix
+    Date operator++(int) throw() // Postfix add milliseconds.
     {
         Date curr_date(*this);
         IncrementDay();
         return curr_date;
     }
 
-    Date operator--() throw() // Prefix
+    Date operator--() throw() // Prefix subtract milliseconds.
     {
         DecrementDay();
         return *this;
     }
 
-    Date operator--(int) throw() // Postfix
+    Date operator--(int) throw() // Postfix subtract milliseconds.
     {
         Date curr_date(*this);
         DecrementDay();
