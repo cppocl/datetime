@@ -39,10 +39,10 @@ public:
 
 // Constants.
 public:
-    static size_type const MILLISECONDS_PER_SECOND = 1000U;
-    static size_type const SECONDS_PER_MINUTE = 60U;
-    static size_type const MINUTES_PER_HOUR = 60U;
-    static size_type const HOURS_PER_DAY = 24U;
+    static millisecond_type const MILLISECONDS_PER_SECOND = 1000U;
+    static second_type const SECONDS_PER_MINUTE = 60U;
+    static minute_type const MINUTES_PER_HOUR = 60U;
+    static hour_type const HOURS_PER_DAY = 24U;
 
     static size_type const MILLISECONDS_PER_MINUTE = MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE;
     static size_type const MILLISECONDS_PER_HOUR = MILLISECONDS_PER_MINUTE * MINUTES_PER_HOUR;
