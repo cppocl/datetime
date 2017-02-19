@@ -151,6 +151,21 @@ public:
         return is_leap_month ? DAYS_IN_LEAP_FEBRUARY : GetDaysInMonth(month);
     }
 
+    /// Get number of days in the months from start to end month, adjusting for the leap year.
+    static size_type GetDaysInMonths(month_type start_month, month_type end_month, year_type year) throw()
+    {
+        size_type days = 0U;
+
+        // Total days until first leap year.
+        while (start_month <= end_month)
+        {
+            days += GetDaysInMonth(start_month, year);
+            ++start_month;
+        }
+
+        return days;
+    }
+
     static month_type GetNextMonth(month_type month) throw()
     {
         return month == DECEMBER ? JANUARY : month + 1U;
@@ -243,21 +258,6 @@ public:
                 days += DAYS_PER_YEAR;
             --years_to_leap_year;
             ++start_year;
-        }
-
-        return days;
-    }
-
-    /// Get number of days in the months from start to end month, adjusting for the leap year.
-    static size_type GetDaysInMonths(month_type start_month, month_type end_month, year_type year) throw()
-    {
-        size_type days = 0U;
-
-        // Total days until first leap year.
-        while (start_month <= end_month)
-        {
-            days += GetDaysInMonth(start_month, year);
-            ++start_month;
         }
 
         return days;
