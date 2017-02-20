@@ -529,6 +529,12 @@ public:
         SetDate(day, month, year);
     }
 
+    /// Create Date object from an unsigned 32-bit value.
+    Date(uint32_t date) throw()
+    {
+        SetDate(date, m_day, m_month, m_year);
+    }
+
     Date(Date const& date) throw()
         : m_day(date.m_day)
         , m_month(date.m_month)
