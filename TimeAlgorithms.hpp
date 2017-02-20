@@ -23,10 +23,43 @@ namespace ocl
 class TimeAlgorithms
 {
 public:
-    // Calculate the number of times a function would need to be called to
-    // reach the total duration.
-    // If this cannot be calculated from the sample duration or sample count,
-    // then provide a count that can be used as a starting point.
+    /// Calculate the number of times a function would need to be called to
+    /// reach the total duration.
+    /// When the sample duration and count for sample is provided,
+    /// this will be to calculate the total count for the total duration.
+    ///
+    /// This function is designed to be called in a loop,
+    /// where a sample time and sample count for a total duration will produce a
+    /// total count that represents the number of function calls required
+    /// to reach the total duration.
+    ///
+    /// E.g. If the total duration expected was 1000ms, and the sample duration of 100ms
+    /// with the count for the sample duration was 1, then the count returned would be 10.
+    /// This means that if a single function call takes 100ms (i.e. 1 function call for 100ms),
+    /// then 10 function calls would take 1000ms.
+    ///
+    /// Note: If total duration is 0, then the return is always zero as it cannot be calculated.
+    /// Example: CalculateTotalCount(0, [any value], [any value]) == 0
+    ///
+    /// Note: If the count for sample was 0 and there is a count required for a total duration,
+    /// then return 1 as an initial value of counts to try for timing a function.
+    /// i.e. No function call has been performed for a sample duration,
+    /// but a total duration expects to call a function at least once.
+    /// Example: CalculateTotalCount(1000, [any value], 0) == 1
+    ///
+    /// Note: If the sample duration was 0 and the count for the sample was greater than zero and
+    /// a total duration was specified, then the current sample count didn't produce a
+    /// sample duration for the function call, so the function was too quick.
+    /// The returned count will be the sample count * total duration,
+    /// in an attempt to make enough function calls to produce a timing.
+    /// Example: CalculateTotalCount(1000, 0, 1) == 1000
+    ///
+    /// If we have a total duration, a sample duration and a count for the sample duration,
+    /// then it's possible to calculate how many times a function needs to be called to reach
+    /// the total duration.
+    /// So if 1 function call takes 100ms and then we know for a total duration of 1000ms
+    /// there will be 10 function calls.
+    /// Example: CalculateTotalCount(1000U, 100U, 1U) == 10U
     template<typename count_type, typename time_type>
     static count_type CalculateTotalCount(time_type total_duration,
                                           time_type sample_duration,
@@ -64,12 +97,14 @@ public:
         return count;
     }
 
-    // Calculate the number of times a function would need to be called to
-    // reach the total duration.
-    // If this cannot be calculated from the sample duration or sample count,
-    // then provide a count that can be used as a starting point.
-    // When the current duration is greater than 0, provide the count for the
-    // remaining duration (i.e. total duration - current duration).
+    /// Calculate the number of times a function would need to be called to
+    /// reach the total duration.
+    /// If this cannot be calculated from the sample duration or sample count,
+    /// then provide a count that can be used as a starting point.
+    /// When the current duration is greater than 0, provide the count for the
+    /// remaining duration (i.e. total duration - current duration).
+    /// The comments from CalculateTotalCount apply, expect the excluded current duration
+    /// is used to adjust the number of calls to complete the call to the total duration.
     template<typename count_type, typename time_type>
     static count_type CalculateTotalCount(time_type total_duration,
                                           time_type current_duration_to_exclude,
