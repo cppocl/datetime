@@ -338,6 +338,29 @@ public:
         }
     }
 
+    /// Subtract milliseconds, decrementing days if the milliseconds underflows the time.
+    void SubtractMiilseconds(size_type milliseconds) throw()
+    {
+        size_type underflow = 0U;
+        m_time.SubtractMilliseconds(milliseconds, underflow);
+        if (underflow > 0U)
+        {
+            --underflow;
+            size_type underflow_days = underflow / Time::MILLISECONDS_PER_DAY;
+            if (underflow_days > 0)
+            {
+                m_date.SubtractDays(underflow_days + 1U);
+                underflow -= underflow_days * Time::MILLISECONDS_PER_DAY;
+            }
+            else
+                m_date.DecrementDay();
+
+            // Subtract 1 as an overflow of 1 would set time to 0:0:0:0.
+            m_time.SetEnd();
+            m_time.SubtractMilliseconds(underflow);
+        }
+    }
+
     int Compare(DateTime const& date_time) const throw()
     {
         int date_cmp = m_date.Compare(date_time.m_date);

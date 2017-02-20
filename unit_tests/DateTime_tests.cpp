@@ -624,24 +624,29 @@ TEST_MEMBER_FUNCTION(DateTime, AddMiilseconds, size_type)
     DateTime date_time;
     date_time.SetDate(1U, Date::JANUARY, 1980U);
 
+    // Test 0 millisecond to 1 millisecond.
     date_time.AddMiilseconds(1U);
     CHECK_EQUAL(date_time.GetMilliseconds(), 1U);
 
+    // Test 0 millisecond to 999 millisecond.
     date_time.SetStartTime();
     date_time.AddMiilseconds(999U);
     CHECK_EQUAL(date_time.GetMilliseconds(), 999U);
 
+    // Test 0 millisecond to 1 second.
     date_time.SetStartTime();
     date_time.AddMiilseconds(1000U);
     CHECK_EQUAL(date_time.GetMilliseconds(), 0U);
     CHECK_EQUAL(date_time.GetSeconds(), 1U);
 
+    // Test 0 millisecond to 1 minute.
     date_time.SetStartTime();
     date_time.AddMiilseconds(Time::MILLISECONDS_PER_MINUTE);
     CHECK_EQUAL(date_time.GetMilliseconds(), 0U);
     CHECK_EQUAL(date_time.GetSeconds(), 0U);
     CHECK_EQUAL(date_time.GetMinutes(), 1U);
 
+    // Test 0 millisecond to 1 hour.
     date_time.SetStartTime();
     date_time.AddMiilseconds(Time::MILLISECONDS_PER_HOUR);
     CHECK_EQUAL(date_time.GetMilliseconds(), 0U);
@@ -649,6 +654,7 @@ TEST_MEMBER_FUNCTION(DateTime, AddMiilseconds, size_type)
     CHECK_EQUAL(date_time.GetMinutes(), 0U);
     CHECK_EQUAL(date_time.GetHours(), 1U);
 
+    // Test 0 millisecond to 1 day.
     date_time.SetStartTime();
     date_time.AddMiilseconds(Time::MILLISECONDS_PER_DAY);
     CHECK_EQUAL(date_time.GetMilliseconds(), 0U);
@@ -657,6 +663,7 @@ TEST_MEMBER_FUNCTION(DateTime, AddMiilseconds, size_type)
     CHECK_EQUAL(date_time.GetHours(), 0U);
     CHECK_EQUAL(date_time.GetDay(), 2U);
 
+    // Test 0 millisecond to 1 day, 23 hours, 59 minutes, 59 seconds, 999 milliseconds.
     date_time.SetStartTime();
     date_time.SetDay(1U);
     date_time.AddMiilseconds((Time::MILLISECONDS_PER_DAY * 2) - 1U);
@@ -666,6 +673,7 @@ TEST_MEMBER_FUNCTION(DateTime, AddMiilseconds, size_type)
     CHECK_EQUAL(date_time.GetHours(), 23U);
     CHECK_EQUAL(date_time.GetDay(), 2U);
 
+    // Test 0 millisecond to 2 days.
     date_time.SetStartTime();
     date_time.SetDay(1U);
     date_time.AddMiilseconds(Time::MILLISECONDS_PER_DAY * 2);
@@ -675,6 +683,7 @@ TEST_MEMBER_FUNCTION(DateTime, AddMiilseconds, size_type)
     CHECK_EQUAL(date_time.GetHours(), 0U);
     CHECK_EQUAL(date_time.GetDay(), 3U);
 
+    // Test 0 millisecond to 2 days and 1 millisecond.
     date_time.SetStartTime();
     date_time.SetDay(1U);
     date_time.AddMiilseconds((Time::MILLISECONDS_PER_DAY * 2) + 1U);
@@ -683,6 +692,93 @@ TEST_MEMBER_FUNCTION(DateTime, AddMiilseconds, size_type)
     CHECK_EQUAL(date_time.GetMinutes(), 0U);
     CHECK_EQUAL(date_time.GetHours(), 0U);
     CHECK_EQUAL(date_time.GetDay(), 3U);
+}
+
+TEST_MEMBER_FUNCTION(DateTime, SubtractMiilseconds, size_type)
+{
+    DateTime date_time;
+    date_time.SetDate(1U, Date::JANUARY, 1980U);
+
+    // Test 999 milliseconds to 998 milliseconds.
+    date_time.SetEndTime();
+    date_time.SubtractMiilseconds(1U);
+    CHECK_EQUAL(date_time.GetMilliseconds(), 998U);
+
+    // Test 999 milliseconds to 0 milliseconds.
+    date_time.SetEndTime();
+    date_time.SubtractMiilseconds(999U);
+    CHECK_EQUAL(date_time.GetMilliseconds(), 0U);
+
+    // Test 1 milliseconds to 0 milliseconds.
+    date_time.SetDate(1U, Date::JANUARY, 1980U);
+    date_time.SetStartTime();
+    date_time.SetMilliseconds(1U);
+    date_time.SubtractMiilseconds(1U);
+    CHECK_EQUAL(date_time.GetMilliseconds(), 0U);
+    CHECK_EQUAL(date_time.GetSeconds(), 0U);
+    CHECK_EQUAL(date_time.GetDay(), 1U);
+    CHECK_EQUAL(date_time.GetMonth(), Date::JANUARY);
+    CHECK_EQUAL(date_time.GetYear(), 1980U);
+
+    // Test 0 milliseconds to 23 hours, 59 minutes, 59 seconds and 999 milliseconds.
+    date_time.SetDate(1U, Date::JANUARY, 1980U);
+    date_time.SetStartTime();
+    date_time.SubtractMiilseconds(1U);
+    CHECK_EQUAL(date_time.GetMilliseconds(), 999U);
+    CHECK_EQUAL(date_time.GetSeconds(), 59U);
+    CHECK_EQUAL(date_time.GetMinutes(), 59U);
+    CHECK_EQUAL(date_time.GetHours(), 23U);
+    CHECK_EQUAL(date_time.GetDay(), Date::DAYS_IN_DECEMBER);
+    CHECK_EQUAL(date_time.GetMonth(), Date::DECEMBER);
+    CHECK_EQUAL(date_time.GetYear(), 1979U);
+
+    // Test 0 milliseconds to 23 hours, 59 minutes, 59 seconds and 0 milliseconds.
+    date_time.SetDate(1U, Date::JANUARY, 1980U);
+    date_time.SetStartTime();
+    date_time.SubtractMiilseconds(Time::MILLISECONDS_PER_SECOND);
+    CHECK_EQUAL(date_time.GetMilliseconds(), 0U);
+    CHECK_EQUAL(date_time.GetSeconds(), 59U);
+    CHECK_EQUAL(date_time.GetMinutes(), 59U);
+    CHECK_EQUAL(date_time.GetHours(), 23U);
+    CHECK_EQUAL(date_time.GetDay(), Date::DAYS_IN_DECEMBER);
+    CHECK_EQUAL(date_time.GetMonth(), Date::DECEMBER);
+    CHECK_EQUAL(date_time.GetYear(), 1979U);
+
+    // Test 0 milliseconds to 23 hours, 59 minutes, 0 seconds and 0 milliseconds.
+    date_time.SetDate(1U, Date::JANUARY, 1980U);
+    date_time.SetStartTime();
+    date_time.SubtractMiilseconds(Time::MILLISECONDS_PER_MINUTE);
+    CHECK_EQUAL(date_time.GetMilliseconds(), 0U);
+    CHECK_EQUAL(date_time.GetSeconds(), 0U);
+    CHECK_EQUAL(date_time.GetMinutes(), 59U);
+    CHECK_EQUAL(date_time.GetHours(), 23U);
+    CHECK_EQUAL(date_time.GetDay(), Date::DAYS_IN_DECEMBER);
+    CHECK_EQUAL(date_time.GetMonth(), Date::DECEMBER);
+    CHECK_EQUAL(date_time.GetYear(), 1979U);
+
+    // Test 0 milliseconds to 23 hours, 0 minutes, 0 seconds and 0 milliseconds.
+    date_time.SetDate(1U, Date::JANUARY, 1980U);
+    date_time.SetStartTime();
+    date_time.SubtractMiilseconds(Time::MILLISECONDS_PER_HOUR);
+    CHECK_EQUAL(date_time.GetMilliseconds(), 0U);
+    CHECK_EQUAL(date_time.GetSeconds(), 0U);
+    CHECK_EQUAL(date_time.GetMinutes(), 0U);
+    CHECK_EQUAL(date_time.GetHours(), 23U);
+    CHECK_EQUAL(date_time.GetDay(), Date::DAYS_IN_DECEMBER);
+    CHECK_EQUAL(date_time.GetMonth(), Date::DECEMBER);
+    CHECK_EQUAL(date_time.GetYear(), 1979U);
+
+    // Test 0 milliseconds to 0 hours, 0 minutes, 0 seconds and 0 milliseconds.
+    date_time.SetDate(1U, Date::JANUARY, 1980U);
+    date_time.SetStartTime();
+    date_time.SubtractMiilseconds(Time::MILLISECONDS_PER_DAY);
+    CHECK_EQUAL(date_time.GetMilliseconds(), 0U);
+    CHECK_EQUAL(date_time.GetSeconds(), 0U);
+    CHECK_EQUAL(date_time.GetMinutes(), 0U);
+    CHECK_EQUAL(date_time.GetHours(), 0U);
+    CHECK_EQUAL(date_time.GetDay(), Date::DAYS_IN_DECEMBER);
+    CHECK_EQUAL(date_time.GetMonth(), Date::DECEMBER);
+    CHECK_EQUAL(date_time.GetYear(), 1979U);
 }
 
 TEST_MEMBER_FUNCTION(DateTime, Compare, DateTime_const_ref)
