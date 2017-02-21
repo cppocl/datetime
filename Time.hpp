@@ -235,6 +235,16 @@ public:
         return ms;
     }
 
+    static Time const& Min(Time const& first, Time const& second) throw()
+    {
+        return first < second ? first : second;
+    }
+
+    static Time const& Max(Time const& first, Time const& second) throw()
+    {
+        return first > second ? first : second;
+    }
+
 // Member functions.
 public:
     millisecond_type GetMilliseconds() const throw()
