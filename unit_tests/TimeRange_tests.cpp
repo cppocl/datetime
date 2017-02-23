@@ -191,6 +191,21 @@ TEST_CONST_MEMBER_FUNCTION(TimeRange, GetRangeInMilliseconds, NA)
         TimeRange time_range(Time(1U, 2U, 3U, 4U), Time(1U, 2U, 3U, 5U));
         CHECK_EQUAL(time_range.GetRangeInMilliseconds(), 1U);
     }
+
+    {
+        TimeRange time_range(Time(1U, 2U, 3U, 4U), Time(1U, 2U, 4U, 4U));
+        CHECK_EQUAL(time_range.GetRangeInMilliseconds(), Time::MILLISECONDS_PER_SECOND);
+    }
+
+    {
+        TimeRange time_range(Time(1U, 2U, 3U, 4U), Time(1U, 3U, 3U, 4U));
+        CHECK_EQUAL(time_range.GetRangeInMilliseconds(), Time::MILLISECONDS_PER_MINUTE);
+    }
+
+    {
+        TimeRange time_range(Time(1U, 2U, 3U, 4U), Time(2U, 2U, 3U, 4U));
+        CHECK_EQUAL(time_range.GetRangeInMilliseconds(), Time::MILLISECONDS_PER_HOUR);
+    }
 }
 
 TEST_CONST_MEMBER_FUNCTION(TimeRange, IsValid, NA)
