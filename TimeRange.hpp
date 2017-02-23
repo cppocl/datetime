@@ -62,7 +62,6 @@ public:
     void SetStart(Time const& start) throw()
     {
         m_start.SetTime(start);
-        m_stop.SetTime(start);
     }
 
     Time const& GetStop() const throw()
