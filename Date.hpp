@@ -476,11 +476,11 @@ public:
 
     /// Get number of days between two dates for the same year.
     /// First date must be less or equal to second date.
-    static size_type GetDaysDifference(day_type first_day,
-                                       month_type first_month,
-                                       day_type second_day,
-                                       month_type second_month,
-                                       year_type year) throw()
+    static size_type GetDifferenceInDays(day_type first_day,
+                                         month_type first_month,
+                                         day_type second_day,
+                                         month_type second_month,
+                                         year_type year) throw()
     {
         size_type first_days_to_start  = GetDaysFromStartOfYear(first_day, first_month, year);
         size_type second_days_to_start = GetDaysFromStartOfYear(second_day, second_month, year);
@@ -489,12 +489,12 @@ public:
 
     /// Get number of days between two dates.
     /// First date must be less or equal to second date.
-    static size_type GetDaysDifference(day_type first_day,
-                                       month_type first_month,
-                                       year_type first_year,
-                                       day_type second_day,
-                                       month_type second_month,
-                                       year_type second_year) throw()
+    static size_type GetDifferenceInDays(day_type first_day,
+                                         month_type first_month,
+                                         year_type first_year,
+                                         day_type second_day,
+                                         month_type second_month,
+                                         year_type second_year) throw()
     {
         size_type days;
 
@@ -507,9 +507,19 @@ public:
             days += GetDaysFromStartOfYear(second_day, second_month, second_year);
         }
         else
-            days = GetDaysDifference(first_day, first_month, second_day, second_month, first_year);
+            days = GetDifferenceInDays(first_day, first_month, second_day, second_month, first_year);
 
         return days;
+    }
+
+    static Date const& Min(Date const& first, Date const& second) throw()
+    {
+        return first < second ? first : second;
+    }
+
+    static Date const& Max(Date const& first, Date const& second) throw()
+    {
+        return first > second ? first : second;
     }
 
 // Constructors.
@@ -608,8 +618,8 @@ public:
 
     diff_type operator -(Date const& other) const throw()
     {
-        return GetDaysDifference(GetDay(), GetMonth(), GetYear(),
-                                 other.GetDay(), other.GetMonth(), other.GetYear());
+        return GetDifferenceInDays(GetDay(), GetMonth(), GetYear(),
+                                   other.GetDay(), other.GetMonth(), other.GetYear());
     }
 
     Date operator++() throw() // Prefix add milliseconds.
@@ -717,16 +727,20 @@ public:
         return GetDaysInYear(GetYear());
     }
 
-    size_type GetDifferenceInDays(Date const& other) throw()
+    size_type GetDifferenceInDays(Date const& other) const throw()
     {
+        size_type diff_in_days;
+
         uint32_t date = GetDate();
         uint32_t other_date = other.GetDate();
         if (date < other_date)
-        {
-        }
+            diff_in_days = GetDifferenceInDays(GetDay(), GetMonth(), GetYear(),
+                                               other.GetDay(), other.GetMonth(), other.GetYear());
         else
-        {
-        }
+            diff_in_days = GetDifferenceInDays(other.GetDay(), other.GetMonth(), other.GetYear(),
+                                               GetDay(), GetMonth(), GetYear());
+
+        return diff_in_days;
     }
 
     /// Set to the 1st of January for the current year.
