@@ -415,6 +415,17 @@ public:
         return time;
     }
 
+    void GetTime(hour_type& hours,
+                 minute_type& minutes,
+                 second_type& seconds,
+                 millisecond_type& milliseconds) const throw()
+    {
+        hours = GetHours();
+        minutes = GetMinutes();
+        seconds = GetSeconds();
+        milliseconds = GetMilliseconds();
+    }
+
     /// Set the time from a 32-bit value for conveniently serializing the time.
     void SetTime(uint32_t time) throw()
     {
