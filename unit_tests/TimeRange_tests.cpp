@@ -113,8 +113,10 @@ TEST_CONST_MEMBER_FUNCTION(TimeRange, IsOverlapped, TimeRange_const_ref)
 
     // Test overlap is detect when on edge of start time.
     CHECK_TRUE(time_range.IsOverlapped(TimeRange(Time(1U, 2U, 3U, 3U), Time(1U, 2U, 3U, 4U))));
+    CHECK_TRUE(time_range.IsOverlapped(TimeRange(Time(1U, 2U, 3U, 4U), Time(1U, 2U, 3U, 4U))));
 
     // Test overlap is detect when on edge of stop time.
+    CHECK_TRUE(time_range.IsOverlapped(TimeRange(Time(5U, 6U, 7U, 8U), Time(5U, 6U, 7U, 8U))));
     CHECK_TRUE(time_range.IsOverlapped(TimeRange(Time(5U, 6U, 7U, 8U), Time(5U, 6U, 7U, 9U))));
 
     // Test overlap being completely consumed.
@@ -147,37 +149,33 @@ TEST_CONST_MEMBER_FUNCTION(TimeRange, GetOverlap, TimeRange_const_ref_TimeRange_
 
     // Test overlap is detect when on edge of stop time.
     CHECK_TRUE(time_range.GetOverlap(TimeRange(Time(5U, 6U, 7U, 8U), Time(5U, 6U, 7U, 9U)), overlap));
-    //CHECK_EQUAL(overlap.GetStart(), Time());
-    //CHECK_EQUAL(overlap.GetStop(), Time());
+    CHECK_EQUAL(overlap.GetStart(), Time(5U, 6U, 7U, 8U));
+    CHECK_EQUAL(overlap.GetStop(), Time(5U, 6U, 7U, 8U));
 
     // Test overlap being completely consumed.
     CHECK_TRUE(time_range.GetOverlap(TimeRange(Time(1U, 2U, 3U, 5U), Time(5U, 6U, 7U, 7U)), overlap));
-    //CHECK_EQUAL(overlap.GetStart(), Time());
-    //CHECK_EQUAL(overlap.GetStop(), Time());
+    CHECK_EQUAL(overlap.GetStart(), Time(1U, 2U, 3U, 5U));
+    CHECK_EQUAL(overlap.GetStop(), Time(5U, 6U, 7U, 7U));
     CHECK_TRUE(time_range.GetOverlap(TimeRange(Time(1U, 2U, 3U, 4U), Time(5U, 6U, 7U, 8U)), overlap));
-    //CHECK_EQUAL(overlap.GetStart(), Time());
-    //CHECK_EQUAL(overlap.GetStop(), Time());
+    CHECK_EQUAL(overlap.GetStart(), Time(1U, 2U, 3U, 4U));
+    CHECK_EQUAL(overlap.GetStop(), Time(5U, 6U, 7U, 8U));
     CHECK_TRUE(time_range.GetOverlap(TimeRange(Time(1U, 2U, 3U, 3U), Time(5U, 6U, 7U, 9U)), overlap));
-    //CHECK_EQUAL(overlap.GetStart(), Time());
-    //CHECK_EQUAL(overlap.GetStop(), Time());
+    CHECK_EQUAL(overlap.GetStart(), Time(1U, 2U, 3U, 4U));
+    CHECK_EQUAL(overlap.GetStop(), Time(5U, 6U, 7U, 8U));
 
     // Test partial overlap at start and stop.
     CHECK_TRUE(time_range.GetOverlap(TimeRange(Time(1U, 2U, 3U, 3U), Time(1U, 2U, 3U, 5U)), overlap));
-    //CHECK_EQUAL(overlap.GetStart(), Time());
-    //CHECK_EQUAL(overlap.GetStop(), Time());
+    CHECK_EQUAL(overlap.GetStart(), Time(1U, 2U, 3U, 4U));
+    CHECK_EQUAL(overlap.GetStop(), Time(1U, 2U, 3U, 5U));
     CHECK_TRUE(time_range.GetOverlap(TimeRange(Time(5U, 6U, 7U, 7U), Time(5U, 6U, 7U, 9U)), overlap));
-    //CHECK_EQUAL(overlap.GetStart(), Time());
-    //CHECK_EQUAL(overlap.GetStop(), Time());
+    CHECK_EQUAL(overlap.GetStart(), Time(5U, 6U, 7U, 7U));
+    CHECK_EQUAL(overlap.GetStop(), Time(5U, 6U, 7U, 8U));
 
     // Test no overlap before start.
     CHECK_FALSE(time_range.GetOverlap(TimeRange(Time(1U, 2U, 3U, 2U), Time(1U, 2U, 3U, 3U)), overlap));
-    //CHECK_EQUAL(overlap.GetStart(), Time());
-    //CHECK_EQUAL(overlap.GetStop(), Time());
 
     // Test no overlap after stop.
     CHECK_FALSE(time_range.GetOverlap(TimeRange(Time(5U, 6U, 7U, 9U), Time(5U, 6U, 7U, 10U)), overlap));
-    //CHECK_EQUAL(overlap.GetStart(), Time());
-    //CHECK_EQUAL(overlap.GetStop(), Time());
 }
 
 TEST_CONST_MEMBER_FUNCTION(TimeRange, GetRangeInMilliseconds, NA)
