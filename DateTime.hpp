@@ -28,6 +28,7 @@ class DateTime
 // Types.
 public:
     typedef Date::size_type size_type;
+    typedef Date::diff_type diff_type;
     typedef Date::day_type day_type;
     typedef Date::day_of_week_type day_of_week_type;
     typedef Date::month_type month_type;
@@ -168,7 +169,7 @@ public:
 
     static bool IsLeapMonth(month_type month, year_type year) throw()
     {
-        return month == FEBRUARY && IsLeapYear(year);
+        return Date::IsLeapMonth(month, year);
     }
 
 // Member functions.
