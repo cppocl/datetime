@@ -500,10 +500,9 @@ public:
 
         if (second_year > first_year)
         {
-            days = GetDaysToEndOfYear(first_day, first_month, first_year) + 1U;
-            ++first_year;
-            for (; first_year < second_year; ++first_year)
-                days += GetDaysInYear(first_year);
+            days = GetDaysToEndOfYear(first_day, first_month, first_year++) + 1U;
+            if (first_year < second_year)
+                days += GetDaysInYears(first_year, second_year - 1U);
             days += GetDaysFromStartOfYear(second_day, second_month, second_year);
         }
         else
