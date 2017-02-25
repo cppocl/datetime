@@ -898,6 +898,18 @@ TEST_MEMBER_FUNCTION(DateTime, SubtractMiilseconds, size_type)
     CHECK_EQUAL(date_time.GetYear(), 1979U);
 }
 
+TEST_MEMBER_FUNCTION(DateTime, Swap, DateTime_ref)
+{
+    TEST_OVERRIDE_ARGS("DateTime&");
+
+    DateTime date_time1(Date(1U, Date::FEBRUARY, 1980U), Time(1U, 2U, 3U, 4U));
+    DateTime date_time2(Date(3U, Date::APRIL, 2000U), Time(5U, 6U, 7U, 8U));
+
+    date_time1.Swap(date_time2);
+    CHECK_EQUAL(date_time1, DateTime(Date(3U, Date::APRIL, 2000U), Time(5U, 6U, 7U, 8U)));
+    CHECK_EQUAL(date_time2, DateTime(Date(1U, Date::FEBRUARY, 1980U), Time(1U, 2U, 3U, 4U)));
+}
+
 TEST_MEMBER_FUNCTION(DateTime, Compare, DateTime_const_ref)
 {
     TEST_OVERRIDE_ARGS("DateTime const&");

@@ -219,6 +219,16 @@ public:
                         static_cast<return_type>(Time::MILLISECONDS_PER_DAY);
     }
 
+    static DateTime const& Min(DateTime const& first, DateTime const& second) throw()
+    {
+        return first < second ? first : second;
+    }
+
+    static DateTime const& Max(DateTime const& first, DateTime const& second) throw()
+    {
+        return first > second ? first : second;
+    }
+
 // Member functions.
 public:
     day_type GetDay() const throw()
@@ -424,6 +434,12 @@ public:
     void GetDifference(DateTime const& other, return_type& milliseconds) const throw()
     {
         GetDifference<return_type>(*this, other, milliseconds);
+    }
+
+    void Swap(DateTime& other) throw()
+    {
+        m_date.Swap(other.m_date);
+        m_time.Swap(other.m_time);
     }
 
     /// Return 0 when the same, -1 when less than other date or 1 when greater than other date.
