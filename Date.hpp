@@ -902,6 +902,19 @@ public:
         }
     }
 
+    void Swap(Date& other) throw()
+    {
+        day_type   other_day = other.m_day;
+        month_type other_month = other.m_month;
+        year_type  other_year = other.m_year;
+        other.m_day = m_day;
+        other.m_month = m_month;
+        other.m_year = m_year;
+        m_day = other_day;
+        m_month = other_month;
+        m_year = other_year;
+    }
+
     int Compare(Date const& date) const throw()
     {
         uint32_t d1 = GetDate();

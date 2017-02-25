@@ -1242,6 +1242,17 @@ TEST_MEMBER_FUNCTION(Date, SubtractDays, size_type)
     }
 }
 
+TEST_CONST_MEMBER_FUNCTION(Date, Swap, Date_ref)
+{
+    TEST_OVERRIDE_ARGS("Date&");
+
+    Date date1(1U, Date::JANUARY, 1980U);
+    Date date2(3U, Date::JULY, 2000U);
+    date1.Swap(date2);
+    CHECK_EQUAL(date1, Date(3U, Date::JULY, 2000U));
+    CHECK_EQUAL(date2, Date(1U, Date::JANUARY, 1980U));
+}
+
 TEST_CONST_MEMBER_FUNCTION(Date, Compare, Date_const_ref)
 {
     TEST_OVERRIDE_ARGS("Date const&");
