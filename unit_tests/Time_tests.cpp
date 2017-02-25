@@ -922,6 +922,16 @@ TEST_MEMBER_FUNCTION(Time, SetTime, hour_type_minute_type_second_type_millisecon
     CHECK_EQUAL(time.GetHours(), 23U);
 }
 
+TEST_CONST_MEMBER_FUNCTION(Time, Swap, Time_ref)
+{
+    Time time1(1U, 2U, 3U, 4U);
+    Time time2(5U, 6U, 7U, 8U);
+
+    time1.Swap(time2);
+    CHECK_EQUAL(time1, Time(5U, 6U, 7U, 8U));
+    CHECK_EQUAL(time2, Time(1U, 2U, 3U, 4U));
+}
+
 TEST_CONST_MEMBER_FUNCTION(Time, Compare, Time_const_ref)
 {
     TEST_OVERRIDE_ARGS("Time const&");

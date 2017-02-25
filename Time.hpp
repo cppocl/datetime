@@ -484,6 +484,24 @@ public:
         return GetTime() != other.GetTime();
     }
 
+    void Swap(Time& other) throw()
+    {
+        hour_type other_hours = other.m_hours;
+        minute_type other_minutes = other.m_minutes;
+        second_type other_seconds = other.m_seconds;
+        millisecond_internal_type other_milliseconds = other.m_milliseconds;
+
+        other.m_hours = m_hours;
+        other.m_minutes = m_minutes;
+        other.m_seconds = m_seconds;
+        other.m_milliseconds = m_milliseconds;
+
+        m_hours = other_hours;
+        m_minutes = other_minutes;
+        m_seconds = other_seconds;
+        m_milliseconds = other_milliseconds;
+    }
+
     /// Return -1 when this time is less than other time, 0 when equal or
     /// 1 when this time is greater than other time.
     int Compare(Time const& other) const throw()
