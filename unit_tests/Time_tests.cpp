@@ -924,6 +924,8 @@ TEST_MEMBER_FUNCTION(Time, SetTime, hour_type_minute_type_second_type_millisecon
 
 TEST_CONST_MEMBER_FUNCTION(Time, Swap, Time_ref)
 {
+    TEST_OVERRIDE_ARGS("Time&");
+
     Time time1(1U, 2U, 3U, 4U);
     Time time2(5U, 6U, 7U, 8U);
 
