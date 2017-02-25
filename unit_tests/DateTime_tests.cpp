@@ -280,6 +280,123 @@ TEST_MEMBER_FUNCTION(DateTime, IsLeapMonth, month_type_year_type)
     CHECK_FALSE(Date::IsLeapMonth(DateTime::JANUARY, 2200U));
 }
 
+TEST_MEMBER_FUNCTION(DateTime, GetDifference, DateTime_const_ref_DateTime_const_ref_size_type_ref_size_type_ref)
+{
+    TEST_OVERRIDE_ARGS("DateTime const&, DateTime const&, size_type&, size_type&");
+
+    DateTime::size_type day;
+    DateTime::size_type milliseconds;
+
+    {
+        day = milliseconds = 1U; // Set to something that will change.
+        DateTime date_time1(Date(1U, 1U, 1980U), Time(0U, 0U, 0U, 0U));
+        DateTime date_time2(Date(1U, 1U, 1980U), Time(0U, 0U, 0U, 0U));
+        DateTime::GetDifference(date_time1, date_time2, day, milliseconds);
+        CHECK_EQUAL(day, 0U);
+        CHECK_EQUAL(milliseconds, 0U);
+    }
+
+    {
+        day = milliseconds = 2U; // Set to something that will change.
+        DateTime date_time1(Date(1U, 1U, 1980U), Time(0U, 0U, 0U, 0U));
+        DateTime date_time2(Date(1U, 1U, 1980U), Time(0U, 0U, 0U, 1U));
+        DateTime::GetDifference(date_time1, date_time2, day, milliseconds);
+        CHECK_EQUAL(day, 0U);
+        CHECK_EQUAL(milliseconds, 1U);
+    }
+
+    {
+        day = milliseconds = 2U; // Set to something that will change.
+        DateTime date_time1(Date(1U, 1U, 1980U), Time(0U, 0U, 0U, 0U));
+        DateTime date_time2(Date(2U, 1U, 1980U), Time(0U, 0U, 0U, 0U));
+        DateTime::GetDifference(date_time1, date_time2, day, milliseconds);
+        CHECK_EQUAL(day, 1U);
+        CHECK_EQUAL(milliseconds, 0U);
+    }
+
+    {
+        day = milliseconds = 2U; // Set to something that will change.
+        DateTime date_time1(Date(1U, 1U, 1980U), Time(0U, 0U, 0U, 0U));
+        DateTime date_time2(Date(2U, 1U, 1980U), Time(0U, 0U, 0U, 1U));
+        DateTime::GetDifference(date_time1, date_time2, day, milliseconds);
+        CHECK_EQUAL(day, 1U);
+        CHECK_EQUAL(milliseconds, 1U);
+    }
+
+    {
+        day = milliseconds = 2U; // Set to something that will change.
+        DateTime date_time1(Date(1U, 1U, 1980U), Time(0U, 0U, 0U, 0U));
+        DateTime date_time2(Date(1U, 2U, 1980U), Time(0U, 0U, 0U, 1U));
+        DateTime::GetDifference(date_time1, date_time2, day, milliseconds);
+        CHECK_EQUAL(day, Date::DAYS_IN_JANUARY);
+        CHECK_EQUAL(milliseconds, 1U);
+    }
+
+    {
+        day = milliseconds = 2U; // Set to something that will change.
+        DateTime date_time1(Date(1U, 1U, 1980U), Time(0U, 0U, 0U, 1U));
+        DateTime date_time2(Date(1U, 2U, 1980U), Time(0U, 0U, 0U, 0U));
+        DateTime::GetDifference(date_time1, date_time2, day, milliseconds);
+        CHECK_EQUAL(day, Date::DAYS_IN_JANUARY - 1U);
+        CHECK_EQUAL(milliseconds, Time::MILLISECONDS_PER_DAY - 1U);
+    }
+}
+
+TEST_MEMBER_FUNCTION(DateTime, GetDifference, DateTime_const_ref_DateTime_const_ref_size_type_ref)
+{
+    TEST_OVERRIDE_ARGS("DateTime const&, DateTime const&, size_type&");
+
+    DateTime::size_type milliseconds;
+
+    {
+        milliseconds = 1U; // Set to something that will change.
+        DateTime date_time1(Date(1U, 1U, 1980U), Time(0U, 0U, 0U, 0U));
+        DateTime date_time2(Date(1U, 1U, 1980U), Time(0U, 0U, 0U, 0U));
+        DateTime::GetDifference(date_time1, date_time2, milliseconds);
+        CHECK_EQUAL(milliseconds, 0U);
+    }
+
+    {
+        milliseconds = 2U; // Set to something that will change.
+        DateTime date_time1(Date(1U, 1U, 1980U), Time(0U, 0U, 0U, 0U));
+        DateTime date_time2(Date(1U, 1U, 1980U), Time(0U, 0U, 0U, 1U));
+        DateTime::GetDifference(date_time1, date_time2, milliseconds);
+        CHECK_EQUAL(milliseconds, 1U);
+    }
+
+    {
+        milliseconds = 2U; // Set to something that will change.
+        DateTime date_time1(Date(1U, 1U, 1980U), Time(0U, 0U, 0U, 0U));
+        DateTime date_time2(Date(2U, 1U, 1980U), Time(0U, 0U, 0U, 0U));
+        DateTime::GetDifference(date_time1, date_time2, milliseconds);
+        CHECK_EQUAL(milliseconds, Time::MILLISECONDS_PER_DAY);
+    }
+
+    {
+        milliseconds = 2U; // Set to something that will change.
+        DateTime date_time1(Date(1U, 1U, 1980U), Time(0U, 0U, 0U, 0U));
+        DateTime date_time2(Date(2U, 1U, 1980U), Time(0U, 0U, 0U, 1U));
+        DateTime::GetDifference(date_time1, date_time2, milliseconds);
+        CHECK_EQUAL(milliseconds, Time::MILLISECONDS_PER_DAY + 1U);
+    }
+
+    {
+        milliseconds = 2U; // Set to something that will change.
+        DateTime date_time1(Date(1U, 1U, 1980U), Time(0U, 0U, 0U, 0U));
+        DateTime date_time2(Date(1U, 2U, 1980U), Time(0U, 0U, 0U, 1U));
+        DateTime::GetDifference(date_time1, date_time2, milliseconds);
+        CHECK_EQUAL(milliseconds, (Time::MILLISECONDS_PER_DAY * Date::DAYS_IN_JANUARY) + 1U);
+    }
+
+    {
+        milliseconds = 2U; // Set to something that will change.
+        DateTime date_time1(Date(1U, 1U, 1980U), Time(0U, 0U, 0U, 1U));
+        DateTime date_time2(Date(1U, 2U, 1980U), Time(0U, 0U, 0U, 0U));
+        DateTime::GetDifference(date_time1, date_time2, milliseconds);
+        CHECK_EQUAL(milliseconds, (Time::MILLISECONDS_PER_DAY * Date::DAYS_IN_JANUARY) - 1U);
+    }
+}
+
 TEST_CONST_MEMBER_FUNCTION(DateTime, GetDay, NA)
 {
     DateTime dt1(Date(1U, 2U, 1980U), Time());

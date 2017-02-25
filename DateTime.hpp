@@ -172,6 +172,53 @@ public:
         return Date::IsLeapMonth(month, year);
     }
 
+    /// Get the difference in days and milliseconds between tow DateTime objects.
+    /// The first date/time must be less or equal to the second date/time,
+    /// or then results will be unexpected.
+    static void GetDifference(DateTime const& first,
+                              DateTime const& second,
+                              size_type& days,
+                              size_type& milliseconds) throw()
+    {
+        Date const& first_date  = first.m_date;
+        Time const& first_time  = first.m_time;
+        Date const& second_date = second.m_date;
+        Time const& second_time = second.m_time;
+
+        if (first_date < second_date)
+        {
+            days = first_date.GetDifferenceInDays(second_date);
+            if (first_time > second_time)
+            {
+                --days;
+                size_type diff = second_time.GetDifferenceInMilliseconds(first_time);
+                milliseconds = Time::MILLISECONDS_PER_DAY - diff;
+            }
+            else
+                milliseconds = first_time.GetDifferenceInMilliseconds(second_time);
+        }
+        else
+        {
+            days = 0U;
+            // It's assumed the second time is less or equal to the first time.
+            milliseconds = first_time.GetDifferenceInMilliseconds(second_time);
+        }
+    }
+
+    /// Get the difference in days and milliseconds between tow DateTime objects.
+    /// The first date/time must be less or equal to the second date/time,
+    /// or then results will be unexpected.
+    template<typename return_type>
+    static void GetDifference(DateTime const& first,
+                              DateTime const& second,
+                              return_type& milliseconds) throw()
+    {
+        size_type days;
+        GetDifference(first, second, days, milliseconds);
+        milliseconds += static_cast<return_type>(days) *
+                        static_cast<return_type>(Time::MILLISECONDS_PER_DAY);
+    }
+
 // Member functions.
 public:
     day_type GetDay() const throw()
@@ -362,10 +409,28 @@ public:
         }
     }
 
-    int Compare(DateTime const& date_time) const throw()
+    /// Get difference in days and milliseconds.
+    /// Other DateTime object is expected to greater or equal to this DateTime object.
+    void GetDifference(DateTime const& other,
+                       size_type& days,
+                       size_type& milliseconds) const throw()
     {
-        int date_cmp = m_date.Compare(date_time.m_date);
-        return date_cmp != 0 ? date_cmp : m_time.Compare(date_time.m_time);
+        GetDifference(*this, other, days, milliseconds);
+    }
+
+    /// Get difference in days and milliseconds.
+    /// Other DateTime object is expected to greater or equal to this DateTime object.
+    template<typename return_type>
+    void GetDifference(DateTime const& other, return_type& milliseconds) const throw()
+    {
+        GetDifference<return_type>(*this, other, milliseconds);
+    }
+
+    /// Return 0 when the same, -1 when less than other date or 1 when greater than other date.
+    int Compare(DateTime const& other) const throw()
+    {
+        int date_cmp = m_date.Compare(other.m_date);
+        return date_cmp != 0 ? date_cmp : m_time.Compare(other.m_time);
     }
 
 // Data (internal use only)
