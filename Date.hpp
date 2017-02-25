@@ -726,6 +726,8 @@ public:
         return GetDaysInYear(GetYear());
     }
 
+    /// Get difference between two dates in days.
+    /// other date is expected to be greater or equal to this date.
     size_type GetDifferenceInDays(Date const& other) const throw()
     {
         size_type diff_in_days;
