@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\unit_tests\DateRange_tests.cpp" />
+    <ClCompile Include="..\..\..\unit_tests\DateTimeRange_tests.cpp" />
     <ClCompile Include="..\..\..\unit_tests\DateTime_tests.cpp" />
     <ClCompile Include="..\..\..\unit_tests\datetime_unit_tests_main.cpp" />
     <ClCompile Include="..\..\..\unit_tests\Date_tests.cpp" />
