@@ -173,9 +173,9 @@ public:
     /// Get difference between two times in milliseconds.
     diff_type operator -(Time const& other) const throw()
     {
-        size_type this_millisecds = GetAsMilliseconds();
-        size_type other_millisecds = other.GetAsMilliseconds();
-        return static_cast<diff_type>(this_millisecds) - static_cast<diff_type>(other_millisecds);
+        size_type this_milliseconds = GetAsMilliseconds();
+        size_type other_milliseconds = other.GetAsMilliseconds();
+        return static_cast<diff_type>(this_milliseconds) - static_cast<diff_type>(other_milliseconds);
     }
 
     Time operator ++() throw() // Prefix
