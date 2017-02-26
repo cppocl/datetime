@@ -99,13 +99,13 @@ public:
 
     void GetDifference(size_type& days, size_type& milliseconds) const throw()
     {
-        m_stop.GetDifference(m_start, days, milliseconds);
+        m_start.GetDifference(m_stop, days, milliseconds);
     }
 
     template<typename return_type>
     void GetDifference(return_type& milliseconds) const throw()
     {
-        m_stop.GetDifference<return_type>(m_start, milliseconds);
+        m_start.GetDifference<return_type>(m_stop, milliseconds);
     }
 
 

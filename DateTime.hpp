@@ -92,6 +92,11 @@ public:
     {
     }
 
+    explicit DateTime(Date const& date) throw()
+        : m_date(date)
+    {
+    }
+
     DateTime(Date const& date, Time const& time) throw()
         : m_date(date)
         , m_time(time)
@@ -366,6 +371,12 @@ public:
     {
         m_date.SetDate(date);
         m_time.SetTime(time);
+    }
+
+    void SetDateTime(DateTime const date_time) throw()
+    {
+        m_date.SetDate(date_time.m_date);
+        m_time.SetTime(date_time.m_time);
     }
 
     void AddDays(size_type days) throw()

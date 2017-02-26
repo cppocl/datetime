@@ -532,13 +532,9 @@ TEST_CONST_MEMBER_FUNCTION(Time, GetDifferenceInMilliseconds, Time_const_ref)
     TEST_OVERRIDE_ARGS("Time const&");
 
     CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifferenceInMilliseconds(Time(0U, 0U, 0U, 0U)), 0U);
-    CHECK_EQUAL(Time(0U, 0U, 0U, 1U).GetDifferenceInMilliseconds(Time(0U, 0U, 0U, 0U)), 1U);
     CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifferenceInMilliseconds(Time(0U, 0U, 0U, 1U)), 1U);
-    CHECK_EQUAL(Time(0U, 0U, 1U, 0U).GetDifferenceInMilliseconds(Time(0U, 0U, 0U, 0U)), Time::MILLISECONDS_PER_SECOND);
     CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifferenceInMilliseconds(Time(0U, 0U, 1U, 0U)), Time::MILLISECONDS_PER_SECOND);
-    CHECK_EQUAL(Time(0U, 1U, 0U, 0U).GetDifferenceInMilliseconds(Time(0U, 0U, 0U, 0U)), Time::MILLISECONDS_PER_MINUTE);
     CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifferenceInMilliseconds(Time(0U, 1U, 0U, 0U)), Time::MILLISECONDS_PER_MINUTE);
-    CHECK_EQUAL(Time(1U, 0U, 0U, 0U).GetDifferenceInMilliseconds(Time(0U, 0U, 0U, 0U)), Time::MILLISECONDS_PER_HOUR);
     CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifferenceInMilliseconds(Time(1U, 0U, 0U, 0U)), Time::MILLISECONDS_PER_HOUR);
 }
 

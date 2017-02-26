@@ -730,18 +730,8 @@ public:
     /// other date is expected to be greater or equal to this date.
     size_type GetDifferenceInDays(Date const& other) const throw()
     {
-        size_type diff_in_days;
-
-        uint32_t date = GetDate();
-        uint32_t other_date = other.GetDate();
-        if (date < other_date)
-            diff_in_days = GetDifferenceInDays(GetDay(), GetMonth(), GetYear(),
-                                               other.GetDay(), other.GetMonth(), other.GetYear());
-        else
-            diff_in_days = GetDifferenceInDays(other.GetDay(), other.GetMonth(), other.GetYear(),
-                                               GetDay(), GetMonth(), GetYear());
-
-        return diff_in_days;
+        return GetDifferenceInDays(GetDay(), GetMonth(), GetYear(),
+                                   other.GetDay(), other.GetMonth(), other.GetYear());
     }
 
     /// Set to the 1st of January for the current year.

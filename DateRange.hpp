@@ -99,7 +99,7 @@ public:
 
     size_type GetRangeInDays() const throw()
     {
-        return m_stop.GetDifferenceInDays(m_start);
+        return m_start.GetDifferenceInDays(m_stop);
     }
 
     // Start is expected to be less than or equal to stop, otherwise this considered invalid.

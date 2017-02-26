@@ -344,13 +344,13 @@ public:
         SetMilliseconds(static_cast<millisecond_type>(milliseconds));
     }
 
-    /// Get the difference between this time and the other time in milliseconds.
+    /// Get the difference between this time and the other time in milliseconds,
+    /// with this time expected to be less or equal to the other time.
     size_type GetDifferenceInMilliseconds(Time const& other) const throw()
     {
         size_type this_milliseconds = GetAsMilliseconds();
         size_type other_millisecds = other.GetAsMilliseconds();
-        return this_milliseconds > other_millisecds ? this_milliseconds - other_millisecds
-                                                    : other_millisecds - this_milliseconds;
+        return other_millisecds - this_milliseconds;
     }
 
     /// Add milliseconds up to 23:59:59:999.

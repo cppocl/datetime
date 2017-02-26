@@ -104,9 +104,10 @@ public:
         return is_overlapped;
     }
 
+    /// Get the difference between start and stop, expecting start to be less or equal to stop.
     size_type GetRangeInMilliseconds() const throw()
     {
-        return m_stop.GetDifferenceInMilliseconds(m_start);
+        return m_start.GetDifferenceInMilliseconds(m_stop);
     }
 
     // Start is expected to be less than or equal to stop, otherwise this considered invalid.
