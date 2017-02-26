@@ -88,9 +88,9 @@ public:
     {
     }
 
-    Time(hour_type hours,         // 0..23
-         minute_type minutes,       // 0..59
-         second_type seconds,       // 0..59
+    Time(hour_type hours,                       // 0..23
+         minute_type minutes,                   // 0..59
+         second_type seconds,                   // 0..59
          millisecond_type milliseconds) throw() // 0..999
     {
         SetTime(hours, minutes, seconds, milliseconds);
