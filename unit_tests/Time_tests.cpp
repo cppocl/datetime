@@ -226,7 +226,7 @@ TEST_CONST_MEMBER_FUNCTION(Time, is_not_equal_operator, Time_const_ref)
     CHECK_TRUE(Time(1U, 0U, 0U, 0U) != Time(0U, 0U, 0U, 0U));
 }
 
-TEST_CONST_MEMBER_FUNCTION(Time, plus_equal_operator, uint32_t)
+TEST_CONST_MEMBER_FUNCTION(Time, plus_equal_operator, size_type)
 {
     TEST_OVERRIDE_FUNCTION_NAME("operator +=");
     typedef Time::diff_type diff_type;
@@ -243,7 +243,7 @@ TEST_CONST_MEMBER_FUNCTION(Time, plus_equal_operator, uint32_t)
     CHECK_EQUAL(Time(0U, 59U, 59U, 999U).operator+=(1U), Time(1U, 0U, 0U, 0U));
 }
 
-TEST_CONST_MEMBER_FUNCTION(Time, minus_equal_operator, uint32_t)
+TEST_CONST_MEMBER_FUNCTION(Time, minus_equal_operator, size_type)
 {
     TEST_OVERRIDE_FUNCTION_NAME("operator -=");
     typedef Time::diff_type diff_type;
@@ -281,14 +281,14 @@ TEST_CONST_MEMBER_FUNCTION(Time, minus_operator, Time_const_ref)
     CHECK_EQUAL(Time(0U, 0U, 0U, 0U) - Time(1U, 0U, 0U, 0U), -static_cast<diff_type>(Time::MILLISECONDS_PER_HOUR));
 }
 
-TEST_MEMBER_FUNCTION(Time, SplitMilliseconds, uint32_t_ref_uint32_t_ref_uint32_t_ref_uint32_t_ref)
+TEST_MEMBER_FUNCTION(Time, SplitMilliseconds, size_type_ref_size_type_ref_size_type_ref_size_type_ref)
 {
-    TEST_OVERRIDE_ARGS("uint32_t&, uint32_t&, uint32_t&, uint32_t&");
+    TEST_OVERRIDE_ARGS("size_type&, size_type&, size_type&, size_type&");
 
-    uint32_t hours = 0U;
-    uint32_t minutes = 0U;
-    uint32_t seconds = 0U;
-    uint32_t milliseconds = 0U;
+    Time::size_type hours = 0U;
+    Time::size_type minutes = 0U;
+    Time::size_type seconds = 0U;
+    Time::size_type milliseconds = 0U;
     Time::SplitMilliseconds(hours, minutes, seconds, milliseconds);
     CHECK_EQUAL(hours, 0U);
     CHECK_EQUAL(minutes, 0U);
@@ -346,15 +346,15 @@ TEST_MEMBER_FUNCTION(Time, SplitMilliseconds, uint32_t_ref_uint32_t_ref_uint32_t
     CHECK_EQUAL(milliseconds, 2U);
 }
 
-TEST_MEMBER_FUNCTION(Time, ToMilliseconds, uint32_t_uint32_t_uint32_t_uint32_t)
+TEST_MEMBER_FUNCTION(Time, ToMilliseconds, size_type_size_type_size_type_size_type)
 {
-    TEST_OVERRIDE_ARGS("uint32_t, uint32_t, uint32_t, uint32_t");
+    TEST_OVERRIDE_ARGS("size_type, size_type, size_type, size_type");
 
-    uint32_t hours = 0U;
-    uint32_t minutes = 0U;
-    uint32_t seconds = 0U;
-    uint32_t milliseconds = 0U;
-    uint32_t ms = Time::ToMilliseconds(hours, minutes, seconds, milliseconds);
+    Time::size_type hours = 0U;
+    Time::size_type minutes = 0U;
+    Time::size_type seconds = 0U;
+    Time::size_type milliseconds = 0U;
+    Time::size_type ms = Time::ToMilliseconds(hours, minutes, seconds, milliseconds);
     CHECK_EQUAL(ms, 0U);
 
     hours = 0U;
@@ -498,7 +498,7 @@ TEST_CONST_MEMBER_FUNCTION(Time, GetAsMilliseconds, NA)
                                                                (Time::MILLISECONDS_PER_SECOND * 59U) + 999U);
 }
 
-TEST_MEMBER_FUNCTION(Time, SetFromMilliseconds, uint32_t)
+TEST_MEMBER_FUNCTION(Time, SetFromMilliseconds, size_type)
 {
     Time time;
 
@@ -538,7 +538,7 @@ TEST_CONST_MEMBER_FUNCTION(Time, GetDifferenceInMilliseconds, Time_const_ref)
     CHECK_EQUAL(Time(0U, 0U, 0U, 0U).GetDifferenceInMilliseconds(Time(1U, 0U, 0U, 0U)), Time::MILLISECONDS_PER_HOUR);
 }
 
-TEST_MEMBER_FUNCTION(Time, AddMilliseconds, uint32_t)
+TEST_MEMBER_FUNCTION(Time, AddMilliseconds, size_type)
 {
     Time time;
 
@@ -591,9 +591,9 @@ TEST_MEMBER_FUNCTION(Time, AddMilliseconds, uint32_t)
     CHECK_EQUAL(time.GetHours(), 23U);
 }
 
-TEST_MEMBER_FUNCTION(Time, AddMilliseconds, uint32_t_uint32_t_ref)
+TEST_MEMBER_FUNCTION(Time, AddMilliseconds, size_type_size_type_ref)
 {
-    TEST_OVERRIDE_ARGS("uint32_t, uint32_t&");
+    TEST_OVERRIDE_ARGS("size_type, size_type&");
 
     Time time;
     Time::size_type overflow = static_cast<Time::size_type>(0xffffffffU);
@@ -696,7 +696,7 @@ TEST_MEMBER_FUNCTION(Time, AddMilliseconds, uint32_t_uint32_t_ref)
     CHECK_EQUAL(time.GetHours(), 23U);
 }
 
-TEST_MEMBER_FUNCTION(Time, SubtractMilliseconds, uint32_t)
+TEST_MEMBER_FUNCTION(Time, SubtractMilliseconds, size_type)
 {
     Time time(23U, 59U, 59U, 999U);
 
@@ -749,9 +749,9 @@ TEST_MEMBER_FUNCTION(Time, SubtractMilliseconds, uint32_t)
     CHECK_EQUAL(time.GetHours(), 0U);
 }
 
-TEST_MEMBER_FUNCTION(Time, SubtractMilliseconds, uint32_t_uint32_t_ref)
+TEST_MEMBER_FUNCTION(Time, SubtractMilliseconds, size_type_size_type_ref)
 {
-    TEST_OVERRIDE_ARGS("uint32_t, uint32_t&");
+    TEST_OVERRIDE_ARGS("size_type, size_type&");
 
     Time time(23U, 59U, 59U, 999U);
     Time::size_type underflow = 0U;
@@ -839,7 +839,7 @@ TEST_MEMBER_FUNCTION(Time, GetTime, NA)
     CHECK_EQUAL(time3.GetTime(), 0x173befe7u);
 }
 
-TEST_MEMBER_FUNCTION(Time, SetTime, uint32_t)
+TEST_MEMBER_FUNCTION(Time, SetTime, size_type)
 {
     Time time;
 

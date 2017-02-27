@@ -142,13 +142,13 @@ public:
         return IsNotEqual(other);
     }
 
-    Time& operator +=(uint32_t milliseconds)
+    Time& operator +=(size_type milliseconds)
     {
         AddMilliseconds(milliseconds);
         return *this;
     }
 
-    Time& operator -=(uint32_t milliseconds)
+    Time& operator -=(size_type milliseconds)
     {
         SubtractMilliseconds(milliseconds);
         return *this;
@@ -228,7 +228,7 @@ public:
                                     size_type seconds,
                                     size_type milliseconds) throw()
     {
-        uint32_t ms = hours * MILLISECONDS_PER_HOUR;
+        size_type ms = hours * MILLISECONDS_PER_HOUR;
         ms += minutes * MILLISECONDS_PER_MINUTE;
         ms += seconds * MILLISECONDS_PER_SECOND;
         ms += milliseconds;
