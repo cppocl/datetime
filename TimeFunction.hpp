@@ -18,7 +18,7 @@ limitations under the License.
 #define OCL_GUARD_DATETIME_TIMEFUNCTION_HPP
 
 #include "Ticks.hpp"
-#include "internal\InternalTimeFunction.hpp"
+#include "internal/InternalTimeFunction.hpp"
 
 namespace ocl
 {
