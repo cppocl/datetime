@@ -25,29 +25,40 @@ limitations under the License.
 namespace ocl
 {
 
-class NowTime
+template<TimePrecision precision>
+class NowTime;
+
+template<>
+class NowTime<Milliseconds>
 {
 // Types and constants
 public:
+    static TimePrecision const PRECISION = Milliseconds;
+
     // Keep name as time_type for compatibility with NowTicks class.
     // This allows these classes to be interchanged with template classes.
-    typedef Time time_type;
+    typedef Time<PRECISION> time_type;
 
 // Static methods.
 public:
-    static void ToTime(Time& time, tm const& tm_time) throw()
+    static void ToTime(time_type& time, tm const& tm_time) throw()
     {
         // Take a copy as this struct is shared across all threads.
         tm local_tm_time = tm_time;
 
-        time.SetHours(static_cast<Time::hour_type>(local_tm_time.tm_hour));
-        time.SetMinutes(static_cast<Time::minute_type>(local_tm_time.tm_min));
-        time.SetSeconds(static_cast<Time::second_type>(local_tm_time.tm_sec));
+        time.SetHours(static_cast<time_type::hour_type>(local_tm_time.tm_hour));
+        time.SetMinutes(static_cast<time_type::minute_type>(local_tm_time.tm_min));
+        time.SetSeconds(static_cast<time_type::second_type>(local_tm_time.tm_sec));
         time.SetMilliseconds(0U);
     }
 
     static time_type Now(TimeZone time_zone = TimeZone::GMT)
     {
+        typedef TimeMs::millisecond_type millisecond_type;
+
+        // Find a reference point for calculating elapsed time.
+        static clock_t const start_clocks = ::clock();
+
         tm* tm_time = NULL;
         time_type time;
         time_t t = ::time(NULL);
@@ -63,10 +74,76 @@ public:
         }
 
         if (tm_time != NULL)
+        {
+            clock_t elapsed = ::clock() - start_clocks;
+            time_type::size_type ms = (static_cast<time_type::size_type>(elapsed) * TimeNs::MILLISECONDS_PER_SECOND) /
+                                       static_cast<time_type::size_type>(CLOCKS_PER_SEC);
             ToTime(time, *tm_time);
+            time.SetMilliseconds(static_cast<millisecond_type>(ms));
+        }
         return time;
     }
 };
+
+template<>
+class NowTime<Nanoseconds>
+{
+// Types and constants
+public:
+    static TimePrecision const PRECISION = Nanoseconds;
+
+    // Keep name as time_type for compatibility with NowTicks class.
+    // This allows these classes to be interchanged with template classes.
+    typedef Time<PRECISION> time_type;
+
+// Static methods.
+public:
+    static void ToTime(time_type& time, tm const& tm_time) throw()
+    {
+        // Take a copy as this struct is shared across all threads.
+        tm local_tm_time = tm_time;
+
+        time.SetHours(static_cast<time_type::hour_type>(local_tm_time.tm_hour));
+        time.SetMinutes(static_cast<time_type::minute_type>(local_tm_time.tm_min));
+        time.SetSeconds(static_cast<time_type::second_type>(local_tm_time.tm_sec));
+        time.SetNanoseconds(0U);
+    }
+
+    static time_type Now(TimeZone time_zone = TimeZone::GMT)
+    {
+        typedef TimeMs::nanosecond_type nanosecond_type;
+
+        // Find a reference point for calculating elapsed time.
+        static clock_t const start_clocks = ::clock();
+
+        tm* tm_time = NULL;
+        time_type time;
+        time_t t = ::time(NULL);
+
+        switch (time_zone)
+        {
+        case TimeZone::Local:
+            tm_time = localtime(&t);
+            break;
+        case TimeZone::GMT:
+            tm_time = gmtime(&t);
+            break;
+        }
+
+        if (tm_time != NULL)
+        {
+            clock_t elapsed = (::clock() - start_clocks) % CLOCKS_PER_SEC;
+            time_type::size_type ns = (static_cast<time_type::size_type>(elapsed) * TimeNs::NANOSECONDS_PER_SECOND) /
+                                       static_cast<time_type::size_type>(CLOCKS_PER_SEC);
+            ToTime(time, *tm_time);
+            time.SetNanoseconds(static_cast<nanosecond_type>(ns));
+        }
+        return time;
+    }
+};
+
+typedef NowTime<Milliseconds> NowTimeMs;
+typedef NowTime<Nanoseconds>  NowTimeNs;
 
 } //namespace ocl
 

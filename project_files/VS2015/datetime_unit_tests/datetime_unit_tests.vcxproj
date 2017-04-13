@@ -71,7 +71,7 @@
   <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
@@ -79,7 +79,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
@@ -87,7 +87,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -101,7 +101,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -118,7 +118,13 @@
     <ClInclude Include="..\..\..\DateRange.hpp" />
     <ClInclude Include="..\..\..\DateTime.hpp" />
     <ClInclude Include="..\..\..\DateTimeRange.hpp" />
+    <ClInclude Include="..\..\..\internal\internalTimeCommon.hpp" />
+    <ClInclude Include="..\..\..\internal\internalTimePrecisionType.hpp" />
+    <ClInclude Include="..\..\..\internal\TimeDefines.hpp" />
+    <ClInclude Include="..\..\..\internal\internalTimeNs.hpp" />
     <ClInclude Include="..\..\..\internal\InternalTimeFunction.hpp" />
+    <ClInclude Include="..\..\..\internal\internalTimeMs.hpp" />
+    <ClInclude Include="..\..\..\internal\TimePrecision.hpp" />
     <ClInclude Include="..\..\..\Now.hpp" />
     <ClInclude Include="..\..\..\NowDate.hpp" />
     <ClInclude Include="..\..\..\NowDateTime.hpp" />
@@ -129,8 +135,10 @@
     <ClInclude Include="..\..\..\TicksTime.hpp" />
     <ClInclude Include="..\..\..\Time.hpp" />
     <ClInclude Include="..\..\..\TimeAlgorithms.hpp" />
+    <ClInclude Include="..\..\..\TimeDefines.hpp" />
     <ClInclude Include="..\..\..\TimeFunction.hpp" />
     <ClInclude Include="..\..\..\PerformanceCount.hpp" />
+    <ClInclude Include="..\..\..\TimePrecision.hpp" />
     <ClInclude Include="..\..\..\TimeRange.hpp" />
   </ItemGroup>
   <ItemGroup>

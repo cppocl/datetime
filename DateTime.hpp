@@ -23,68 +23,98 @@ limitations under the License.
 namespace ocl
 {
 
+template<TimePrecision precision>
 class DateTime
 {
 // Types.
 public:
-    typedef Date::size_type size_type;
-    typedef Date::diff_type diff_type;
-    typedef Date::day_type day_type;
-    typedef Date::day_of_week_type day_of_week_type;
-    typedef Date::month_type month_type;
-    typedef Date::year_type year_type;
-    typedef Time::millisecond_type millisecond_type;
-    typedef Time::second_type second_type;
-    typedef Time::minute_type minute_type;
-    typedef Time::hour_type hour_type;
+    typedef          Date                             date_type;
+    typedef          Time<precision>                  time_type;
+    typedef          DateTime<precision>              date_time_type;
+
+    typedef          date_type::size_type             date_size_type;
+    typedef          date_type::diff_type             date_diff_type;
+    typedef          date_type::day_type              day_type;
+    typedef          date_type::day_of_week_type      day_of_week_type;
+    typedef          date_type::month_type            month_type;
+    typedef          date_type::year_type             year_type;
+    typedef typename time_type::serialize_type        serialize_time_type;
+    typedef typename date_type::serialize_type        serialize_date_type;
+    typedef typename time_type::smallest_unit_type    smallest_unit_type;
+
+    typedef typename time_type::size_type             time_size_type;
+    typedef typename time_type::diff_type             time_diff_type;
+    typedef typename time_type::nanosecond_size_type  nanosecond_size_type;
+    typedef typename time_type::nanosecond_diff_type  nanosecond_diff_type;
+    typedef typename time_type::millisecond_size_type millisecond_size_type;
+    typedef typename time_type::millisecond_diff_type millisecond_diff_type;
+    typedef typename time_type::nanosecond_type       nanosecond_type;
+    typedef typename time_type::millisecond_type      millisecond_type;
+    typedef typename time_type::second_type           second_type;
+    typedef typename time_type::minute_type           minute_type;
+    typedef typename time_type::hour_type             hour_type;
 
 // Constants.
 public:
-    static day_type const MIN_DAY = Date::MIN_DAY;
-    static day_type const MAX_DAY = Date::MAX_DAY;
-    static day_type const DAYS_IN_LEAP_FEBRUARY = Date::DAYS_IN_LEAP_FEBRUARY;
+    // Date related constants.
+    static day_type const              MIN_DAY                 = date_type::MIN_DAY;
+    static day_type const              MAX_DAY                 = date_type::MAX_DAY;
+    static day_type const              DAYS_IN_LEAP_FEBRUARY   = date_type::DAYS_IN_LEAP_FEBRUARY;
 
-    static size_type const MONTHS_PER_YEAR = Date::MONTHS_PER_YEAR;
+    static date_size_type const        MONTHS_PER_YEAR         = date_type::MONTHS_PER_YEAR;
 
-    static year_type const DEFAULT_YEAR = Date::DEFAULT_YEAR;
+    static year_type const             DEFAULT_YEAR            = date_type::DEFAULT_YEAR;
 
-    static day_of_week_type const SUNDAY = 0;
-    static day_of_week_type const MONDAY = 1;
-    static day_of_week_type const TUESDAY = 2;
-    static day_of_week_type const WEDNESDAY = 3;
-    static day_of_week_type const THURSDAY = 4;
-    static day_of_week_type const FRIDAY = 5;
-    static day_of_week_type const SATURDAY = 6;
+    static day_of_week_type const      SUNDAY                  = date_type::SUNDAY;
+    static day_of_week_type const      MONDAY                  = date_type::MONDAY;
+    static day_of_week_type const      TUESDAY                 = date_type::TUESDAY;
+    static day_of_week_type const      WEDNESDAY               = date_type::WEDNESDAY;
+    static day_of_week_type const      THURSDAY                = date_type::THURSDAY;
+    static day_of_week_type const      FRIDAY                  = date_type::FRIDAY;
+    static day_of_week_type const      SATURDAY                = date_type::SATURDAY;
 
-    static month_type const JANUARY = 1;
-    static month_type const FEBRUARY = 2;
-    static month_type const MARCH = 3;
-    static month_type const APRIL = 4;
-    static month_type const MAY = 5;
-    static month_type const JUNE = 6;
-    static month_type const JULY = 7;
-    static month_type const AUGUST = 8;
-    static month_type const SEPTEMBER = 9;
-    static month_type const OCTOBER = 10;
-    static month_type const NOVEMBER = 11;
-    static month_type const DECEMBER = 12;
+    static month_type const            JANUARY                 = date_type::JANUARY;
+    static month_type const            FEBRUARY                = date_type::FEBRUARY;
+    static month_type const            MARCH                   = date_type::MARCH;
+    static month_type const            APRIL                   = date_type::APRIL;
+    static month_type const            MAY                     = date_type::MAY;
+    static month_type const            JUNE                    = date_type::JUNE;
+    static month_type const            JULY                    = date_type::JULY;
+    static month_type const            AUGUST                  = date_type::AUGUST;
+    static month_type const            SEPTEMBER               = date_type::SEPTEMBER;
+    static month_type const            OCTOBER                 = date_type::OCTOBER;
+    static month_type const            NOVEMBER                = date_type::NOVEMBER;
+    static month_type const            DECEMBER                = date_type::DECEMBER;
 
-    static month_type const MIN_MONTH = JANUARY;
-    static month_type const MAX_MONTH = DECEMBER;
+    static month_type const            MIN_MONTH               = date_type::MIN_MONTH;
+    static month_type const            MAX_MONTH               = date_type::MAX_MONTH;
 
-    static size_type const MILLISECONDS_PER_SECOND = Time::MILLISECONDS_PER_SECOND;
-    static size_type const SECONDS_PER_MINUTE = Time::SECONDS_PER_MINUTE;
-    static size_type const MINUTES_PER_HOUR = Time::MINUTES_PER_HOUR;
-    static size_type const HOURS_PER_DAY = Time::HOURS_PER_DAY;
+    // Time related constants.
+    static nanosecond_type const       NANOSECONDS_PER_SECOND  = time_type::NANOSECONDS_PER_SECOND;
+    static millisecond_type const      MILLISECONDS_PER_SECOND = time_type::MILLISECONDS_PER_SECOND;
+    static second_type const           SECONDS_PER_MINUTE      = time_type::SECONDS_PER_MINUTE;
+    static minute_type const           MINUTES_PER_HOUR        = time_type::MINUTES_PER_HOUR;
+    static hour_type const             HOURS_PER_DAY           = time_type::HOURS_PER_DAY;
 
-    static size_type const MILLISECONDS_PER_MINUTE = Time::MILLISECONDS_PER_MINUTE;
-    static size_type const MILLISECONDS_PER_HOUR = Time::MILLISECONDS_PER_HOUR;
-    static size_type const MILLISECONDS_PER_DAY = Time::MILLISECONDS_PER_DAY;
+    static nanosecond_size_type const  NANOSECONDS_PER_MINUTE  = time_type::NANOSECONDS_PER_MINUTE;
+    static nanosecond_size_type const  NANOSECONDS_PER_HOUR    = time_type::NANOSECONDS_PER_HOUR;
+    static nanosecond_size_type const  NANOSECONDS_PER_DAY     = time_type::NANOSECONDS_PER_DAY;
 
-    static size_type const SECONDS_PER_HOUR = Time::SECONDS_PER_HOUR;
-    static size_type const SECONDS_PER_DAY = Time::SECONDS_PER_DAY;
+    static time_size_type const        MILLISECONDS_PER_MINUTE = time_type::MILLISECONDS_PER_MINUTE;
+    static time_size_type const        MILLISECONDS_PER_HOUR   = time_type::MILLISECONDS_PER_HOUR;
+    static time_size_type const        MILLISECONDS_PER_DAY    = time_type::MILLISECONDS_PER_DAY;
 
-    static size_type const MINUTES_PER_DAY = Time::MINUTES_PER_DAY;
+    static time_size_type const        SECONDS_PER_HOUR        = time_type::SECONDS_PER_HOUR;
+    static time_size_type const        SECONDS_PER_DAY         = time_type::SECONDS_PER_DAY;
+
+    static time_size_type const        MINUTES_PER_DAY         = time_type::MINUTES_PER_DAY;
+
+    /// Maximum values for milliseconds, seconds, minutes and hours.
+    static nanosecond_type const       NANOSECONDS_UPPER_BOUND         = time_type::NANOSECONDS_UPPER_BOUND;
+    static millisecond_type const      MILLISECONDS_UPPER_BOUND        = time_type::MILLISECONDS_UPPER_BOUND;
+    static second_type const           SECONDS_UPPER_BOUND             = time_type::SECONDS_UPPER_BOUND;
+    static minute_type const           MINUTES_UPPER_BOUND             = time_type::MINUTES_UPPER_BOUND;
+    static hour_type const             HOURS_UPPER_BOUND               = time_type::HOURS_UPPER_BOUND;
 
 // Constructors.
 public:
@@ -97,13 +127,13 @@ public:
     {
     }
 
-    DateTime(Date const& date, Time const& time) throw()
+    DateTime(Date const& date, time_type const& time) throw()
         : m_date(date)
         , m_time(time)
     {
     }
 
-    DateTime(DateTime const& date_time) throw()
+    DateTime(date_time_type const& date_time) throw()
         : m_date(date_time.m_date)
         , m_time(date_time.m_time)
     {
@@ -123,72 +153,72 @@ public:
 
 // Overloaded operators.
 public:
-    DateTime& operator =(DateTime const& date_time) throw()
+    date_time_type& operator =(date_time_type const& date_time) throw()
     {
-        m_date.SetDate(date_time.m_date);
-        m_time.SetTime(date_time.m_time);
+        m_date.Copy(date_time.m_date);
+        m_time.Copy(date_time.m_time);
         return *this;
     }
 
-    bool operator <(DateTime const& date_time) const throw()
+    bool operator <(date_time_type const& date_time) const throw()
     {
         return Compare(date_time) < 0;
     }
 
-    bool operator <=(DateTime const& date_time) const throw()
+    bool operator <=(date_time_type const& date_time) const throw()
     {
         return Compare(date_time) <= 0;
     }
 
-    bool operator >(DateTime const& date_time) const throw()
+    bool operator >(date_time_type const& date_time) const throw()
     {
         return Compare(date_time) > 0;
     }
 
-    bool operator >=(DateTime const& date_time) const throw()
+    bool operator >=(date_time_type const& date_time) const throw()
     {
         return Compare(date_time) >= 0;
     }
 
-    bool operator ==(DateTime const& date_time) const throw()
+    bool operator ==(date_time_type const& date_time) const throw()
     {
         return Compare(date_time) == 0;
     }
 
-    bool operator !=(DateTime const& date_time) const throw()
+    bool operator !=(date_time_type const& date_time) const throw()
     {
         return Compare(date_time) != 0;
     }
 
 // Static member functions.
 public:
-    static size_type GetDaysInMonth(month_type month) throw()
+    static date_size_type GetDaysInMonth(month_type month) throw()
     {
-        return Date::GetDaysInMonth(month);
+        return date_type::GetDaysInMonth(month);
     }
 
     static bool IsLeapYear(year_type year) throw()
     {
-        return Date::IsLeapYear(year);
+        return date_type::IsLeapYear(year);
     }
 
     static bool IsLeapMonth(month_type month, year_type year) throw()
     {
-        return Date::IsLeapMonth(month, year);
+        return date_type::IsLeapMonth(month, year);
     }
 
-    /// Get the difference in days and milliseconds between tow DateTime objects.
+    /// Get the difference in days and time units between tow DateTime objects.
     /// The first date/time must be less or equal to the second date/time,
     /// or then results will be unexpected.
-    static void GetDifference(DateTime const& first,
-                              DateTime const& second,
-                              size_type& days,
-                              size_type& milliseconds) throw()
+    static void GetDifference(date_time_type const& first,
+                              date_time_type const& second,
+                              date_size_type& days,
+                              time_size_type& units) throw()
     {
         Date const& first_date  = first.m_date;
-        Time const& first_time  = first.m_time;
+        time_type const& first_time  = first.m_time;
         Date const& second_date = second.m_date;
-        Time const& second_time = second.m_time;
+        time_type const& second_time = second.m_time;
 
         if (first_date < second_date)
         {
@@ -196,40 +226,40 @@ public:
             if (first_time > second_time)
             {
                 --days;
-                size_type diff = second_time.GetDifferenceInMilliseconds(first_time);
-                milliseconds = Time::MILLISECONDS_PER_DAY - diff;
+                time_size_type diff = second_time.GetDifference(first_time);
+                units = time_type::UNITS_PER_DAY - diff;
             }
             else
-                milliseconds = first_time.GetDifferenceInMilliseconds(second_time);
+                units = first_time.GetDifference(second_time);
         }
         else
         {
             days = 0U;
             // It's assumed the second time is less or equal to the first time.
-            milliseconds = first_time.GetDifferenceInMilliseconds(second_time);
+            units = first_time.GetDifference(second_time);
         }
     }
 
-    /// Get the difference in days and milliseconds between tow DateTime objects.
+    /// Get the difference in milliseconds between tow DateTime objects.
     /// The first date/time must be less or equal to the second date/time,
     /// or then results will be unexpected.
     template<typename return_type>
-    static void GetDifference(DateTime const& first,
-                              DateTime const& second,
-                              return_type& milliseconds) throw()
+    static void GetDifference(date_time_type const& first,
+                              date_time_type const& second,
+                              return_type& units) throw()
     {
-        size_type days;
-        GetDifference(first, second, days, milliseconds);
-        milliseconds += static_cast<return_type>(days) *
-                        static_cast<return_type>(Time::MILLISECONDS_PER_DAY);
+        date_size_type days;
+        GetDifference(first, second, days, units);
+        units += static_cast<return_type>(days) *
+                 static_cast<return_type>(time_type::UNITS_PER_DAY);
     }
 
-    static DateTime const& Min(DateTime const& first, DateTime const& second) throw()
+    static date_time_type const& Min(date_time_type const& first, date_time_type const& second) throw()
     {
         return first < second ? first : second;
     }
 
-    static DateTime const& Max(DateTime const& first, DateTime const& second) throw()
+    static date_time_type const& Max(date_time_type const& first, date_time_type const& second) throw()
     {
         return first > second ? first : second;
     }
@@ -274,6 +304,16 @@ public:
         return m_date.IsLeapYear();
     }
 
+    nanosecond_type GetNanoseconds() const throw()
+    {
+        return m_time.GetNanoseconds();
+    }
+
+    void SetNanoseconds(nanosecond_type nanoseconds) throw()
+    {
+        m_time.SetNanoseconds(nanoseconds);
+    }
+
     millisecond_type GetMilliseconds() const throw()
     {
         return m_time.GetMilliseconds();
@@ -314,19 +354,19 @@ public:
         m_time.SetHours(hours);
     }
 
-    uint32_t GetDate() const throw()
+    serialize_date_type SerializeDate() const throw()
     {
-        return m_date.GetDate();
+        return m_date.Serialize();
     }
 
-    void SetDate(uint32_t date) throw()
+    void DeserializeDate(serialize_date_type date) throw()
     {
-        m_date.SetDate(date);
+        m_date.Deserialize(date);
     }
 
-    void SetDate(Date const& date) throw()
+    void Copy(Date const& date) throw()
     {
-        m_date.SetDate(date);
+        m_date.Copy(date);
     }
 
     void SetDate(day_type day, month_type month, year_type year) throw()
@@ -334,17 +374,17 @@ public:
         m_date.SetDate(day, month, year);
     }
 
-    uint32_t GetTime() const throw()
+    serialize_time_type SerializeTime() const throw()
     {
-        return m_time.GetTime();
+        return m_time.Serialize();
     }
 
-    void SetTime(uint32_t time) throw()
+    void DeserializeTime(serialize_time_type time) throw()
     {
-        m_time.SetTime(time);
+        m_time.Deserialize(time);
     }
 
-    void SetTime(Time const& time) throw()
+    void SetTime(time_type const& time) throw()
     {
         m_time.SetTime(time);
     }
@@ -367,94 +407,96 @@ public:
         m_time.SetEnd();
     }
 
-    void SetDateTime(uint32_t date, uint32_t time) throw()
+    void Deserialize(serialize_date_type date, serialize_time_type time) throw()
     {
-        m_date.SetDate(date);
-        m_time.SetTime(time);
+        m_date.Deserialize(date);
+        m_time.Deserialize(time);
     }
 
-    void SetDateTime(DateTime const date_time) throw()
+    void Copy(date_time_type const date_time) throw()
     {
-        m_date.SetDate(date_time.m_date);
-        m_time.SetTime(date_time.m_time);
+        m_date.Copy(date_time.m_date);
+        m_time.Copy(date_time.m_time);
     }
 
-    void AddDays(size_type days) throw()
+    void AddDays(date_size_type days) throw()
     {
         m_date.AddDays(days);
     }
 
-    /// Add milliseconds, incrementing days if the milliseconds overflows the time.
-    void AddMiilseconds(size_type milliseconds) throw()
+    /// Add milliseconds or nanoseconds, incrementing days
+    /// if the milliseconds or nanoseconds overflows the time.
+    void Add(time_size_type units) throw()
     {
-        size_type overflow = 0U;
-        m_time.AddMilliseconds(milliseconds, overflow);
+        time_size_type overflow = 0U;
+        m_time.Add(units, overflow);
         if (overflow > 0U)
         {
             --overflow;
-            size_type overflow_days = overflow / Time::MILLISECONDS_PER_DAY;
+            date_size_type overflow_days = static_cast<date_size_type>(overflow / time_type::UNITS_PER_DAY);
             if (overflow_days > 0)
             {
                 m_date.AddDays(overflow_days + 1U);
-                overflow -= overflow_days * Time::MILLISECONDS_PER_DAY;
+                overflow -= overflow_days * time_type::UNITS_PER_DAY;
             }
             else
                 m_date.IncrementDay();
 
             // Subtract 1 as an overflow of 1 would set time to 0:0:0:0.
             m_time.SetStart();
-            m_time.AddMilliseconds(overflow);
+            m_time.Add(overflow);
         }
     }
 
-    /// Subtract milliseconds, decrementing days if the milliseconds underflows the time.
-    void SubtractMiilseconds(size_type milliseconds) throw()
+    /// Subtract milliseconds or nanoseconds, decrementing days
+    /// if the milliseconds or nanoseconds underflows the time.
+    void Subtract(time_size_type units) throw()
     {
-        size_type underflow = 0U;
-        m_time.SubtractMilliseconds(milliseconds, underflow);
+        time_size_type underflow = 0U;
+        m_time.Subtract(units, underflow);
         if (underflow > 0U)
         {
             --underflow;
-            size_type underflow_days = underflow / Time::MILLISECONDS_PER_DAY;
+            date_size_type underflow_days = static_cast<date_size_type>(underflow / time_type::UNITS_PER_DAY);
             if (underflow_days > 0)
             {
                 m_date.SubtractDays(underflow_days + 1U);
-                underflow -= underflow_days * Time::MILLISECONDS_PER_DAY;
+                underflow -= underflow_days * time_type::UNITS_PER_DAY;
             }
             else
                 m_date.DecrementDay();
 
             // Subtract 1 as an overflow of 1 would set time to 0:0:0:0.
             m_time.SetEnd();
-            m_time.SubtractMilliseconds(underflow);
+            m_time.Subtract(underflow);
         }
     }
 
     /// Get difference in days and milliseconds.
     /// Other DateTime object is expected to greater or equal to this DateTime object.
-    void GetDifference(DateTime const& other,
-                       size_type& days,
-                       size_type& milliseconds) const throw()
+    void GetDifference(date_time_type const& other,
+                       date_size_type& days,
+                       time_size_type& milliseconds) const throw()
     {
         GetDifference(*this, other, days, milliseconds);
     }
 
-    /// Get difference in days and milliseconds.
+    /// Get difference in milliseconds.
     /// Other DateTime object is expected to greater or equal to this DateTime object.
     template<typename return_type>
-    void GetDifference(DateTime const& other, return_type& milliseconds) const throw()
+    void GetDifference(date_time_type const& other, return_type& milliseconds) const throw()
     {
         GetDifference<return_type>(*this, other, milliseconds);
     }
 
-    void Swap(DateTime& other) throw()
+    void Swap(date_time_type& other) throw()
     {
         m_date.Swap(other.m_date);
         m_time.Swap(other.m_time);
     }
 
     /// Return 0 when the same, -1 when less than other date or 1 when greater than other date.
-    int Compare(DateTime const& other) const throw()
+    int Compare(date_time_type const& other) const throw()
     {
         int date_cmp = m_date.Compare(other.m_date);
         return date_cmp != 0 ? date_cmp : m_time.Compare(other.m_time);
@@ -463,8 +505,11 @@ public:
 // Data (internal use only)
 private:
     Date m_date;
-    Time m_time;
+    time_type m_time;
 };
+
+typedef DateTime<Milliseconds> DateTimeMs;
+typedef DateTime<Nanoseconds>  DateTimeNs;
 
 }
 

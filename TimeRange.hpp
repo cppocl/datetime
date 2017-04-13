@@ -22,16 +22,18 @@ limitations under the License.
 namespace ocl
 {
 
+template<TimePrecision precision>
 class TimeRange
 {
 // Types.
 public:
-    typedef Time::size_type size_type;
-    typedef Time::diff_type diff_type;
-    typedef Time::millisecond_type millisecond_type;
-    typedef Time::second_type second_type;
-    typedef Time::minute_type minute_type;
-    typedef Time::hour_type hour_type;
+    typedef Time<precision> time_type;
+    typedef typename time_type::size_type size_type;
+    typedef typename time_type::diff_type diff_type;
+    typedef typename time_type::millisecond_type millisecond_type;
+    typedef typename time_type::second_type second_type;
+    typedef typename time_type::minute_type minute_type;
+    typedef typename time_type::hour_type hour_type;
 
 // Constructors.
 public:
@@ -40,7 +42,7 @@ public:
     {
     }
 
-    TimeRange(Time const& start, Time const& stop) throw()
+    TimeRange(time_type const& start, time_type const& stop) throw()
         : m_start(start)
         , m_stop(stop)
     {
@@ -54,24 +56,24 @@ public:
 
 // Member functions.
 public:
-    Time const& GetStart() const throw()
+    time_type const& GetStart() const throw()
     {
         return m_start;
     }
 
-    void SetStart(Time const& start) throw()
+    void SetStart(time_type const& start) throw()
     {
-        m_start.SetTime(start);
+        m_start.Copy(start);
     }
 
-    Time const& GetStop() const throw()
+    time_type const& GetStop() const throw()
     {
         return m_stop;
     }
 
-    void SetStop(Time const& stop) throw()
+    void SetStop(time_type const& stop) throw()
     {
-        m_stop.SetTime(stop);
+        m_stop.Copy(stop);
     }
 
     // Set start and stop to 0:0:0.0.
@@ -81,7 +83,7 @@ public:
         m_stop.SetStart();
     }
 
-    bool IsWithin(Time const& time) const throw()
+    bool IsWithin(time_type const& time) const throw()
     {
         return (time >= m_start) && (time <= m_stop);
     }
@@ -97,17 +99,17 @@ public:
 
         if (is_overlapped)
         {
-            overlap.SetStart(Time::Max(m_start, other_range.m_start));
-            overlap.SetStop(Time::Min(m_stop, other_range.m_stop));
+            overlap.SetStart(time_type::Max(m_start, other_range.m_start));
+            overlap.SetStop(time_type::Min(m_stop, other_range.m_stop));
         }
 
         return is_overlapped;
     }
 
     /// Get the difference between start and stop, expecting start to be less or equal to stop.
-    size_type GetRangeInMilliseconds() const throw()
+    size_type GetRange() const throw()
     {
-        return m_start.GetDifferenceInMilliseconds(m_stop);
+        return m_start.GetDifference(m_stop);
     }
 
     // Start is expected to be less than or equal to stop, otherwise this considered invalid.
@@ -118,8 +120,8 @@ public:
 
 // Data (internal use only)
 private:
-    Time m_start;
-    Time m_stop;
+    time_type m_start;
+    time_type m_stop;
 };
 
 }

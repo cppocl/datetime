@@ -308,10 +308,10 @@ TEST_MEMBER_FUNCTION(Date, GetDaysInMonths, month_type_month_type_year_type)
     TEST_OVERRIDE_ARGS("month_type, month_type, year_type");
 
     CHECK_EQUAL(Date::GetDaysInMonths(Date::JANUARY, Date::JANUARY, 2000U), Date::DAYS_IN_JANUARY);
-    CHECK_EQUAL(Date::GetDaysInMonths(Date::JANUARY, Date::FEBRUARY, 2000U), Date::DAYS_IN_JANUARY + Date::DAYS_IN_LEAP_FEBRUARY);
-    CHECK_EQUAL(Date::GetDaysInMonths(Date::JANUARY, Date::MARCH, 2000U), Date::DAYS_IN_JANUARY + Date::DAYS_IN_LEAP_FEBRUARY + Date::DAYS_IN_MARCH);
+    CHECK_EQUAL(Date::GetDaysInMonths(Date::JANUARY, Date::FEBRUARY, 2000U), static_cast<Date::size_type>(Date::DAYS_IN_JANUARY) + Date::DAYS_IN_LEAP_FEBRUARY);
+    CHECK_EQUAL(Date::GetDaysInMonths(Date::JANUARY, Date::MARCH, 2000U), static_cast<Date::size_type>(Date::DAYS_IN_JANUARY) + Date::DAYS_IN_LEAP_FEBRUARY + Date::DAYS_IN_MARCH);
     CHECK_EQUAL(Date::GetDaysInMonths(Date::JANUARY, Date::DECEMBER, 2000U), Date::GetDaysInYear(2000U));
-    CHECK_EQUAL(Date::GetDaysInMonths(Date::JANUARY, Date::FEBRUARY, 2001U), Date::DAYS_IN_JANUARY + Date::DAYS_IN_FEBRUARY);
+    CHECK_EQUAL(Date::GetDaysInMonths(Date::JANUARY, Date::FEBRUARY, 2001U), static_cast<Date::size_type>(Date::DAYS_IN_JANUARY) + Date::DAYS_IN_FEBRUARY);
     CHECK_EQUAL(Date::GetDaysInMonths(Date::JANUARY, Date::DECEMBER, 2001U), Date::GetDaysInYear(2001U));
 }
 
@@ -325,7 +325,7 @@ TEST_MEMBER_FUNCTION(Date, GetDaysFromStartOfYear, day_type_month_type_year_type
     CHECK_EQUAL(Date::GetDaysFromStartOfYear(2U, Date::JANUARY, year), 1U);
     CHECK_EQUAL(Date::GetDaysFromStartOfYear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1U);
     CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
-    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::MARCH, year), Date::DAYS_IN_JANUARY + Date::DAYS_IN_FEBRUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::MARCH, year), static_cast<Date::size_type>(Date::DAYS_IN_JANUARY) + Date::DAYS_IN_FEBRUARY);
     CHECK_EQUAL(Date::GetDaysFromStartOfYear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), Date::DAYS_PER_YEAR - 1U);
 
     // Check this works with 2000, which is a leap year.
@@ -334,7 +334,7 @@ TEST_MEMBER_FUNCTION(Date, GetDaysFromStartOfYear, day_type_month_type_year_type
     CHECK_EQUAL(Date::GetDaysFromStartOfYear(2U, Date::JANUARY, year), 1U);
     CHECK_EQUAL(Date::GetDaysFromStartOfYear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1U);
     CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
-    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::MARCH, year), Date::DAYS_IN_JANUARY + Date::DAYS_IN_LEAP_FEBRUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::MARCH, year), static_cast<Date::size_type>(Date::DAYS_IN_JANUARY) + Date::DAYS_IN_LEAP_FEBRUARY);
     CHECK_EQUAL(Date::GetDaysFromStartOfYear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), Date::DAYS_PER_LEAP_YEAR - 1U);
 
     // Check this works with 2003, which is not a leap year.
@@ -343,7 +343,7 @@ TEST_MEMBER_FUNCTION(Date, GetDaysFromStartOfYear, day_type_month_type_year_type
     CHECK_EQUAL(Date::GetDaysFromStartOfYear(2U, Date::JANUARY, year), 1U);
     CHECK_EQUAL(Date::GetDaysFromStartOfYear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1U);
     CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
-    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::MARCH, year), Date::DAYS_IN_JANUARY + Date::DAYS_IN_FEBRUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::MARCH, year), static_cast<Date::size_type>(Date::DAYS_IN_JANUARY) + Date::DAYS_IN_FEBRUARY);
     CHECK_EQUAL(Date::GetDaysFromStartOfYear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), Date::DAYS_PER_YEAR - 1U);
 
     // Check this works with 2004, which is a leap year.
@@ -352,7 +352,7 @@ TEST_MEMBER_FUNCTION(Date, GetDaysFromStartOfYear, day_type_month_type_year_type
     CHECK_EQUAL(Date::GetDaysFromStartOfYear(2U, Date::JANUARY, year), 1U);
     CHECK_EQUAL(Date::GetDaysFromStartOfYear(Date::DAYS_IN_JANUARY, Date::JANUARY, year), Date::DAYS_IN_JANUARY - 1U);
     CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::FEBRUARY, year), Date::DAYS_IN_JANUARY);
-    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::MARCH, year), Date::DAYS_IN_JANUARY + Date::DAYS_IN_LEAP_FEBRUARY);
+    CHECK_EQUAL(Date::GetDaysFromStartOfYear(1U, Date::MARCH, year), static_cast<Date::size_type>(Date::DAYS_IN_JANUARY) + Date::DAYS_IN_LEAP_FEBRUARY);
     CHECK_EQUAL(Date::GetDaysFromStartOfYear(Date::DAYS_IN_DECEMBER, Date::DECEMBER, year), Date::DAYS_PER_LEAP_YEAR - 1U);
 }
 
@@ -937,67 +937,67 @@ TEST_MEMBER_FUNCTION(Date, GetDifferenceInDays, Date_const_ref)
     CHECK_EQUAL(date.GetDifferenceInDays(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2000U)), Date::GetDaysInYear(2000U) - 1U);
 
     // Check difference works for non-leap year for same year.
-    date.SetDate(Date(1U, Date::JANUARY, 2001U));
+    date.Copy(Date(1U, Date::JANUARY, 2001U));
     CHECK_EQUAL(date.GetDifferenceInDays(Date(1U, Date::JANUARY, 2001U)), 0U);
     CHECK_EQUAL(date.GetDifferenceInDays(Date(2U, Date::JANUARY, 2001U)), 1U);
     CHECK_EQUAL(date.GetDifferenceInDays(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2001U)), Date::GetDaysInYear(2001U) - 1U);
 
     // Check difference works over a single year boundary.
-    date.SetDate(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 1999U));
+    date.Copy(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 1999U));
     CHECK_EQUAL(date.GetDifferenceInDays(Date(1U, Date::JANUARY, 2000U)), 1U);
 
-    date.SetDate(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2000U));
+    date.Copy(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2000U));
     CHECK_EQUAL(date.GetDifferenceInDays(Date(1U, Date::JANUARY, 2001U)), 1U);
 
-    date.SetDate(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 1999U));
+    date.Copy(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 1999U));
     CHECK_EQUAL(date.GetDifferenceInDays(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2000U)), Date::GetDaysInYear(2000U));
 
-    date.SetDate(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2000U));
+    date.Copy(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2000U));
     CHECK_EQUAL(date.GetDifferenceInDays(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2001U)), Date::GetDaysInYear(2001U));
 
-    date.SetDate(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 1999U));
+    date.Copy(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 1999U));
     CHECK_EQUAL(date.GetDifferenceInDays(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2001U)), Date::GetDaysInYears(2000U, 2001U));
 
-    date.SetDate(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2000U));
+    date.Copy(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2000U));
     CHECK_EQUAL(date.GetDifferenceInDays(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2002U)), Date::GetDaysInYears(2001U, 2002U));
 
-    date.SetDate(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 1999U));
+    date.Copy(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 1999U));
     CHECK_EQUAL(date.GetDifferenceInDays(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2002U)), Date::GetDaysInYears(2000U, 2002U));
 
-    date.SetDate(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2000U));
+    date.Copy(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2000U));
     CHECK_EQUAL(date.GetDifferenceInDays(Date(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2003U)), Date::GetDaysInYears(2001U, 2003U));
 }
 
-TEST_CONST_MEMBER_FUNCTION(Date, GetDate, NA)
+TEST_CONST_MEMBER_FUNCTION(Date, Serialize, NA)
 {
-    CHECK_EQUAL(Date().GetDate(), 0x07b20101U);
-    CHECK_EQUAL(Date(1U, 2U, 2000U).GetDate(), 0x07d00201U);
+    CHECK_EQUAL(Date().Serialize(), 0x07b20101U);
+    CHECK_EQUAL(Date(1U, 2U, 2000U).Serialize(), 0x07d00201U);
 }
 
-TEST_MEMBER_FUNCTION(Date, SetDate, uint32_t)
+TEST_MEMBER_FUNCTION(Date, Deserialize, uint32_t)
 {
     Date date;
 
-    date.SetDate(0x07b20101U);
-    CHECK_EQUAL(date.GetDate(), 0x07b20101U);
+    date.Deserialize(0x07b20101U);
+    CHECK_EQUAL(date.Serialize(), 0x07b20101U);
     CHECK_EQUAL(date.GetDay(), 1U);
     CHECK_EQUAL(date.GetMonth(), 1U);
     CHECK_EQUAL(date.GetYear(), 1970U);
 
-    date.SetDate(0x07d00201U);
-    CHECK_EQUAL(date.GetDate(), 0x07d00201U);
+    date.Deserialize(0x07d00201U);
+    CHECK_EQUAL(date.Serialize(), 0x07d00201U);
     CHECK_EQUAL(date.GetDay(), 1U);
     CHECK_EQUAL(date.GetMonth(), 2U);
     CHECK_EQUAL(date.GetYear(), 2000U);
 }
 
-TEST_MEMBER_FUNCTION(Date, SetDate, Date_const_ref)
+TEST_MEMBER_FUNCTION(Date, Copy, Date_const_ref)
 {
     TEST_OVERRIDE_ARGS("Date const&");
 
     Date date;
 
-    date.SetDate(Date(1U, Date::JANUARY, 1970U));
+    date.Copy(Date(1U, Date::JANUARY, 1970U));
     CHECK_EQUAL(date, Date(1U, Date::JANUARY, 1970U));
 }
 

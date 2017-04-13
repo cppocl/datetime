@@ -18,41 +18,69 @@ limitations under the License.
 #include "../NowTime.hpp"
 #include <ctime>
 
+using ocl::Time;
 using ocl::NowTime;
+using ocl::TimeMs;
+using ocl::TimeNs;
+using ocl::NowTimeMs;
+using ocl::NowTimeNs;
 
-TEST_MEMBER_FUNCTION(NowTime, Now, TimeZone)
+TEST_MEMBER_FUNCTION(NowTimeMs, Now, TimeZone)
 {
-    NowTime::time_type start = NowTime::Now(ocl::TimeZone::GMT);
-    NowTime::time_type curr = start;
+    NowTimeMs::time_type start = NowTimeMs::Now(ocl::TimeZone::GMT);
+    NowTimeMs::time_type curr = start;
     while (curr == start)
-        curr = NowTime::Now();
+        curr = NowTimeMs::Now(ocl::TimeZone::GMT);
     CHECK_TRUE(curr > start);
 
-    start = NowTime::Now(ocl::TimeZone::Local);
+    start = NowTimeMs::Now(ocl::TimeZone::Local);
     curr = start;
+    while (curr.GetSeconds() == start.GetSeconds())
+    {
+        curr = NowTimeMs::Now(ocl::TimeZone::Local);
+        CHECK_TRUE(curr.GetMilliseconds() >= start.GetMilliseconds());
+    }
+    CHECK_TRUE(curr > start);
+}
+
+TEST_MEMBER_FUNCTION(NowTimeNs, Now, TimeZone)
+{
+    NowTimeNs::time_type start = NowTimeNs::Now(ocl::TimeZone::GMT);
+    NowTimeNs::time_type curr = start;
     while (curr == start)
-        curr = NowTime::Now();
+        curr = NowTimeNs::Now(ocl::TimeZone::GMT);
+    CHECK_TRUE(curr > start);
+
+    start = NowTimeNs::Now(ocl::TimeZone::Local);
+    curr = start;
+    while (curr.GetSeconds() == start.GetSeconds())
+    {
+        curr = NowTimeNs::Now(ocl::TimeZone::Local);
+        if (curr.GetNanoseconds() < start.GetNanoseconds())
+        {
+            CHECK_TRUE(curr.GetNanoseconds() >= start.GetNanoseconds());
+        }
+        CHECK_TRUE(curr.GetNanoseconds() >= start.GetNanoseconds());
+    }
     CHECK_TRUE(curr > start);
 }
 
 TEST_MEMBER_FUNCTION(ToDateTime, ToTime, Time_ref_tm_const_ptr)
 {
-    TEST_OVERRIDE_ARGS("Time&, tm const* tm_time");
-
-    using ocl::Time;
+    TEST_OVERRIDE_ARGS("TimeMs&, tm const* tm_time");
 
     tm tm_time;
-    Time time;
+    TimeMs time;
 
     tm_time.tm_hour = 0;
     tm_time.tm_min = 0;
     tm_time.tm_sec = 0;
-    NowTime::ToTime(time, tm_time);
-    CHECK_TRUE(time == Time(0U, 0U, 0U, 0U));
+    NowTimeMs::ToTime(time, tm_time);
+    CHECK_TRUE(time == TimeMs(0U, 0U, 0U, 0U));
 
     tm_time.tm_hour = 23;
     tm_time.tm_min = 59;
     tm_time.tm_sec = 59;
-    NowTime::ToTime(time, tm_time);
-    CHECK_TRUE(time == Time(23U, 59U, 59U, 0U));
+    NowTimeMs::ToTime(time, tm_time);
+    CHECK_TRUE(time == TimeMs(23U, 59U, 59U, 0U));
 }

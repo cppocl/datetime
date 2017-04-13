@@ -1,5 +1,5 @@
 /*
-Copyright 2016 Colin Girling
+Copyright 2017 Colin Girling
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,507 +17,410 @@ limitations under the License.
 #ifndef OCL_GUARD_DATETIME_TIME_HPP
 #define OCL_GUARD_DATETIME_TIME_HPP
 
-#include <stdint.h>
+#include "TimeDefines.hpp"
+#include "TimePrecision.hpp"
+#include "internal/internalTimeMs.hpp"
+#include "internal/internalTimeNs.hpp"
+#include "internal/internalTimeCommon.hpp"
+#include "internal/internalTimePrecisionType.hpp"
 
 namespace ocl
 {
 
 /*
-    24 hour time storing hours, minutes, seconds and milliseconds.
-    The time is guaranteed to fit into 4 bytes.
+    24 hour time storing hours, minutes, seconds and milliseconds or nanoseconds.
+    The time is guaranteed to fit into 4 bytes for milliseconds or 8 bytes for nanoseconds.
 */
-class Time
+template<TimePrecision const time_precision>
+class Time : public InternalTimeCommon<typename InternalTimePrecisionType<time_precision>::precision_time_type>
 {
+// helper types (for internal use only)
+private:
+    typedef Time<time_precision> type;
+    typedef InternalTimeCommon<typename InternalTimePrecisionType<time_precision>::precision_time_type> base_type;
+
 // Types.
 public:
-    typedef uint32_t size_type;
-    typedef int32_t diff_type;
-    typedef uint16_t millisecond_type;
-    typedef uint8_t second_type;
-    typedef uint8_t minute_type;
-    typedef uint8_t hour_type;
+    // Size types when converting into values larger than the limit
+    // stored within a time period.
+    typedef typename base_type::nanosecond_size_type  nanosecond_size_type;
+    typedef typename base_type::nanosecond_diff_type  nanosecond_diff_type;
+    typedef typename base_type::microsecond_size_type microsecond_size_type;
+    typedef typename base_type::microsecond_diff_type microsecond_diff_type;
+    typedef typename base_type::millisecond_size_type millisecond_size_type;
+    typedef typename base_type::millisecond_diff_type millisecond_diff_type;
+    typedef typename base_type::second_size_type      second_size_type;
+    typedef typename base_type::second_diff_type      second_diff_type;
+    typedef typename base_type::minute_size_type      minute_size_type;
+    typedef typename base_type::minute_diff_type      minute_diff_type;
+    typedef typename base_type::hour_size_type        hour_size_type;
+    typedef typename base_type::hour_diff_type        hour_diff_type;
+    typedef typename base_type::size_type             size_type;
+    typedef typename base_type::diff_type             diff_type;
+    typedef typename base_type::serialize_type        serialize_type;
+
+    // For Time<Milliseconds> this will be millisecond_type,
+    // and for Time<Nanoseconds> this will be nanosecond_type.
+    typedef typename base_type::smallest_unit_type    smallest_unit_type;
+
+    /// Types for hours, minutes, seconds, milliseconds and nanoseconds,
+    // that don't exceed their limit within a time period.
+    typedef typename base_type::nanosecond_type       nanosecond_type;
+    typedef typename base_type::microsecond_type      microsecond_type;
+    typedef typename base_type::millisecond_type      millisecond_type;
+    typedef typename base_type::second_type           second_type;
+    typedef typename base_type::minute_type           minute_type;
+    typedef typename base_type::hour_type             hour_type;
 
 // Constants.
 public:
-    static millisecond_type const MILLISECONDS_PER_SECOND = 1000U;
-    static second_type const SECONDS_PER_MINUTE = 60U;
-    static minute_type const MINUTES_PER_HOUR = 60U;
-    static hour_type const HOURS_PER_DAY = 24U;
+    static hour_type const             HOURS_PER_DAY                = base_type::HOURS_PER_DAY;
 
-    static size_type const MILLISECONDS_PER_MINUTE = MILLISECONDS_PER_SECOND * SECONDS_PER_MINUTE;
-    static size_type const MILLISECONDS_PER_HOUR = MILLISECONDS_PER_MINUTE * MINUTES_PER_HOUR;
-    static size_type const MILLISECONDS_PER_DAY = MILLISECONDS_PER_HOUR * HOURS_PER_DAY;
+    static minute_type const           MINUTES_PER_HOUR             = base_type::MINUTES_PER_HOUR;
+    static minute_size_type const      MINUTES_PER_DAY              = base_type::MINUTES_PER_DAY;
 
-    static size_type const SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
-    static size_type const SECONDS_PER_DAY = SECONDS_PER_HOUR * HOURS_PER_DAY;
+    static second_type const           SECONDS_PER_MINUTE           = base_type::SECONDS_PER_MINUTE;
+    static second_size_type const      SECONDS_PER_HOUR             = base_type::SECONDS_PER_HOUR;
+    static second_size_type const      SECONDS_PER_DAY              = base_type::SECONDS_PER_DAY;
 
-    static size_type const MINUTES_PER_DAY = MINUTES_PER_HOUR * HOURS_PER_DAY;
+    static millisecond_type const      MILLISECONDS_PER_SECOND      = base_type::MILLISECONDS_PER_SECOND;
+    static millisecond_size_type const MILLISECONDS_PER_MINUTE      = base_type::MILLISECONDS_PER_MINUTE;
+    static millisecond_size_type const MILLISECONDS_PER_HOUR        = base_type::MILLISECONDS_PER_HOUR;
+    static millisecond_size_type const MILLISECONDS_PER_DAY         = base_type::MILLISECONDS_PER_DAY;
 
-    /// Maximum values for milliseconds, seconds, minutes and hours.
-    static millisecond_type const MAX_MILLISECONDS = MILLISECONDS_PER_SECOND - 1U;
-    static second_type const MAX_SECONDS = SECONDS_PER_MINUTE - 1U;
-    static minute_type const MAX_MINUTES = MINUTES_PER_HOUR - 1U;
-    static hour_type const MAX_HOURS = HOURS_PER_DAY - 1U;
+    static microsecond_type const      MICROSECONDS_PER_MILLISECOND = base_type::MICROSECONDS_PER_MILLISECOND;
+    static microsecond_type const      MICROSECONDS_PER_SECOND      = base_type::MICROSECONDS_PER_SECOND;
+    static microsecond_size_type const MICROSECONDS_PER_MINUTE      = base_type::MICROSECONDS_PER_MINUTE;
+    static microsecond_size_type const MICROSECONDS_PER_HOUR        = base_type::MICROSECONDS_PER_HOUR;
+    static microsecond_size_type const MICROSECONDS_PER_DAY         = base_type::MICROSECONDS_PER_DAY;
 
-// constants (internal use only)
-private:
-    /// Milliseconds are stored as a 10 bit value, 8 bits in m_milliseconds
-    /// and 2 bits in the top 2 bits of m_seconds.
-    typedef uint8_t millisecond_internal_type;
+    static nanosecond_type const       NANOSECONDS_PER_MICROSECOND  = base_type::NANOSECONDS_PER_MICROSECOND;
+    static nanosecond_type const       NANOSECONDS_PER_MILLISECOND  = base_type::NANOSECONDS_PER_MILLISECOND;
+    static nanosecond_type const       NANOSECONDS_PER_SECOND       = base_type::NANOSECONDS_PER_SECOND;
+    static nanosecond_size_type const  NANOSECONDS_PER_MINUTE       = base_type::NANOSECONDS_PER_MINUTE;
+    static nanosecond_size_type const  NANOSECONDS_PER_HOUR         = base_type::NANOSECONDS_PER_HOUR;
+    static nanosecond_size_type const  NANOSECONDS_PER_DAY          = base_type::NANOSECONDS_PER_DAY;
 
-    /// Masks for handling m_milliseconds and m_seconds.
-    /// m_seconds bottom two bits contain the top two bits of the 10 bits used for milliseconds.
-    /// Storing seconds in top 8 bits allows for quick time comparison.
-    static second_type const SECONDS_MASK = static_cast<second_type>(0xfc);
-    static second_type const MILLISECONDS_FROM_SECONDS_MASK = static_cast<second_type>(0x03);
+    /// Maximum values for nanoseconds, microseconds, milliseconds, seconds, minutes and hours.
+    static nanosecond_type const       NANOSECONDS_UPPER_BOUND      = base_type::NANOSECONDS_UPPER_BOUND;
+    static microsecond_type const      MICROSECONDS_UPPER_BOUND     = base_type::MICROSECONDS_UPPER_BOUND;
+    static millisecond_type const      MILLISECONDS_UPPER_BOUND     = base_type::MILLISECONDS_UPPER_BOUND;
+    static second_type const           SECONDS_UPPER_BOUND          = base_type::SECONDS_UPPER_BOUND;
+    static minute_type const           MINUTES_UPPER_BOUND          = base_type::MINUTES_UPPER_BOUND;
+    static hour_type const             HOURS_UPPER_BOUND            = base_type::HOURS_UPPER_BOUND;
 
-    /// When milliseconds is the maximum value, the lower 8 bits and
-    /// the upper 2 bits will always be the same value, and can be optimized with constants.
-    static millisecond_internal_type const MAX_MILLISECONDS_LOW_8_BITS =
-                            static_cast<millisecond_internal_type>(MAX_MILLISECONDS & 0xffU);
-    static millisecond_internal_type const MAX_MILLISECONDS_HI_BYTE_2_BITS =
-            static_cast<second_type>(MAX_MILLISECONDS >> 8U) & MILLISECONDS_FROM_SECONDS_MASK;
+    // Provide easy means for Time class to identify if the precision is more accurate than a second.
+    // This is true when Time precision is Milliseconds or Nanoseconds.
+    static bool const                  HAS_PARTIAL_SECONDS          = base_type::HAS_PARTIAL_SECONDS;
+
+    // For generic use of the smallest units of precision for the Time.
+    // If PRECISION is Milliseconds then units is in milliseconds,
+    // If PRECISION is Nanoseconds then units is in nanoseconds.
+    static TimePrecision const         PRECISION                    = base_type::PRECISION;
+    static size_type const             UNITS_PER_SECOND             = base_type::UNITS_PER_SECOND;
+    static size_type const             UNITS_PER_MINUTE             = base_type::UNITS_PER_MINUTE;
+    static size_type const             UNITS_PER_HOUR               = base_type::UNITS_PER_HOUR;
+    static size_type const             UNITS_PER_DAY                = base_type::UNITS_PER_DAY;
 
 // Constructors.
 public:
     Time() throw()
-        : m_hours(0U)
-        , m_minutes(0U)
-        , m_seconds(0U)
-        , m_milliseconds(0U)
     {
     }
 
-    Time(hour_type hours,                       // 0..23
-         minute_type minutes,                   // 0..59
-         second_type seconds,                   // 0..59
-         millisecond_type milliseconds) throw() // 0..999
+    Time(hour_type hours,             // 0..23
+         minute_type minutes) throw() // 0..59
+        : base_type(hours, minutes)
     {
-        SetTime(hours, minutes, seconds, milliseconds);
     }
 
-    Time(Time const& time) throw()
-        : m_hours(time.m_hours)
-        , m_minutes(time.m_minutes)
-        , m_seconds(time.m_seconds)
-        , m_milliseconds(time.m_milliseconds)
+    Time(hour_type hours,             // 0..23
+         minute_type minutes,         // 0..59
+         second_type seconds) throw() // 0..59
+        : base_type(hours, minutes, seconds)
+    {
+    }
+
+    Time(hour_type hours,                           // 0..23
+         minute_type minutes,                       // 0..59
+         second_type seconds,                       // 0..59
+         smallest_unit_type smallest_units) throw() // 0..999 or 0..999999999
+        : base_type(hours, minutes, seconds, smallest_units)
+    {
+    }
+
+    Time(type const& time) throw()
+        : base_type(time)
     {
     }
 
 // Overloaded operators.
 public:
-    Time& operator =(Time const& time) throw()
+    Time& operator =(type const& time) throw()
     {
-        SetTime(time);
+        base_type::Copy(time);
         return *this;
     }
 
-    bool operator <(Time const& other) const throw()
+    bool operator <(type const& other) const throw()
     {
-        return IsLess(other);
+        return base_type::IsLess(other);
     }
 
-    bool operator <=(Time const& other) const throw()
+    bool operator <=(type const& other) const throw()
     {
-        return IsLessEqual(other);
+        return base_type::IsLessEqual(other);
     }
 
-    bool operator >(Time const& other) const throw()
+    bool operator >(type const& other) const throw()
     {
-        return IsGreater(other);
+        return base_type::IsGreater(other);
     }
 
-    bool operator >=(Time const& other) const throw()
+    bool operator >=(type const& other) const throw()
     {
-        return IsGreaterEqual(other);
+        return base_type::IsGreaterEqual(other);
     }
 
-    bool operator ==(Time const& other) const throw()
+    bool operator ==(type const& other) const throw()
     {
-        return IsEqual(other);
+        return base_type::IsEqual(other);
     }
 
-    bool operator !=(Time const& other) const throw()
+    bool operator !=(type const& other) const throw()
     {
-        return IsNotEqual(other);
+        return base_type::IsNotEqual(other);
     }
 
-    Time& operator +=(size_type milliseconds)
+    /// Depending on the precision, add the smallest unit type to this time.
+    /// E.g. if precision is Milliseconds then the partial value will be in milliseconds.
+    Time& operator +=(size_type smallest_units)
     {
-        AddMilliseconds(milliseconds);
+        Add(smallest_units);
         return *this;
     }
 
-    Time& operator -=(size_type milliseconds)
+    /// Depending on the precision, subtract the smallest unit type to this time.
+    /// E.g. if precision is Milliseconds then the partial value will be in milliseconds.
+    Time& operator -=(size_type smallest_units)
     {
-        SubtractMilliseconds(milliseconds);
+        Subtract(smallest_units);
         return *this;
     }
 
     /// Get difference between two times in milliseconds.
-    Time operator +(size_type milliseconds) const throw()
+    Time operator +(size_type smallest_units) const throw()
     {
         Time time(*this);
-        time += milliseconds;
+        time.Add(smallest_units);
         return time;
     }
 
     /// Get difference between two times in milliseconds.
-    Time operator -(size_type milliseconds) const throw()
+    Time operator -(size_type smallest_units) const throw()
     {
         Time time(*this);
-        time -= milliseconds;
+        time.Subtract(smallest_units);
         return time;
     }
 
     /// Get difference between two times in milliseconds.
-    diff_type operator -(Time const& other) const throw()
+    diff_type operator -(type const& other) const throw()
     {
-        size_type this_milliseconds = GetAsMilliseconds();
-        size_type other_milliseconds = other.GetAsMilliseconds();
-        return static_cast<diff_type>(this_milliseconds) - static_cast<diff_type>(other_milliseconds);
+        size_type this_smallest_units  = Transform();
+        size_type other_smallest_units = other.Transform();
+
+        return static_cast<diff_type>(this_smallest_units) -
+               static_cast<diff_type>(other_smallest_units);
     }
 
     Time operator ++() throw() // Prefix
     {
-        AddMilliseconds(1U);
+        Add(1U);
         return *this;
     }
 
     Time operator ++(int) throw() // Postfix
     {
         Time time(*this);
-        time.AddMilliseconds(1U);
+        time.Add(1U);
         return time;
     }
 
     Time operator --() throw() // Prefix
     {
-        SubtractMilliseconds(1U);
+        Subtract(1U);
         return *this;
     }
 
     Time operator --(int) throw() // Postfix
     {
         Time time(*this);
-        time.SubtractMilliseconds(1U);
+        time.Subtract(1U);
         return time;
     }
 
-// Static member functions.
+// Public interface pulled through from base class.
+// Although these functions don't need to be here and can be called from base,
+// for easier readability of the Time class interface,
+// they have been pulled into the Time class.
 public:
-    /// Split milliseconds into hours, minutes, seconds and milliseconds.
-    static void SplitMilliseconds(size_type& hours,
-                                  size_type& minutes,
-                                  size_type& seconds,
-                                  size_type& milliseconds) throw()
+    /// Add smallest units, which could be milliseconds, nanoseconds, etc, depending on precision.
+    // The time will not exceed a whole day.
+    void Add(size_type smallest_units_to_add) throw()
     {
-        size_type ms = milliseconds;
-        hours = ms / MILLISECONDS_PER_HOUR;
-        ms -= hours * MILLISECONDS_PER_HOUR;
-        minutes = ms / MILLISECONDS_PER_MINUTE;
-        ms -= minutes * MILLISECONDS_PER_MINUTE;
-        seconds = ms / MILLISECONDS_PER_SECOND;
-        ms -= seconds * MILLISECONDS_PER_SECOND;
-        milliseconds = ms;
+        base_type::Add(smallest_units_to_add);
     }
 
-    /// Convert a time into milliseconds.
-    static size_type ToMilliseconds(size_type hours,
-                                    size_type minutes,
-                                    size_type seconds,
-                                    size_type milliseconds) throw()
+    /// Add smallest units, which could be milliseconds, nanoseconds, etc, depending on precision.
+    // The time will not exceed a whole day, and overflow will be set if addition is too big.
+    void Add(size_type smallest_units_to_add, size_type& overflow) throw()
     {
-        size_type ms = hours * MILLISECONDS_PER_HOUR;
-        ms += minutes * MILLISECONDS_PER_MINUTE;
-        ms += seconds * MILLISECONDS_PER_SECOND;
-        ms += milliseconds;
-        return ms;
+        base_type::Add(smallest_units_to_add, overflow);
     }
 
-    static Time const& Min(Time const& first, Time const& second) throw()
+    /// Subtract milliseconds to 0:0:0:0.
+    void Subtract(size_type smallest_units_to_subtract) throw()
     {
-        return first < second ? first : second;
+        base_type::Subtract(smallest_units_to_subtract);
     }
 
-    static Time const& Max(Time const& first, Time const& second) throw()
+    /// Subtract smallest units, which could be milliseconds, nanoseconds, etc, depending on precision.
+    // The time will not exceed 0:0:0:0, and underflow will be set if addition is too big.
+    void Subtract(size_type smallest_units_to_subtract, size_type& underflow) throw()
     {
-        return first > second ? first : second;
+        base_type::Subtract(smallest_units_to_subtract, underflow);
     }
 
-// Member functions.
-public:
+    /// Get the difference between this time and the other time in smallest units,
+    /// i.e. milliseconds or nanoseconds.
+    /// with this time expected to be less or equal to the other time.
+    size_type GetDifference(type const& other) const throw()
+    {
+        return base_type::GetDifference(other);
+    }
+
+    int Compare(type const& other) const throw()
+    {
+        return IsLess(other) ? -1 : (IsGreater(other) ? 1 : 0);
+    }
+
+    nanosecond_type GetNanoseconds() const throw()
+    {
+        return base_type::GetNanoseconds();
+    }
+
+    void SetNanoseconds(nanosecond_type nanoseconds) throw()
+    {
+        base_type::SetNanoseconds(nanoseconds);
+    }
+
     millisecond_type GetMilliseconds() const throw()
     {
-        millisecond_type milliseconds = m_milliseconds;
-        milliseconds |= static_cast<millisecond_type>(m_seconds & MILLISECONDS_FROM_SECONDS_MASK) << 8U;
-
-        return milliseconds;
+        return base_type::GetMilliseconds();
     }
 
     void SetMilliseconds(millisecond_type milliseconds) throw()
     {
-        if (milliseconds > MAX_MILLISECONDS)
-        {
-            m_milliseconds = MAX_MILLISECONDS_LOW_8_BITS;
-            m_seconds |= MAX_MILLISECONDS_HI_BYTE_2_BITS;
-        }
-        else
-        {
-            second_type seconds = m_seconds & SECONDS_MASK;
-            m_milliseconds = static_cast<millisecond_internal_type>(milliseconds);
-            m_seconds = seconds | (static_cast<second_type>(milliseconds >> 8U) & MILLISECONDS_FROM_SECONDS_MASK);
-        }
+        base_type::SetMilliseconds(milliseconds);
     }
 
     second_type GetSeconds() const throw()
     {
-        return static_cast<second_type>(m_seconds >> 2U);
+        return base_type:: GetSeconds();
     }
 
     void SetSeconds(second_type seconds) throw()
     {
-        second_type millisecond_bits = m_seconds & MILLISECONDS_FROM_SECONDS_MASK;
-        if (seconds > MAX_SECONDS)
-            m_seconds = static_cast<second_type>(MAX_SECONDS << 2U) | millisecond_bits;
-        else
-            m_seconds = static_cast<second_type>(seconds << 2U) | millisecond_bits;
+        base_type::SetSeconds(seconds);
     }
 
     minute_type GetMinutes() const throw()
     {
-        return m_minutes;
+        return base_type::GetMinutes();
     }
 
     void SetMinutes(minute_type minutes) throw()
     {
-        m_minutes = minutes > MAX_MINUTES ? MAX_MINUTES : minutes;
+        base_type::SetMinutes(minutes);
     }
 
     hour_type GetHours() const throw()
     {
-        return m_hours;
+        return base_type::GetHours();
     }
 
     void SetHours(hour_type hours) throw()
     {
-        m_hours = hours > MAX_HOURS ? MAX_HOURS : hours;
+        base_type::SetHours(hours);
     }
 
-    void SetStart() throw()
-    {
-        SetHours(0U);
-        SetMinutes(0U);
-        SetSeconds(0U);
-        SetMilliseconds(0U);
-    }
-
-    void SetEnd() throw()
-    {
-        SetHours(HOURS_PER_DAY);
-        SetMinutes(MINUTES_PER_HOUR);
-        SetSeconds(SECONDS_PER_MINUTE);
-        SetMilliseconds(MILLISECONDS_PER_SECOND);
-    }
-
-    /// Convert time into a milliseconds value.
-    size_type GetAsMilliseconds() const throw()
-    {
-        return ToMilliseconds(static_cast<size_type>(GetHours()),
-                              static_cast<size_type>(GetMinutes()),
-                              static_cast<size_type>(GetSeconds()),
-                              static_cast<size_type>(GetMilliseconds()));
-    }
-
-    /// Convert the milliseconds to a time.
-    void SetFromMilliseconds(size_type milliseconds) throw()
-    {
-        size_type hours = 0;
-        size_type minutes = 0;
-        size_type seconds = 0;
-        SplitMilliseconds(hours, minutes, seconds, milliseconds);
-        if (hours > MAX_HOURS)
-            hours = MAX_HOURS;
-        SetHours(static_cast<hour_type>(hours));
-        SetMinutes(static_cast<minute_type>(minutes));
-        SetSeconds(static_cast<second_type>(seconds));
-        SetMilliseconds(static_cast<millisecond_type>(milliseconds));
-    }
-
-    /// Get the difference between this time and the other time in milliseconds,
-    /// with this time expected to be less or equal to the other time.
-    size_type GetDifferenceInMilliseconds(Time const& other) const throw()
-    {
-        size_type this_milliseconds = GetAsMilliseconds();
-        size_type other_millisecds = other.GetAsMilliseconds();
-        return other_millisecds - this_milliseconds;
-    }
-
-    /// Add milliseconds up to 23:59:59:999.
-    void AddMilliseconds(size_type milliseconds) throw()
-    {
-        size_type time_ms = GetAsMilliseconds() + milliseconds;
-        if (time_ms >= MILLISECONDS_PER_DAY)
-            SetFromMilliseconds(MILLISECONDS_PER_DAY - 1U);
-        else
-            SetFromMilliseconds(time_ms);
-    }
-
-    /// Add milliseconds up to 23:59:59:999 and return any overflow.
-    void AddMilliseconds(size_type milliseconds, size_type& overflow) throw()
-    {
-        size_type time_ms = GetAsMilliseconds() + milliseconds;
-        if (time_ms >= MILLISECONDS_PER_DAY)
-        {
-            overflow = 1U + time_ms - MILLISECONDS_PER_DAY;
-            SetFromMilliseconds(MILLISECONDS_PER_DAY - 1U);
-        }
-        else
-        {
-            overflow = 0U;
-            SetFromMilliseconds(time_ms);
-        }
-    }
-
-    /// Subtract milliseconds to 0:0:0:0.
-    void SubtractMilliseconds(size_type milliseconds) throw()
-    {
-        size_type time_ms = GetAsMilliseconds();
-        if (milliseconds >= time_ms)
-            SetFromMilliseconds(0U);
-        else
-            SetFromMilliseconds(time_ms - milliseconds);
-    }
-
-    /// Subtract milliseconds to 0:0:0:0 and return any underflow.
-    void SubtractMilliseconds(size_type milliseconds, size_type& underflow) throw()
-    {
-        size_type time_ms = GetAsMilliseconds();
-        if (milliseconds > time_ms)
-        {
-            underflow = milliseconds - time_ms;
-            SetFromMilliseconds(0U);
-        }
-        else
-        {
-            underflow = 0U;
-            SetFromMilliseconds(time_ms - milliseconds);
-        }
-    }
-
-    /// Get the time as a 32-bit value for conveniently serializing the time.
-    uint32_t GetTime() const throw()
-    {
-        uint32_t time = m_milliseconds;
-        time |= static_cast<uint32_t>(m_seconds) << 8U;
-        time |= static_cast<uint32_t>(m_minutes) << 16U;
-        time |= static_cast<uint32_t>(m_hours) << 24U;
-        return time;
-    }
-
+    /*
+    /// GetTime and SetTime are public via the base class,
+    /// and are specific to the precision of the time.
+    /// i.e. smallest unit could be Milliseconds or Nanoseconds.
     void GetTime(hour_type& hours,
                  minute_type& minutes,
                  second_type& seconds,
-                 millisecond_type& milliseconds) const throw()
-    {
-        hours = GetHours();
-        minutes = GetMinutes();
-        seconds = GetSeconds();
-        milliseconds = GetMilliseconds();
-    }
-
-    /// Set the time from a 32-bit value for conveniently serializing the time.
-    void SetTime(uint32_t time) throw()
-    {
-        m_milliseconds = static_cast<millisecond_internal_type>(time);
-        m_seconds = static_cast<second_type>(time >> 8U);
-        m_minutes = static_cast<minute_type>(time >> 16U);
-        m_hours = static_cast<hour_type>(time >> 24U);
-    }
-
-    void SetTime(Time const& time) throw()
-    {
-        m_hours = time.m_hours;
-        m_minutes = time.m_minutes;
-        m_seconds = time.m_seconds;
-        m_milliseconds = time.m_milliseconds;
-    }
+                 smallest_unit_type& smallest_units) throw();
 
     void SetTime(hour_type hours,
                  minute_type minutes,
                  second_type seconds,
-                 millisecond_type milliseconds) throw()
+                 smallest_unit_type smallest_units) throw();
+    */
+
+    /// Transform time into the smallest units, i.e. milliseconds or nanoseconds value.
+    /// 0:0:0.0 would returned as 0.
+    size_type Transform() const throw()
     {
-        SetHours(hours);
-        SetMinutes(minutes);
-        SetSeconds(seconds);
-        SetMilliseconds(milliseconds);
+        return base_type::Transform();
     }
 
-    bool IsLess(Time const& other) const throw()
+    /// Transform the smallest units, i.e. milliseconds or nanoseconds into a time.
+    /// 0 would set the time to 0:0:0.0.
+    void Transform(size_type smallest_units) throw()
     {
-        return GetTime() < other.GetTime();
+        base_type::Transform(smallest_units);
     }
 
-    bool IsLessEqual(Time const& other) const throw()
+    /// Get the time as a 32-bit value for conveniently serializing the time.
+    /// Earlier time is always returned as a lower value.
+    serialize_type Serialize() const throw()
     {
-        return GetTime() <= other.GetTime();
+        return base_type::Serialize();
     }
 
-    bool IsGreater(Time const& other) const throw()
+    /// Set the time from a 32-bit value for conveniently serializing the time.
+    /// Format of serialized_time will be in the same format returned from Serialize.
+    void Deserialize(serialize_type serialized_time) throw()
     {
-        return GetTime() > other.GetTime();
+        base_type::Deserialize(serialized_time);
     }
 
-    bool IsGreaterEqual(Time const& other) const throw()
+    void Copy(type const& other) throw()
     {
-        return GetTime() >= other.GetTime();
+        base_type::Copy(other);
     }
 
-    bool IsEqual(Time const& other) const throw()
+    void Swap(type& other) throw()
     {
-        return GetTime() == other.GetTime();
+        base_type::Swap(other);
     }
 
-    bool IsNotEqual(Time const& other) const throw()
+    void SetStart() throw()
     {
-        return GetTime() != other.GetTime();
+        base_type::SetStart();
     }
 
-    void Swap(Time& other) throw()
+    void SetEnd() throw()
     {
-        hour_type other_hours = other.m_hours;
-        minute_type other_minutes = other.m_minutes;
-        second_type other_seconds = other.m_seconds;
-        millisecond_internal_type other_milliseconds = other.m_milliseconds;
-
-        other.m_hours = m_hours;
-        other.m_minutes = m_minutes;
-        other.m_seconds = m_seconds;
-        other.m_milliseconds = m_milliseconds;
-
-        m_hours = other_hours;
-        m_minutes = other_minutes;
-        m_seconds = other_seconds;
-        m_milliseconds = other_milliseconds;
+        base_type::SetEnd();
     }
-
-    /// Return -1 when this time is less than other time, 0 when equal or
-    /// 1 when this time is greater than other time.
-    int Compare(Time const& other) const throw()
-    {
-        uint32_t t1 = GetTime();
-        uint32_t t2 = other.GetTime();
-        return t1 > t2 ? 1 : (t1 < t2 ? -1 : 0);
-    }
-
-// Data (internal use only)
-private:
-    hour_type m_hours;                        // 0..23
-    minute_type m_minutes;                    // 0..59
-    second_type m_seconds;                    // 0..59 (6 - bits)
-    millisecond_internal_type m_milliseconds; // 0..999 (8 - bits + 2 bottom bits stored in m_seconds)
 };
+
+typedef Time<Milliseconds> TimeMs;
+typedef Time<Nanoseconds>  TimeNs;
 
 } // namespace ocl
 

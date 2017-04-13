@@ -35,6 +35,7 @@ public:
     typedef uint8_t day_of_week_type;
     typedef uint8_t month_type;
     typedef uint16_t year_type;
+    typedef uint32_t serialize_type;
 
 // Constants.
 public:
@@ -88,8 +89,8 @@ public:
 
 // Static member functions.
 public:
-    /// Convert date to a 32-bit value that can be ordered.
-    static uint32_t GetDate(day_type day, month_type month, year_type year) throw()
+    /// Convert date to a 32-bit value that can be ordered and stored.
+    static serialize_type Serialize(day_type day, month_type month, year_type year) throw()
     {
         uint32_t date = day;
         date |= static_cast<uint32_t>(month) << 8U;
@@ -97,8 +98,8 @@ public:
         return date;
     }
 
-    /// Convert a 32-bit ordered value to a day, month and year.
-    static void SetDate(uint32_t date, day_type& day, month_type& month, year_type& year) throw()
+    /// Convert a 32-bit ordered or stored value into a day, month and year.
+    static void Deserialize(serialize_type date, day_type& day, month_type& month, year_type& year) throw()
     {
         day = static_cast<day_type>(date);
         month = static_cast<month_type>(date >> 8U);
@@ -406,7 +407,7 @@ public:
     /// If the user doesn't want to include the current year,
     /// then start from the 1st of January of the current year.
     /// Note that year will be updated to be the year before the counted days.
-    /// The days returned will be the number of days up to the 1st of January,
+    /// The days returned will be the number of days up to the 31st of December,
     /// where there were not enough days remaining to complete a full year.
     static size_type SubtractDaysForYears(size_type days,
                                           day_type& day,
@@ -458,14 +459,14 @@ public:
             days -= day;
             SetToPreviousMonth(month, year);
             size_type days_in_month = GetDaysInMonth(month, year);
-            day = days_in_month;
+            day = static_cast<day_type>(days_in_month);
             while (days >= days_in_month)
             {
                 SetToPreviousMonth(month, year);
                 days -= days_in_month;
                 total_days += days_in_month;
                 days_in_month = GetDaysInMonth(month, year);
-                day = days_in_month;
+                day = static_cast<day_type>(days_in_month);
             }
         }
         else
@@ -541,7 +542,7 @@ public:
     /// Create Date object from an unsigned 32-bit value.
     Date(uint32_t date) throw()
     {
-        SetDate(date, m_day, m_month, m_year);
+        Deserialize(date, m_day, m_month, m_year);
     }
 
     Date(Date const& date) throw()
@@ -555,38 +556,38 @@ public:
 public:
     Date& operator =(Date const& date) throw()
     {
-        SetDate(date);
+        Copy(date);
         return *this;
     }
 
     bool operator <(Date const& other) const throw()
     {
-        return GetDate() < other.GetDate();
+        return Serialize() < other.Serialize();
     }
 
     bool operator <=(Date const& other) const throw()
     {
-        return GetDate() <= other.GetDate();
+        return Serialize() <= other.Serialize();
     }
 
     bool operator >(Date const& other) const throw()
     {
-        return GetDate() > other.GetDate();
+        return Serialize() > other.Serialize();
     }
 
     bool operator >=(Date const& other) const throw()
     {
-        return GetDate() >= other.GetDate();
+        return Serialize() >= other.Serialize();
     }
 
     bool operator ==(Date const& other) const throw()
     {
-        return GetDate() == other.GetDate();
+        return Serialize() == other.Serialize();
     }
 
     bool operator !=(Date const& other) const throw()
     {
-        return GetDate() != other.GetDate();
+        return Serialize() != other.Serialize();
     }
 
     Date& operator +=(size_type days_to_add) throw()
@@ -763,18 +764,18 @@ public:
     }
 
     /// Get the date as a 32-bit value for conveniently serializing the date.
-    uint32_t GetDate() const throw()
+    serialize_type Serialize() const throw()
     {
-        return GetDate(m_day, m_month, m_year);
+        return Serialize(m_day, m_month, m_year);
     }
 
     /// Set the date from a 32-bit value for conveniently serializing the date.
-    void SetDate(uint32_t date) throw()
+    void Deserialize(serialize_type date) throw()
     {
-        SetDate(date, m_day, m_month, m_year);
+        Deserialize(date, m_day, m_month, m_year);
     }
 
-    void SetDate(Date const& date) throw()
+    void Copy(Date const& date) throw()
     {
         m_day = date.m_day;
         m_month = date.m_month;
@@ -885,7 +886,8 @@ public:
             days -= SubtractDaysForYears(days, day, month, year);
             // Remove days to start of month and days for whole previous month.
             days -= SubtractDaysForMonths(days, day, month, year);
-            day_type days_in_month = GetDaysInMonth(month, year);
+            // Day will be at last day of the month, so if day is greater than
+            // days remaining, day - days will take you correct day for the month.
             if (day > days)
                 day = static_cast<day_type>(day - days);
             SetDate(day, month, year);
@@ -907,8 +909,8 @@ public:
 
     int Compare(Date const& date) const throw()
     {
-        uint32_t d1 = GetDate();
-        uint32_t d2 = date.GetDate();
+        uint32_t d1 = Serialize();
+        uint32_t d2 = date.Serialize();
         return d1 > d2 ? 1 : (d1 < d2 ? -1 : 0);
     }
 

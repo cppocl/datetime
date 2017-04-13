@@ -25,28 +25,29 @@ limitations under the License.
 namespace ocl
 {
 
+template<TimePrecision precision>
 class NowDateTime
 {
 // Types and constants
 public:
     // Keep name as time_type for compatibility with NowTicks class.
     // This allows these classes to be interchanged with template classes.
-    typedef DateTime time_type;
+    typedef DateTime<precision> time_type;
 
 // Static methods.
 public:
-    static void ToDateTime(DateTime& date_time, tm const& tm_dt) throw()
+    static void ToDateTime(time_type& date_time, tm const& tm_dt) throw()
     {
         // Take a copy as this struct is shared across all threads.
         tm local_tm_dt = tm_dt;
 
-        date_time.SetHours(static_cast<DateTime::hour_type>(local_tm_dt.tm_hour));
-        date_time.SetMinutes(static_cast<DateTime::minute_type>(local_tm_dt.tm_min));
-        date_time.SetSeconds(static_cast<DateTime::second_type>(local_tm_dt.tm_sec));
+        date_time.SetHours(static_cast<time_type::hour_type>(local_tm_dt.tm_hour));
+        date_time.SetMinutes(static_cast<time_type::minute_type>(local_tm_dt.tm_min));
+        date_time.SetSeconds(static_cast<time_type::second_type>(local_tm_dt.tm_sec));
         date_time.SetMilliseconds(0U);
-        date_time.SetDay(static_cast<DateTime::day_type>(local_tm_dt.tm_mday));
-        date_time.SetMonth(static_cast<DateTime::month_type>(local_tm_dt.tm_mon) + DateTime::MIN_MONTH);
-        date_time.SetYear(static_cast<DateTime::year_type>(local_tm_dt.tm_year + 1900));
+        date_time.SetDay(static_cast<time_type::day_type>(local_tm_dt.tm_mday));
+        date_time.SetMonth(static_cast<time_type::month_type>(local_tm_dt.tm_mon) + time_type::MIN_MONTH);
+        date_time.SetYear(static_cast<time_type::year_type>(local_tm_dt.tm_year + 1900));
     }
 
     static time_type Now(TimeZone time_zone = TimeZone::GMT)

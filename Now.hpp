@@ -26,27 +26,39 @@ namespace ocl
 {
 
 template<typename time_type>
-static inline time_type Now(TimeZone time_zone = TimeZone::GMT)
+inline time_type Now(TimeZone /*time_zone*/ = TimeZone::GMT)
 {
     return static_cast<time_type>(NowTicks<time_type>::Now());
 }
 
 template<>
-static inline Date Now<Date>(TimeZone time_zone)
+inline Date Now<Date>(TimeZone time_zone)
 {
     return NowDate::Now(time_zone);
 }
 
 template<>
-static inline Time Now<Time>(TimeZone time_zone)
+inline Time<Milliseconds> Now< Time<Milliseconds> >(TimeZone time_zone)
 {
-    return NowTime::Now(time_zone);
+    return NowTime<Milliseconds>::Now(time_zone);
 }
 
 template<>
-static DateTime Now<DateTime>(TimeZone time_zone)
+inline Time<Nanoseconds> Now< Time<Nanoseconds> >(TimeZone time_zone)
 {
-    return NowDateTime::Now(time_zone);
+    return NowTime<Nanoseconds>::Now(time_zone);
+}
+
+template<>
+DateTime<Milliseconds> Now< DateTime<Milliseconds> >(TimeZone time_zone)
+{
+    return NowDateTime<Milliseconds>::Now(time_zone);
+}
+
+template<>
+DateTime<Nanoseconds> Now< DateTime<Nanoseconds> >(TimeZone time_zone)
+{
+    return NowDateTime<Nanoseconds>::Now(time_zone);
 }
 
 } // namespace ocl

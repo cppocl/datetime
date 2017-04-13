@@ -18,20 +18,23 @@ limitations under the License.
 #include "../NowDateTime.hpp"
 #include <ctime>
 
+using ocl::DateTime;
 using ocl::NowDateTime;
+typedef DateTime<ocl::Milliseconds> date_time_ms_type;
+typedef NowDateTime<ocl::Milliseconds> now_date_time_ms_type;
 
 TEST_MEMBER_FUNCTION(NowDateTime, Now, TimeZone)
 {
-    NowDateTime::time_type start = NowDateTime::Now(ocl::TimeZone::GMT);
-    NowDateTime::time_type curr = start;
+    now_date_time_ms_type::time_type start = now_date_time_ms_type::Now(ocl::TimeZone::GMT);
+    now_date_time_ms_type::time_type curr = start;
     while (curr == start)
-        curr = NowDateTime::Now();
+        curr = now_date_time_ms_type::Now(ocl::TimeZone::GMT);
     CHECK_TRUE(curr > start);
 
-    start = NowDateTime::Now(ocl::TimeZone::Local);
+    start = now_date_time_ms_type::Now(ocl::TimeZone::Local);
     curr = start;
     while (curr == start)
-        curr = NowDateTime::Now();
+        curr = now_date_time_ms_type::Now(ocl::TimeZone::Local);
     CHECK_TRUE(curr > start);
 }
 
@@ -39,10 +42,8 @@ TEST_MEMBER_FUNCTION(ToDateTime, ToDateTime, DateTime_ref_tm_const_ptr)
 {
     TEST_OVERRIDE_ARGS("DateTime&, tm const* tm_time");
 
-    using ocl::DateTime;
-
     tm tm_time;
-    DateTime date_time;
+    date_time_ms_type date_time;
 
     tm_time.tm_hour = 0;
     tm_time.tm_min = 0;
@@ -50,8 +51,8 @@ TEST_MEMBER_FUNCTION(ToDateTime, ToDateTime, DateTime_ref_tm_const_ptr)
     tm_time.tm_mday = 1;
     tm_time.tm_mon = 0; // Jan
     tm_time.tm_year = 0; // 1900
-    NowDateTime::ToDateTime(date_time, tm_time);
-    CHECK_TRUE(date_time == DateTime(1U, 1U, 1900U, 0U, 0U, 0U, 0U));
+    now_date_time_ms_type::ToDateTime(date_time, tm_time);
+    CHECK_TRUE(date_time == date_time_ms_type(1U, 1U, 1900U, 0U, 0U, 0U, 0U));
 
     tm_time.tm_hour = 23;
     tm_time.tm_min = 59;
@@ -59,6 +60,6 @@ TEST_MEMBER_FUNCTION(ToDateTime, ToDateTime, DateTime_ref_tm_const_ptr)
     tm_time.tm_mday = 31;
     tm_time.tm_mon = 11; // Dec
     tm_time.tm_year = 100; // 2000
-    NowDateTime::ToDateTime(date_time, tm_time);
-    CHECK_TRUE(date_time == DateTime(31U, 12U, 2000U, 23U, 59U, 59U, 0U));
+    now_date_time_ms_type::ToDateTime(date_time, tm_time);
+    CHECK_TRUE(date_time == date_time_ms_type(31U, 12U, 2000U, 23U, 59U, 59U, 0U));
 }

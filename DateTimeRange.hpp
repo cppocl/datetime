@@ -22,16 +22,20 @@ limitations under the License.
 namespace ocl
 {
 
+template<TimePrecision precision>
 class DateTimeRange
 {
 // Types.
 public:
-    typedef DateTime::size_type size_type;
-    typedef DateTime::diff_type diff_type;
-    typedef DateTime::day_type day_type;
-    typedef DateTime::day_of_week_type day_of_week_type;
-    typedef DateTime::month_type month_type;
-    typedef DateTime::year_type year_type;
+    typedef DateTime<precision>                       date_time_type;
+    typedef typename date_time_type::date_size_type   date_size_type;
+    typedef typename date_time_type::date_diff_type   date_diff_type;
+    typedef typename date_time_type::time_size_type   time_size_type;
+    typedef typename date_time_type::time_diff_type   time_diff_type;
+    typedef typename date_time_type::day_type         day_type;
+    typedef typename date_time_type::day_of_week_type day_of_week_type;
+    typedef typename date_time_type::month_type       month_type;
+    typedef typename date_time_type::year_type        year_type;
 
 // Constructors.
 public:
@@ -40,7 +44,7 @@ public:
     {
     }
 
-    DateTimeRange(DateTime const& start, DateTime const& stop) throw()
+    DateTimeRange(date_time_type const& start, date_time_type const& stop) throw()
         : m_start(start)
         , m_stop(stop)
     {
@@ -54,27 +58,27 @@ public:
 
 // Member functions.
 public:
-    DateTime const& GetStart() const throw()
+    date_time_type const& GetStart() const throw()
     {
         return m_start;
     }
 
-    void SetStart(DateTime const& start) throw()
+    void SetStart(date_time_type const& start) throw()
     {
-        m_start.SetDateTime(start);
+        m_start.Copy(start);
     }
 
-    DateTime const& GetStop() const throw()
+    date_time_type const& GetStop() const throw()
     {
         return m_stop;
     }
 
-    void SetStop(DateTime const& stop) throw()
+    void SetStop(date_time_type const& stop) throw()
     {
-        m_stop.SetDateTime(stop);
+        m_stop.Copy(stop);
     }
 
-    bool IsWithin(DateTime const& date) const throw()
+    bool IsWithin(date_time_type const& date) const throw()
     {
         return (date >= m_start) && (date <= m_stop);
     }
@@ -90,14 +94,14 @@ public:
 
         if (is_overlapped)
         {
-            overlap.SetStart(DateTime::Max(m_start, other_range.m_start));
-            overlap.SetStop(DateTime::Min(m_stop, other_range.m_stop));
+            overlap.SetStart(date_time_type::Max(m_start, other_range.m_start));
+            overlap.SetStop(date_time_type::Min(m_stop, other_range.m_stop));
         }
 
         return is_overlapped;
     }
 
-    void GetDifference(size_type& days, size_type& milliseconds) const throw()
+    void GetDifference(date_size_type& days, time_size_type& milliseconds) const throw()
     {
         m_start.GetDifference(m_stop, days, milliseconds);
     }
@@ -108,7 +112,6 @@ public:
         m_start.GetDifference<return_type>(m_stop, milliseconds);
     }
 
-
     // Start is expected to be less than or equal to stop, otherwise this considered invalid.
     bool IsValid() const throw()
     {
@@ -117,8 +120,8 @@ public:
 
 // Data (internal use only)
 private:
-    DateTime m_start;
-    DateTime m_stop;
+    date_time_type m_start;
+    date_time_type m_stop;
 };
 
 }

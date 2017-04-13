@@ -61,7 +61,7 @@ public:
 
     void SetStart(Date const& start) throw()
     {
-        m_start.SetDate(start);
+        m_start.Copy(start);
     }
 
     Date const& GetStop() const throw()
@@ -71,7 +71,7 @@ public:
 
     void SetStop(Date const& stop) throw()
     {
-        m_stop.SetDate(stop);
+        m_stop.Copy(stop);
     }
 
     bool IsWithin(Date const& date) const throw()
