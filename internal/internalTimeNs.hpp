@@ -19,7 +19,7 @@ limitations under the License.
 
 #include "TimeDefines.hpp"
 #include "TimePrecision.hpp"
-#include <stdint.h>
+#include <cstdint>
 
 namespace ocl
 {
@@ -31,7 +31,7 @@ class InternalTimeNs : public TimeDefines
 public:
     typedef nanosecond_size_type size_type;
     typedef nanosecond_diff_type diff_type;
-    typedef uint64_t             serialize_type;
+    typedef std::uint64_t        serialize_type;
     typedef nanosecond_type      smallest_unit_type;
 
 // Constants.

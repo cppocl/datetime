@@ -17,7 +17,7 @@ limitations under the License.
 #ifndef OCL_GUARD_DATETIME_INTERNAL_TIMEDEFINES_HPP
 #define OCL_GUARD_DATETIME_INTERNAL_TIMEDEFINES_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace ocl
 {
@@ -28,27 +28,27 @@ class TimeDefines
 public:
     // Size types when converting into values larger than the limit
     // stored within a time period.
-    typedef uint64_t nanosecond_size_type;
-    typedef int64_t  nanosecond_diff_type;
-    typedef uint64_t microsecond_size_type;
-    typedef int64_t  microsecond_diff_type;
-    typedef uint32_t millisecond_size_type;
-    typedef int32_t  millisecond_diff_type;
-    typedef uint32_t second_size_type;
-    typedef int32_t  second_diff_type;
-    typedef uint32_t minute_size_type;
-    typedef int32_t  minute_diff_type;
-    typedef uint32_t hour_size_type;
-    typedef int32_t  hour_diff_type;
+    typedef std::uint64_t nanosecond_size_type;
+    typedef std::int64_t  nanosecond_diff_type;
+    typedef std::uint64_t microsecond_size_type;
+    typedef std::int64_t  microsecond_diff_type;
+    typedef std::uint32_t millisecond_size_type;
+    typedef std::int32_t  millisecond_diff_type;
+    typedef std::uint32_t second_size_type;
+    typedef std::int32_t  second_diff_type;
+    typedef std::uint32_t minute_size_type;
+    typedef std::int32_t  minute_diff_type;
+    typedef std::uint32_t hour_size_type;
+    typedef std::int32_t  hour_diff_type;
 
     /// Types for hours, minutes, seconds, milliseconds and nanoseconds,
     // that don't exceed their limit within a time period.
-    typedef uint32_t nanosecond_type;
-    typedef uint32_t microsecond_type;
-    typedef uint16_t millisecond_type;
-    typedef uint8_t second_type;
-    typedef uint8_t minute_type;
-    typedef uint8_t hour_type;
+    typedef std::uint32_t nanosecond_type;
+    typedef std::uint32_t microsecond_type;
+    typedef std::uint16_t millisecond_type;
+    typedef std::uint8_t second_type;
+    typedef std::uint8_t minute_type;
+    typedef std::uint8_t hour_type;
 
 // Constants.
 public:

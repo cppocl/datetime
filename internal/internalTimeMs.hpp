@@ -19,7 +19,7 @@ limitations under the License.
 
 #include "TimeDefines.hpp"
 #include "TimePrecision.hpp"
-#include <stdint.h>
+#include <cstdint>
 
 namespace ocl
 {
@@ -31,7 +31,7 @@ class InternalTimeMs : public TimeDefines
 public:
     typedef millisecond_size_type size_type;
     typedef millisecond_diff_type diff_type;
-    typedef uint32_t              serialize_type;
+    typedef std::uint32_t         serialize_type;
     typedef millisecond_type      smallest_unit_type;
 
 // Constants.
@@ -254,9 +254,9 @@ public:
     serialize_type Serialize() const throw()
     {
         serialize_type serialize_time = m_milliseconds;
-        serialize_time |= static_cast<uint32_t>(m_seconds) << 8U;
-        serialize_time |= static_cast<uint32_t>(m_minutes) << 16U;
-        serialize_time |= static_cast<uint32_t>(m_hours) << 24U;
+        serialize_time |= static_cast<serialize_type>(m_seconds) << 8U;
+        serialize_time |= static_cast<serialize_type>(m_minutes) << 16U;
+        serialize_time |= static_cast<serialize_type>(m_hours) << 24U;
         return serialize_time;
     }
 
@@ -316,7 +316,7 @@ public:
 private:
     /// Milliseconds are stored as a 10 bit value, 8 bits in m_milliseconds
     /// and 2 bits in the top 2 bits of m_seconds.
-    typedef uint8_t millisecond_internal_type;
+    typedef std::uint8_t millisecond_internal_type;
 
     /// Masks for handling m_milliseconds and m_seconds.
     /// m_seconds bottom two bits contain the top two bits of the 10 bits used for milliseconds.

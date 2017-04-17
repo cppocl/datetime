@@ -17,7 +17,7 @@ limitations under the License.
 #ifndef OCL_GUARD_DATETIME_DATE_HPP
 #define OCL_GUARD_DATETIME_DATE_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace ocl
 {
@@ -29,13 +29,13 @@ class Date
 {
 // Types.
 public:
-    typedef uint32_t size_type;
-    typedef int32_t diff_type;
-    typedef uint8_t day_type;
-    typedef uint8_t day_of_week_type;
-    typedef uint8_t month_type;
-    typedef uint16_t year_type;
-    typedef uint32_t serialize_type;
+    typedef std::uint32_t size_type;
+    typedef std::int32_t diff_type;
+    typedef std::uint8_t day_type;
+    typedef std::uint8_t day_of_week_type;
+    typedef std::uint8_t month_type;
+    typedef std::uint16_t year_type;
+    typedef std::uint32_t serialize_type;
 
 // Constants.
 public:
@@ -92,9 +92,9 @@ public:
     /// Convert date to a 32-bit value that can be ordered and stored.
     static serialize_type Serialize(day_type day, month_type month, year_type year) throw()
     {
-        uint32_t date = day;
-        date |= static_cast<uint32_t>(month) << 8U;
-        date |= static_cast<uint32_t>(year) << 16U;
+        serialize_type date = day;
+        date |= static_cast<serialize_type>(month) << 8U;
+        date |= static_cast<serialize_type>(year) << 16U;
         return date;
     }
 
@@ -540,7 +540,7 @@ public:
     }
 
     /// Create Date object from an unsigned 32-bit value.
-    Date(uint32_t date) throw()
+    Date(serialize_type date) throw()
     {
         Deserialize(date, m_day, m_month, m_year);
     }
@@ -909,8 +909,8 @@ public:
 
     int Compare(Date const& date) const throw()
     {
-        uint32_t d1 = Serialize();
-        uint32_t d2 = date.Serialize();
+        serialize_type d1 = Serialize();
+        serialize_type d2 = date.Serialize();
         return d1 > d2 ? 1 : (d1 < d2 ? -1 : 0);
     }
 
