@@ -17,7 +17,7 @@ limitations under the License.
 #ifndef OCL_GUARD_DATETIME_DATE_HPP
 #define OCL_GUARD_DATETIME_DATE_HPP
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace ocl
 {
@@ -29,13 +29,13 @@ class Date
 {
 // Types.
 public:
-    typedef std::uint32_t size_type;
-    typedef std::int32_t diff_type;
-    typedef std::uint8_t day_type;
-    typedef std::uint8_t day_of_week_type;
-    typedef std::uint8_t month_type;
-    typedef std::uint16_t year_type;
-    typedef std::uint32_t serialize_type;
+    typedef uint32_t size_type;
+    typedef int32_t diff_type;
+    typedef uint8_t day_type;
+    typedef uint8_t day_of_week_type;
+    typedef uint8_t month_type;
+    typedef uint16_t year_type;
+    typedef uint32_t serialize_type;
 
 // Constants.
 public:
@@ -90,7 +90,7 @@ public:
 // Static member functions.
 public:
     /// Convert date to a 32-bit value that can be ordered and stored.
-    static serialize_type Serialize(day_type day, month_type month, year_type year) throw()
+    static serialize_type Serialize(day_type day, month_type month, year_type year) noexcept
     {
         serialize_type date = day;
         date |= static_cast<serialize_type>(month) << 8U;
@@ -99,14 +99,14 @@ public:
     }
 
     /// Convert a 32-bit ordered or stored value into a day, month and year.
-    static void Deserialize(serialize_type date, day_type& day, month_type& month, year_type& year) throw()
+    static void Deserialize(serialize_type date, day_type& day, month_type& month, year_type& year) noexcept
     {
         day = static_cast<day_type>(date);
         month = static_cast<month_type>(date >> 8U);
         year = static_cast<year_type>(date >> 16U);
     }
 
-    static bool IsLeapYear(year_type year) throw()
+    static bool IsLeapYear(year_type year) noexcept
     {
         /* Leap year is when an extra day is added to February,
            making it 29 days on a leap year.
@@ -125,13 +125,13 @@ public:
     }
 
     /// When month is February and the year is a leap year, this returns true.
-    static bool IsLeapMonth(month_type month, year_type year) throw()
+    static bool IsLeapMonth(month_type month, year_type year) noexcept
     {
         return month == FEBRUARY && IsLeapYear(year);
     }
 
     /// Get days in the month, ignoring leap year.
-    static day_type GetDaysInMonth(month_type month) throw()
+    static day_type GetDaysInMonth(month_type month) noexcept
     {
         static day_type const days[MONTHS_PER_YEAR] =
         {
@@ -146,14 +146,14 @@ public:
     }
 
     /// Get days in the month, adjusting for the leap year and month.
-    static day_type GetDaysInMonth(month_type month, year_type year) throw()
+    static day_type GetDaysInMonth(month_type month, year_type year) noexcept
     {
         bool const is_leap_month = (month == FEBRUARY) && IsLeapYear(year);
         return is_leap_month ? DAYS_IN_LEAP_FEBRUARY : GetDaysInMonth(month);
     }
 
     /// Get number of days in the months from start to end month, adjusting for the leap year.
-    static size_type GetDaysInMonths(month_type start_month, month_type end_month, year_type year) throw()
+    static size_type GetDaysInMonths(month_type start_month, month_type end_month, year_type year) noexcept
     {
         size_type days = 0U;
 
@@ -167,13 +167,13 @@ public:
         return days;
     }
 
-    static month_type GetNextMonth(month_type month) throw()
+    static month_type GetNextMonth(month_type month) noexcept
     {
         return month == DECEMBER ? JANUARY : month + 1U;
     }
 
     /// Move to next month and increment year, if month is December.
-    static void SetToNextMonth(month_type& month, year_type& year) throw()
+    static void SetToNextMonth(month_type& month, year_type& year) noexcept
     {
         if (month == DECEMBER)
         {
@@ -184,13 +184,13 @@ public:
             ++month;
     }
 
-    static month_type GetPreviousMonth(month_type month) throw()
+    static month_type GetPreviousMonth(month_type month) noexcept
     {
         return month == JANUARY ? DECEMBER : month - 1U;
     }
 
     /// Move to previous month and decrement year, if month is January.
-    static void SetToPreviousMonth(month_type& month, year_type& year) throw()
+    static void SetToPreviousMonth(month_type& month, year_type& year) noexcept
     {
         if (month == JANUARY)
         {
@@ -215,7 +215,7 @@ public:
 
     /// Return remaining days in month, e.g.
     /// if it's 30th Jan then 1 is returned, ignoring leap year.
-    static day_type GetDaysToEndOfMonth(day_type day, month_type month) throw()
+    static day_type GetDaysToEndOfMonth(day_type day, month_type month) noexcept
     {
         return GetDaysInMonth(month) - day;
     }
@@ -224,19 +224,19 @@ public:
     /// if it's 30th Jan then 1 is returned, adjusting for the leap year and month.
     static day_type GetDaysToEndOfMonth(day_type day,
                                         month_type month,
-                                        year_type year) throw()
+                                        year_type year) noexcept
     {
         return GetDaysInMonth(month, year) - day;
     }
 
     /// Get number of days in the year, adjusting for the leap year.
-    static size_type GetDaysInYear(year_type year) throw()
+    static size_type GetDaysInYear(year_type year) noexcept
     {
         return IsLeapYear(year) ? DAYS_PER_LEAP_YEAR : DAYS_PER_YEAR;
     }
 
     /// Get number of days in the years from start to end year, adjusting for the leap year.
-    static size_type GetDaysInYears(year_type start_year, year_type end_year) throw()
+    static size_type GetDaysInYears(year_type start_year, year_type end_year) noexcept
     {
         size_type days = 0U;
 
@@ -268,7 +268,7 @@ public:
     /// adjusting for the leap year and month.
     static size_type GetDaysFromStartOfYear(day_type day,
                                             month_type month,
-                                            year_type year) throw()
+                                            year_type year) noexcept
     {
         size_type days = 0U;
         month_type curr_month = JANUARY;
@@ -279,7 +279,7 @@ public:
     }
 
     /// Get number of days to end of year from current date, adjusting for leap year.
-    static size_type GetDaysToEndOfYear(day_type day, month_type month, year_type year) throw()
+    static size_type GetDaysToEndOfYear(day_type day, month_type month, year_type year) noexcept
     {
         size_type days = GetDaysToEndOfMonth(day, month++, year);
         while (month <= DECEMBER)
@@ -289,7 +289,7 @@ public:
 
     /// If the next day is less than the provided day, then it will be 1,
     /// as it has wrapped past end of month, ignoring leap year.
-    static day_type GetNextDay(day_type day, month_type month) throw()
+    static day_type GetNextDay(day_type day, month_type month) noexcept
     {
         day_type days_in_month = GetDaysInMonth(month);
         day_type next_day = (day < days_in_month) ? day + 1U : MIN_DAY;
@@ -298,7 +298,7 @@ public:
 
     /// If the next day is less than the provided day, then it will be 1,
     /// as it has wrapped past end of month, adjusting for the leap year and month.
-    static day_type GetNextDay(day_type day, month_type month, year_type year) throw()
+    static day_type GetNextDay(day_type day, month_type month, year_type year) noexcept
     {
         day_type days_in_month = GetDaysInMonth(month, year);
         day_type next_day = (day < days_in_month) ? day + 1U : MIN_DAY;
@@ -308,7 +308,7 @@ public:
     /// If the previous day is more than the provided day,
     /// then it will be maximum day for the previous month,
     /// as it has wrapped past start of month, ignoring leap year.
-    static day_type GetPreviousDay(day_type day, month_type month) throw()
+    static day_type GetPreviousDay(day_type day, month_type month) noexcept
     {
         day_type prev_day = (day > MIN_DAY) ? day - 1U : GetDaysInMonth(GetPreviousMonth(month));
         return prev_day;
@@ -317,7 +317,7 @@ public:
     /// If the previous day is more than the provided day,
     /// then it will be maximum day for the previous month,
     /// as it has wrapped past start of month, adjusting for the leap year and month.
-    static day_type GetPreviousDay(day_type day, month_type month, year_type year) throw()
+    static day_type GetPreviousDay(day_type day, month_type month, year_type year) noexcept
     {
         day_type prev_day;
 
@@ -340,7 +340,7 @@ public:
     static size_type AddDaysForYears(size_type days,
                                      day_type &day,
                                      month_type& month,
-                                     year_type& year) throw()
+                                     year_type& year) noexcept
     {
         size_type days_to_start_of_next_year = GetDaysToEndOfYear(day, month, year) + 1U;
         size_type total_days;
@@ -376,7 +376,7 @@ public:
     static size_type AddDaysForMonths(size_type days,
                                       day_type& day,
                                       month_type &month,
-                                      year_type& year) throw()
+                                      year_type& year) noexcept
     {
         size_type days_to_start_of_next_month = GetDaysToEndOfMonth(day, month, year) + 1U;
         size_type total_days;
@@ -412,7 +412,7 @@ public:
     static size_type SubtractDaysForYears(size_type days,
                                           day_type& day,
                                           month_type& month,
-                                          year_type& year) throw()
+                                          year_type& year) noexcept
     {
         size_type days_to_end_of_prev_year = GetDaysFromStartOfYear(day, month, year) + 1U;
         size_type total_days;
@@ -449,7 +449,7 @@ public:
     static size_type SubtractDaysForMonths(size_type days,
                                            day_type& day,
                                            month_type& month,
-                                           year_type& year) throw()
+                                           year_type& year) noexcept
     {
         size_type total_days;
 
@@ -481,7 +481,7 @@ public:
                                          month_type first_month,
                                          day_type second_day,
                                          month_type second_month,
-                                         year_type year) throw()
+                                         year_type year) noexcept
     {
         size_type first_days_to_start  = GetDaysFromStartOfYear(first_day, first_month, year);
         size_type second_days_to_start = GetDaysFromStartOfYear(second_day, second_month, year);
@@ -495,7 +495,7 @@ public:
                                          year_type first_year,
                                          day_type second_day,
                                          month_type second_month,
-                                         year_type second_year) throw()
+                                         year_type second_year) noexcept
     {
         size_type days;
 
@@ -512,19 +512,37 @@ public:
         return days;
     }
 
-    static Date const& Min(Date const& first, Date const& second) throw()
+    static Date const& Min(Date const& first, Date const& second) noexcept
     {
         return first < second ? first : second;
     }
 
-    static Date const& Max(Date const& first, Date const& second) throw()
+    static Date const& Max(Date const& first, Date const& second) noexcept
     {
         return first > second ? first : second;
     }
 
+    static bool IsValidDate(uint8_t day, uint8_t month, uint16_t year) noexcept
+    {
+        bool is_valid;
+
+        if ((month >= JANUARY) && (month <= DECEMBER))
+        {
+            uint8_t days_in_month = GetDaysInMonth(month, year);
+            if ((day >= 1) || (day <= days_in_month))
+                is_valid = true;
+            else
+                is_valid = true;
+        }
+        else
+            is_valid = false;
+
+        return is_valid;
+    }
+
 // Constructors.
 public:
-    Date() throw()
+    Date() noexcept
         : m_day(MIN_DAY)
         , m_month(JANUARY)
         , m_year(DEFAULT_YEAR)
@@ -534,18 +552,18 @@ public:
     /// Set day (1..31), month (1..12) and year (e.g. 1970)
     Date(day_type day,
          month_type month,
-         year_type year) throw()
+         year_type year) noexcept
     {
         SetDate(day, month, year);
     }
 
     /// Create Date object from an unsigned 32-bit value.
-    Date(serialize_type date) throw()
+    Date(serialize_type date) noexcept
     {
         Deserialize(date, m_day, m_month, m_year);
     }
 
-    Date(Date const& date) throw()
+    Date(Date const& date) noexcept
         : m_day(date.m_day)
         , m_month(date.m_month)
         , m_year(date.m_year)
@@ -554,94 +572,94 @@ public:
 
 // Overloaded operators.
 public:
-    Date& operator =(Date const& date) throw()
+    Date& operator =(Date const& date) noexcept
     {
         Copy(date);
         return *this;
     }
 
-    bool operator <(Date const& other) const throw()
+    bool operator <(Date const& other) const noexcept
     {
         return Serialize() < other.Serialize();
     }
 
-    bool operator <=(Date const& other) const throw()
+    bool operator <=(Date const& other) const noexcept
     {
         return Serialize() <= other.Serialize();
     }
 
-    bool operator >(Date const& other) const throw()
+    bool operator >(Date const& other) const noexcept
     {
         return Serialize() > other.Serialize();
     }
 
-    bool operator >=(Date const& other) const throw()
+    bool operator >=(Date const& other) const noexcept
     {
         return Serialize() >= other.Serialize();
     }
 
-    bool operator ==(Date const& other) const throw()
+    bool operator ==(Date const& other) const noexcept
     {
         return Serialize() == other.Serialize();
     }
 
-    bool operator !=(Date const& other) const throw()
+    bool operator !=(Date const& other) const noexcept
     {
         return Serialize() != other.Serialize();
     }
 
-    Date& operator +=(size_type days_to_add) throw()
+    Date& operator +=(size_type days_to_add) noexcept
     {
         AddDays(days_to_add);
         return *this;
     }
 
-    Date& operator -=(size_type days_to_subtract) throw()
+    Date& operator -=(size_type days_to_subtract) noexcept
     {
         SubtractDays(days_to_subtract);
         return *this;
     }
 
-    Date operator +(size_type days) throw()
+    Date operator +(size_type days) noexcept
     {
         Date date(*this);
         date += days;
         return date;
     }
 
-    Date operator -(size_type days) const throw()
+    Date operator -(size_type days) const noexcept
     {
         Date date(*this);
         date -= days;
         return date;
     }
 
-    diff_type operator -(Date const& other) const throw()
+    diff_type operator -(Date const& other) const noexcept
     {
         return GetDifferenceInDays(GetDay(), GetMonth(), GetYear(),
                                    other.GetDay(), other.GetMonth(), other.GetYear());
     }
 
-    Date operator++() throw() // Prefix add milliseconds.
+    Date operator++() noexcept // Prefix add milliseconds.
     {
         IncrementDay();
         return *this;
     }
 
-    Date operator++(int) throw() // Postfix add milliseconds.
+    Date operator++(int) noexcept // Postfix add milliseconds.
     {
         Date curr_date(*this);
         IncrementDay();
         return curr_date;
     }
 
-    Date operator--() throw() // Prefix subtract milliseconds.
+    Date operator--() noexcept // Prefix subtract milliseconds.
     {
         DecrementDay();
         return *this;
     }
 
-    Date operator--(int) throw() // Postfix subtract milliseconds.
+    Date operator--(int) noexcept // Postfix subtract milliseconds.
     {
         Date curr_date(*this);
         DecrementDay();
@@ -651,25 +669,25 @@ public:
 // Member functions.
 public:
     /// Get a day between 1 and 31.
-    day_type GetDay() const throw()
+    day_type GetDay() const noexcept
     {
         return m_day;
     }
 
     /// Set a day between 1 and max days for current month and year, with leap year handled.
-    void SetDay(day_type day) throw()
+    void SetDay(day_type day) noexcept
     {
         privateSetDay(day, GetMonth(), GetYear());
     }
 
     /// Get a month between 1 and 12.
-    month_type GetMonth() const throw()
+    month_type GetMonth() const noexcept
     {
         return m_month;
     }
 
     /// Set a month between 1 and 12.
-    void SetMonth(month_type month) throw()
+    void SetMonth(month_type month) noexcept
     {
         if (month >= MIN_MONTH)
             m_month = (month <= MAX_MONTH) ? month : MAX_MONTH;
@@ -678,23 +696,23 @@ public:
     }
 
     /// Get the year as is, i.e. 1990.
-    year_type GetYear() const throw()
+    year_type GetYear() const noexcept
     {
         return m_year;
     }
 
     /// Set the year as is, i.e. 1990.
-    void SetYear(year_type year) throw()
+    void SetYear(year_type year) noexcept
     {
         m_year = year;
     }
 
-    bool IsLeapYear() const throw()
+    bool IsLeapYear() const noexcept
     {
         return IsLeapYear(GetYear());
     }
 
-    year_type GetNextLeapYear() const throw()
+    year_type GetNextLeapYear() const noexcept
     {
         year_type year = GetYear() + 1U;
         while (!IsLeapYear(year))
@@ -702,87 +720,87 @@ public:
         return year;
     }
 
-    day_type GetDaysInMonth() const throw()
+    day_type GetDaysInMonth() const noexcept
     {
         return GetDaysInMonth(GetMonth(), GetYear());
     }
 
-    size_type GetDaysToEndOfMonth() const throw()
+    size_type GetDaysToEndOfMonth() const noexcept
     {
         return GetDaysToEndOfMonth(GetDay(), GetMonth(), GetYear());
     }
 
-    size_type GetDaysFromStartOfYear() const throw()
+    size_type GetDaysFromStartOfYear() const noexcept
     {
         return GetDaysFromStartOfYear(GetDay(), GetMonth(), GetYear());
     }
 
-    size_type GetDaysToEndOfYear() const throw()
+    size_type GetDaysToEndOfYear() const noexcept
     {
         return GetDaysToEndOfYear(GetDay(), GetMonth(), GetYear());
     }
 
-    size_type GetDaysInYear() const throw()
+    size_type GetDaysInYear() const noexcept
     {
         return GetDaysInYear(GetYear());
     }
 
     /// Get difference between two dates in days.
     /// other date is expected to be greater or equal to this date.
-    size_type GetDifferenceInDays(Date const& other) const throw()
+    size_type GetDifferenceInDays(Date const& other) const noexcept
     {
         return GetDifferenceInDays(GetDay(), GetMonth(), GetYear(),
                                    other.GetDay(), other.GetMonth(), other.GetYear());
     }
 
     /// Set to the 1st of January for the current year.
-    void SetStartOfYear() throw()
+    void SetStartOfYear() noexcept
     {
         SetDay(1U);
         SetMonth(JANUARY);
     }
 
     /// Set to the 1st of January for the current year, and return numbers of days to start.
-    void SetStartOfYear(size_type& days_to_start) throw()
+    void SetStartOfYear(size_type& days_to_start) noexcept
     {
         days_to_start = GetDaysFromStartOfYear();
         SetStartOfYear();
     }
 
     /// Set to the 31st of December for the current year.
-    void SetEndtOfYear() throw()
+    void SetEndtOfYear() noexcept
     {
         SetDay(DAYS_IN_DECEMBER);
         SetMonth(DECEMBER);
     }
 
     /// Set to the 31st of December for the current year, and return numbers of days to end.
-    void SetEndtOfYear(size_type& days_to_end) throw()
+    void SetEndtOfYear(size_type& days_to_end) noexcept
     {
         days_to_end = GetDaysToEndOfMonth();
         SetEndtOfYear();
     }
 
     /// Get the date as a 32-bit value for conveniently serializing the date.
-    serialize_type Serialize() const throw()
+    serialize_type Serialize() const noexcept
     {
         return Serialize(m_day, m_month, m_year);
     }
 
     /// Set the date from a 32-bit value for conveniently serializing the date.
-    void Deserialize(serialize_type date) throw()
+    void Deserialize(serialize_type date) noexcept
     {
         Deserialize(date, m_day, m_month, m_year);
     }
 
-    void Copy(Date const& date) throw()
+    void Copy(Date const& date) noexcept
     {
         m_day = date.m_day;
         m_month = date.m_month;
         m_year = date.m_year;
     }
 
-    void SetDate(day_type day, month_type month, year_type year) throw()
+    void SetDate(day_type day, month_type month, year_type year) noexcept
     {
         privateSetDay(day, month, year);
         SetMonth(month);
@@ -791,7 +809,7 @@ public:
 
     /// Increment the day, wrapping the month and year if required.
     /// This is also adjusted for leap year.
-    void IncrementDay() throw()
+    void IncrementDay() noexcept
     {
         month_type month = GetMonth();
         year_type year = GetYear();
@@ -808,7 +826,7 @@ public:
 
     /// Decrement the day, wrapping the month and year if required.
     /// This is also adjusted for leap year.
-    void DecrementDay() throw()
+    void DecrementDay() noexcept
     {
         day_type day = GetDay();
         month_type month = GetMonth();
@@ -827,7 +845,7 @@ public:
     /// Moves onto next month, wrapping year if required.
     /// If the day is past the limit for the next month, the day is
     /// adjusted to the valid maximum day, taking into consideration leap year.
-    void IncrementMonth() throw()
+    void IncrementMonth() noexcept
     {
         day_type day = GetDay();
         month_type month = GetMonth();
@@ -844,7 +862,7 @@ public:
     /// Moves onto previous month, wrapping year if required.
     /// If the day is past the limit for the previous month, the day is
     /// adjusted to the valid maximum day, taking into consideration leap year.
-    void DecrementMonth() throw()
+    void DecrementMonth() noexcept
     {
         day_type day = GetDay();
         month_type month = GetMonth();
@@ -894,7 +912,7 @@ public:
         }
     }
 
-    void Swap(Date& other) throw()
+    void Swap(Date& other) noexcept
     {
         day_type   other_day = other.m_day;
         month_type other_month = other.m_month;
@@ -907,7 +925,7 @@ public:
         m_year = other_year;
     }
 
-    int Compare(Date const& date) const throw()
+    int Compare(Date const& date) const noexcept
     {
         serialize_type d1 = Serialize();
         serialize_type d2 = date.Serialize();
@@ -915,7 +933,7 @@ public:
     }
 
 private:
-    void privateSetDay(day_type day, month_type month, year_type year) throw()
+    void privateSetDay(day_type day, month_type month, year_type year) noexcept
     {
         if (day >= MIN_DAY)
         {

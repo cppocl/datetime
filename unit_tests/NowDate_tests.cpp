@@ -22,7 +22,7 @@ using ocl::NowDate;
 
 TEST_MEMBER_FUNCTION(NowDate, Now, TimeZone)
 {
-    NowDate::time_type now_date = NowDate::Now(ocl::TimeZone::GMT);
+    NowDate::date_type now_date = NowDate::Now(ocl::TimeZone::GMT);
     CHECK_TRUE(now_date.GetYear() >= 1900U);
 }
 

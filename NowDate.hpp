@@ -29,9 +29,9 @@ class NowDate
 {
 // Types and constants
 public:
-    // Keep name as time_type for compatibility with NowTicks class.
+    // Keep name as date_type for compatibility with NowTicks class.
     // This allows these classes to be interchanged with template classes.
-    typedef Date time_type;
+    typedef Date date_type;
 
 // Static methods.
 public:
@@ -45,10 +45,10 @@ public:
         date.SetYear(static_cast<Date::year_type>(local_tm_date.tm_year + 1900));
     }
 
-    static time_type Now(TimeZone time_zone = TimeZone::GMT)
+    static date_type Now(TimeZone time_zone = TimeZone::GMT)
     {
         tm* tm_date = NULL;
-        time_type date;
+        date_type date;
         time_t t = ::time(NULL);
 
         switch (time_zone)
