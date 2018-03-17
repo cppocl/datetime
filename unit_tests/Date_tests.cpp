@@ -738,6 +738,125 @@ TEST_MEMBER_FUNCTION(Date, GetDifferenceInDays, day_type_month_type_year_type_da
     CHECK_EQUAL(Date::GetDifferenceInDays(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2000U, Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2003U), Date::GetDaysInYears(2001U, 2003U));
 }
 
+TEST_MEMBER_FUNCTION(Date, GetDifference, day_type_month_type_year_type_day_type_month_type_year_type_day_type_ref_month_type_ref_year_type_ref)
+{
+    TEST_OVERRIDE_ARGS("day_type, month_type, year_type, day_type, month_type, year_type, day_type&, month_type&, year_type&");
+
+    Date::day_type diff_days = 99;
+    Date::month_type diff_months = 99;
+    Date::year_type diff_years = 10000;
+
+    // Check minimum difference of 1 days over a year boundary.
+    Date::GetDifference(Date::DAYS_IN_DECEMBER, Date::DECEMBER, 1999U, 1U, Date::JANUARY, 2000U, diff_days, diff_months, diff_years);
+    CHECK_EQUAL(diff_days, 1);
+    CHECK_EQUAL(diff_months, 0);
+    CHECK_EQUAL(diff_years, 0);
+
+    // Check minimum difference of 1 days over a month boundary.
+    diff_days = 99;
+    diff_months = 99;
+    diff_years = 10000;
+    Date::GetDifference(Date::DAYS_IN_MARCH, Date::MARCH, 1999U, 1U, Date::APRIL, 1999U, diff_days, diff_months, diff_years);
+    CHECK_EQUAL(diff_days, 1);
+    CHECK_EQUAL(diff_months, 0);
+    CHECK_EQUAL(diff_years, 0);
+
+    // Check minimum difference of 1 days over a non-leap month boundary.
+    diff_days = 99;
+    diff_months = 99;
+    diff_years = 10000;
+    Date::GetDifference(Date::DAYS_IN_FEBRUARY, Date::FEBRUARY, 1999U, 1U, Date::MARCH, 1999U, diff_days, diff_months, diff_years);
+    CHECK_EQUAL(diff_days, 1);
+    CHECK_EQUAL(diff_months, 0);
+    CHECK_EQUAL(diff_years, 0);
+
+    // Check minimum difference of 1 days over a non-leap month boundary.
+    diff_days = 99;
+    diff_months = 99;
+    diff_years = 10000;
+    Date::GetDifference(Date::DAYS_IN_FEBRUARY, Date::FEBRUARY, 2020U, 1U, Date::MARCH, 2020U, diff_days, diff_months, diff_years);
+    CHECK_EQUAL(diff_days, 2);
+    CHECK_EQUAL(diff_months, 0);
+    CHECK_EQUAL(diff_years, 0);
+
+    // Check first and last day in the same year.
+    diff_days = 99;
+    diff_months = 99;
+    diff_years = 10000;
+    Date::GetDifference(1U, Date::JANUARY, 2020U, Date::DAYS_IN_DECEMBER, Date::DECEMBER, 2020U, diff_days, diff_months, diff_years);
+    CHECK_EQUAL(diff_days, Date::DAYS_IN_DECEMBER - 1);
+    CHECK_EQUAL(diff_months, 11);
+    CHECK_EQUAL(diff_years, 0);
+
+    // Check first and last day in the every month, including non-leap year and leap year.
+    for (Date::year_type y = 2019U; y <= 2020U; ++y)
+        for (Date::month_type m = Date::JANUARY; m <= Date::DECEMBER; ++m)
+        {
+            diff_days = 99;
+            diff_months = 99;
+            diff_years = 10000;
+            Date::month_type days_in_month = Date::GetDaysInMonth(m, y);
+            Date::GetDifference(1U, m, y, days_in_month, m, y, diff_days, diff_months, diff_years);
+            CHECK_EQUAL(diff_days, days_in_month - 1);
+            CHECK_EQUAL(diff_months, 0);
+            CHECK_EQUAL(diff_years, 0);
+        }
+
+    // Check 1 day over a year difference for non-leap year.
+    diff_days = 99;
+    diff_months = 99;
+    diff_years = 10000;
+    Date::GetDifference(1U, Date::JANUARY, 2019U, 2U, Date::JANUARY, 2020U, diff_days, diff_months, diff_years);
+    CHECK_EQUAL(diff_days, 1);
+    CHECK_EQUAL(diff_months, 0);
+    CHECK_EQUAL(diff_years, 1);
+
+    // Check 1 day over a year difference for leap year.
+    diff_days = 99;
+    diff_months = 99;
+    diff_years = 10000;
+    Date::GetDifference(1U, Date::JANUARY, 2020U, 2U, Date::JANUARY, 2021U, diff_days, diff_months, diff_years);
+    CHECK_EQUAL(diff_days, 1);
+    CHECK_EQUAL(diff_months, 0);
+    CHECK_EQUAL(diff_years, 1);
+
+    // Check 1 day and 1 month over a year difference for non-leap year.
+    diff_days = 99;
+    diff_months = 99;
+    diff_years = 10000;
+    Date::GetDifference(1U, Date::JANUARY, 2019U, 2U, Date::FEBRUARY, 2020U, diff_days, diff_months, diff_years);
+    CHECK_EQUAL(diff_days, 1);
+    CHECK_EQUAL(diff_months, 1);
+    CHECK_EQUAL(diff_years, 1);
+
+    // Check 1 day and 1 month over a year difference for leap year.
+    diff_days = 99;
+    diff_months = 99;
+    diff_years = 10000;
+    Date::GetDifference(1U, Date::JANUARY, 2020U, 2U, Date::FEBRUARY, 2021U, diff_days, diff_months, diff_years);
+    CHECK_EQUAL(diff_days, 1);
+    CHECK_EQUAL(diff_months, 1);
+    CHECK_EQUAL(diff_years, 1);
+
+    // Check 1 day and 2 month over 3 years difference for non-leap year.
+    diff_days = 99;
+    diff_months = 99;
+    diff_years = 10000;
+    Date::GetDifference(1U, Date::JANUARY, 2019U, 2U, Date::MARCH, 2022U, diff_days, diff_months, diff_years);
+    CHECK_EQUAL(diff_days, 1);
+    CHECK_EQUAL(diff_months, 2);
+    CHECK_EQUAL(diff_years, 3);
+
+    // Check 1 day and 2 month over 3 years difference for leap year.
+    diff_days = 99;
+    diff_months = 99;
+    diff_years = 10000;
+    Date::GetDifference(1U, Date::JANUARY, 2020U, 2U, Date::MARCH, 2023U, diff_days, diff_months, diff_years);
+    CHECK_EQUAL(diff_days, 1);
+    CHECK_EQUAL(diff_months, 2);
+    CHECK_EQUAL(diff_years, 3);
+}
+
 TEST_MEMBER_FUNCTION(Date, GetPreviousDay, day_type_month_type_year_type)
 {
     TEST_OVERRIDE_ARGS("day_type, month_type, year_type");

@@ -475,7 +475,7 @@ public:
         return total_days;
     }
 
-    /// Get number of days between two dates for the same year.
+    /// Get number of days between two dates for the same year in days.
     /// First date must be less or equal to second date.
     static size_type GetDifferenceInDays(day_type first_day,
                                          month_type first_month,
@@ -488,7 +488,7 @@ public:
         return second_days_to_start - first_days_to_start;
     }
 
-    /// Get number of days between two dates.
+    /// Get number of days between two dates in days.
     /// First date must be less or equal to second date.
     static size_type GetDifferenceInDays(day_type first_day,
                                          month_type first_month,
@@ -510,6 +510,43 @@ public:
             days = GetDifferenceInDays(first_day, first_month, second_day, second_month, first_year);
 
         return days;
+    }
+
+    /// Get number of days, months and years between two dates.
+    /// First date must be less or equal to second date.
+    static void GetDifference(day_type first_day,
+                              month_type first_month,
+                              year_type first_year,
+                              day_type second_day,
+                              month_type second_month,
+                              year_type second_year,
+                              day_type& diff_days,
+                              month_type& diff_months,
+                              year_type& diff_years) noexcept
+    {
+        if (second_year > first_year)
+        {
+            bool const is_month_day_greater_equal = second_month > first_month ||
+                                                    ((second_month == first_month) &&
+                                                     (second_day >= first_day));
+
+            diff_years = is_month_day_greater_equal ? second_year - first_year
+                                                    : second_year - first_year - 1;
+        }
+        else
+            diff_years = 0;
+
+        if (second_month > first_month)
+            diff_months = (second_day >= first_day) ? second_month - first_month
+                                                    : second_month - first_month - 1;
+        else
+            diff_months = (diff_years > 0) && (second_month != first_month) ?
+                                    MONTHS_PER_YEAR + second_month - first_month : 0;
+
+        if (second_day >= first_day)
+            diff_days = second_day - first_day;
+        else
+            diff_days = (GetDaysInMonth(first_month, first_year) - first_day) + second_day;
     }
 
     static Date const& Min(Date const& first, Date const& second) noexcept
@@ -751,6 +788,18 @@ public:
     {
         return GetDifferenceInDays(GetDay(), GetMonth(), GetYear(),
                                    other.GetDay(), other.GetMonth(), other.GetYear());
+    }
+
+    /// Get number of days, months and years between two dates.
+    /// other date must be greater or equal to this date.
+    void GetDifference(Date const& other,
+                      day_type& diff_days,
+                      month_type& diff_months,
+                      year_type& diff_years) const noexcept
+    {
+        GetDifference(GetDay(), GetMonth(), GetYear(),
+                      other.GetDay(), other.GetMonth(), other.GetYear(),
+                      diff_days, diff_months, diff_years);
     }
 
     /// Set to the 1st of January for the current year.
