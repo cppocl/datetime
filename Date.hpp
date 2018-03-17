@@ -17,7 +17,7 @@ limitations under the License.
 #ifndef OCL_GUARD_DATETIME_DATE_HPP
 #define OCL_GUARD_DATETIME_DATE_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace ocl
 {
@@ -29,13 +29,13 @@ class Date
 {
 // Types.
 public:
-    typedef uint32_t size_type;
-    typedef int32_t diff_type;
-    typedef uint8_t day_type;
-    typedef uint8_t day_of_week_type;
-    typedef uint8_t month_type;
-    typedef uint16_t year_type;
-    typedef uint32_t serialize_type;
+    typedef std::uint32_t size_type;
+    typedef std::int32_t diff_type;
+    typedef std::uint8_t day_type;
+    typedef std::uint8_t day_of_week_type;
+    typedef std::uint8_t month_type;
+    typedef std::uint16_t year_type;
+    typedef std::uint32_t serialize_type;
 
 // Constants.
 public:
