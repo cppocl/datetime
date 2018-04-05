@@ -2,13 +2,13 @@
 
 ![](header_image.jpg)
 
-# Overview
+## Overview
 
 C++ Date and time classes.
 Designed to be an easier to use alternative to the C++ 11 chrono library.
 The library only uses header files, which means they can be used purely by including the header file.
 
-# Code Examples
+## Code Examples
 
 ```cpp
 #include "datetime/Date.hpp"
