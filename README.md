@@ -16,8 +16,8 @@ The library only uses header files, which means they can be used purely by inclu
 
 int main()
 {
-    Date gmt_now_date = NowDate::Now();
-    Date my_birthday(1, Date::January, 1980);
+    ocl::Date gmt_now_date = ocl::NowDate::Now();
+    ocl::Date my_birthday(1, ocl::Date::January, 1980);
 
     auto days_alive = my_birthday.GetDifferenceInDays(gmt_now_date);
 
